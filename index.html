@@ -1,0 +1,1185 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Carte interactive du LabFab Rennes</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:#0f0f1a;overflow:hidden;font-family:'Segoe UI',system-ui,Arial,sans-serif;color:#fff;}
+svg#main-svg{display:block;position:absolute;top:56px;left:0;right:0;bottom:80px;}
+
+/* === TOP BAR === */
+#topbar{
+  position:absolute;top:0;left:0;right:0;height:56px;z-index:100;
+  display:flex;align-items:center;justify-content:space-between;padding:0 20px;
+  background:rgba(10,10,26,0.92);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  border-bottom:1px solid rgba(255,255,255,0.06);
+}
+.title-area{display:flex;flex-direction:column;}
+.title-area h1{font-size:17px;font-weight:600;letter-spacing:0.5px;color:rgba(255,255,255,0.9);}
+.title-area .sub{font-size:11px;font-weight:400;opacity:0.4;margin-top:1px;}
+.search-area{position:relative;width:280px;}
+.search-area input{
+  width:100%;padding:8px 14px 8px 36px;border-radius:8px;border:1px solid rgba(255,255,255,0.1);
+  background:rgba(255,255,255,0.06);color:#fff;font-size:13px;outline:none;
+  transition:border-color 0.2s,background 0.2s;
+}
+.search-area input:focus{border-color:rgba(255,255,255,0.25);background:rgba(255,255,255,0.1);}
+.search-area input::placeholder{color:rgba(255,255,255,0.3);}
+.search-area svg{position:absolute;left:10px;top:50%;transform:translateY(-50%);opacity:0.3;}
+.controls-area{display:flex;gap:6px;align-items:center;}
+.controls-area button{
+  background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.1);
+  color:#fff;width:32px;height:32px;border-radius:6px;cursor:pointer;font-size:15px;
+  display:flex;align-items:center;justify-content:center;transition:background 0.2s;
+}
+.controls-area button:hover{background:rgba(255,255,255,0.15);}
+
+/* === LEGEND & FILTERS === */
+#legend{
+  position:absolute;bottom:96px;left:16px;z-index:100;
+  background:rgba(10,10,26,0.88);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  padding:12px 14px;border-radius:10px;border:1px solid rgba(255,255,255,0.08);
+}
+.filter-btn{
+  display:flex;align-items:center;gap:8px;padding:5px 8px;margin:3px 0;
+  background:none;border:1px solid transparent;border-radius:6px;cursor:pointer;
+  font-size:12px;color:rgba(255,255,255,0.85);transition:all 0.2s;width:100%;text-align:left;
+}
+.filter-btn:hover{background:rgba(255,255,255,0.05);}
+.filter-btn .dot{width:12px;height:12px;border-radius:50%;flex-shrink:0;transition:opacity 0.2s;}
+.filter-btn .count{margin-left:auto;opacity:0.35;font-size:11px;}
+.filter-btn.inactive .dot{opacity:0.2;}
+.filter-btn.inactive{opacity:0.35;}
+
+/* === SIDE PANEL === */
+#panel{
+  position:absolute;top:56px;right:0;bottom:80px;width:380px;z-index:90;
+  background:rgba(10,10,26,0.95);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  border-left:1px solid rgba(255,255,255,0.08);
+  transform:translateX(100%);transition:transform 0.3s cubic-bezier(0.4,0,0.2,1);
+  overflow-y:auto;padding:24px 20px;
+}
+#panel.open{transform:translateX(0);}
+#panel::-webkit-scrollbar{width:4px;}
+#panel::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.1);border-radius:2px;}
+.panel-close{
+  position:absolute;top:12px;right:12px;background:rgba(255,255,255,0.08);
+  border:none;color:#fff;width:28px;height:28px;border-radius:6px;cursor:pointer;
+  font-size:16px;display:flex;align-items:center;justify-content:center;transition:background 0.2s;
+}
+.panel-close:hover{background:rgba(255,255,255,0.15);}
+.panel-badge{
+  display:inline-block;padding:3px 10px;border-radius:4px;font-size:10px;
+  font-weight:600;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;
+}
+#panel h2{font-size:20px;font-weight:700;margin-bottom:4px;line-height:1.3;}
+.panel-period{font-size:12px;opacity:0.4;margin-bottom:12px;display:block;}
+.panel-desc{font-size:13.5px;line-height:1.6;opacity:0.8;margin-bottom:16px;}
+.panel-quote{
+  font-style:italic;font-size:13px;line-height:1.5;opacity:0.65;
+  border-left:2px solid rgba(255,255,255,0.15);padding-left:12px;margin-bottom:16px;
+}
+.panel-section{margin-bottom:16px;}
+.panel-section h3{font-size:11px;text-transform:uppercase;letter-spacing:1.5px;opacity:0.4;margin-bottom:8px;font-weight:600;}
+.panel-section ul{list-style:none;padding:0;}
+.panel-section li{font-size:13px;line-height:1.5;opacity:0.75;padding:2px 0;padding-left:12px;position:relative;}
+.panel-section li::before{content:'·';position:absolute;left:0;opacity:0.4;}
+.conn-chip{
+  display:inline-block;padding:4px 10px;margin:2px 3px;border-radius:5px;
+  font-size:12px;cursor:pointer;transition:all 0.15s;
+  background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);
+}
+.conn-chip:hover{background:rgba(255,255,255,0.12);border-color:rgba(255,255,255,0.2);}
+
+/* === TIMELINE === */
+#timeline{
+  position:absolute;bottom:0;left:0;right:0;height:80px;z-index:100;
+  background:rgba(10,10,26,0.92);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  border-top:1px solid rgba(255,255,255,0.06);
+}
+#timeline svg{width:100%;height:100%;}
+#timeline .axis text{fill:rgba(255,255,255,0.35);font-size:11px;}
+#timeline .axis line,#timeline .axis path{stroke:rgba(255,255,255,0.08);}
+#timeline .brush .selection{fill:rgba(255,255,255,0.08);stroke:rgba(255,255,255,0.2);stroke-width:1;rx:4;}
+#timeline .brush .handle{fill:rgba(255,255,255,0.4);rx:2;width:4px !important;}
+#timeline .brush .overlay{fill:transparent;}
+.timeline-label{
+  position:absolute;top:6px;left:50%;transform:translateX(-50%);
+  font-size:11px;opacity:0.4;letter-spacing:0.5px;pointer-events:none;
+}
+.play-btn{
+  position:absolute;top:10px;right:20px;z-index:10;
+  background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);
+  color:#fff;width:32px;height:32px;border-radius:50%;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;transition:all 0.2s;
+  font-size:14px;
+}
+.play-btn:hover{background:rgba(255,255,255,0.18);}
+.play-btn.playing{background:rgba(42,157,143,0.25);border-color:rgba(42,157,143,0.5);}
+.timeline-year{
+  position:absolute;top:8px;right:60px;
+  font-size:13px;font-weight:600;opacity:0;letter-spacing:0.5px;
+  transition:opacity 0.2s;pointer-events:none;
+}
+.timeline-year.visible{opacity:0.6;}
+
+/* === TOOLTIP === */
+.tooltip{
+  position:absolute;pointer-events:none;opacity:0;z-index:200;
+  background:rgba(10,10,30,0.94);color:#fff;padding:10px 14px;
+  border-radius:8px;font-size:13px;max-width:300px;
+  border:1px solid rgba(255,255,255,0.12);
+  box-shadow:0 8px 32px rgba(0,0,0,0.5);
+  transition:opacity 0.12s;
+}
+.tooltip .t-cat{font-size:10px;opacity:0.5;text-transform:uppercase;letter-spacing:1px;}
+.tooltip .t-name{font-size:14px;font-weight:600;margin:2px 0 4px;}
+.tooltip .t-desc{font-size:12px;opacity:0.6;margin-bottom:4px;line-height:1.4;}
+.tooltip .t-links{font-size:11.5px;opacity:0.7;}
+
+/* === ANIMATIONS === */
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.fade-in{animation:fadeIn 0.4s ease-out;}
+
+/* === 3D CONTAINER === */
+#three-container{
+  display:none;position:absolute;top:56px;left:0;right:0;bottom:80px;
+  background:#0f0f1a;
+}
+#three-container canvas{display:block;width:100%;height:100%;}
+.btn-mode{
+  background:rgba(255,255,255,0.1) !important;font-weight:600 !important;
+  letter-spacing:0.5px;font-size:12px !important;width:auto !important;padding:0 10px !important;
+}
+.btn-mode.active-3d{background:rgba(42,157,143,0.3) !important;border-color:rgba(42,157,143,0.5) !important;}
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div id="topbar">
+  <div class="title-area">
+    <h1>Carte du milieu LabFab Rennes</h1>
+    <div class="sub">Acteurs · Lieux · Événements · Mots-clés</div>
+  </div>
+  <div class="search-area">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    <input type="text" id="search" placeholder="Rechercher… (ou appuyer /)" autocomplete="off">
+  </div>
+  <div class="controls-area">
+    <button onclick="zoomIn()" title="Zoom +">+</button>
+    <button onclick="zoomOut()" title="Zoom −">−</button>
+    <button onclick="resetZoom()" title="Reset vue">⟳</button>
+    <button id="btn-3d" class="btn-mode" onclick="toggle3D()" title="Mode 3D">3D</button>
+  </div>
+</div>
+
+<!-- LEGEND & FILTERS -->
+<div id="legend"></div>
+
+<!-- SIDE PANEL -->
+<div id="panel">
+  <button class="panel-close" onclick="closePanel()">✕</button>
+  <div id="panel-content"></div>
+</div>
+
+<!-- TIMELINE -->
+<div id="timeline">
+  <span class="timeline-label">Période</span>
+  <span class="timeline-year" id="timeline-year"></span>
+  <button class="play-btn" id="play-btn" onclick="togglePlay()" title="Lecture automatique">▶</button>
+  <svg id="timeline-svg"></svg>
+</div>
+
+<!-- 3D CONTAINER -->
+<div id="three-container"></div>
+
+<!-- MAIN SVG -->
+<svg id="main-svg"></svg>
+
+<!-- TOOLTIP -->
+<div class="tooltip" id="tooltip"></div>
+
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script>
+// ===== CONFIGURATION =====
+const catConfig = {
+  'Acteur':     {color:'#E63946', bg:'rgba(230,57,70,0.06)',  cx:-0.18, cy:-0.16, label:'ACTEURS'},
+  'Lieu':       {color:'#457B9D', bg:'rgba(69,123,157,0.06)', cx:-0.18, cy: 0.16, label:'LIEUX'},
+  'Événement':  {color:'#2A9D8F', bg:'rgba(42,157,143,0.06)', cx: 0.18, cy:-0.16, label:'ÉVÉNEMENTS'},
+  'Mot-clé':    {color:'#F4A261', bg:'rgba(244,162,97,0.06)', cx: 0.18, cy: 0.16, label:'MOTS-CLÉS'}
+};
+
+// ===== ENRICHED NODE DATA =====
+const nodes = [
+  {id:'a01',label:'Hugues Aubin',cat:'Acteur',size:20,y1:2010,y2:2025},
+  {id:'a02',label:'Baptiste Gaultier',cat:'Acteur',size:16,y1:2010,y2:2025},
+  {id:'a03',label:'Nicolas Huchet',cat:'Acteur',size:16,y1:2012,y2:2025},
+  {id:'a04',label:'Norbert Friant',cat:'Acteur',size:16,y1:2012,y2:2025},
+  {id:'a05',label:'Erwan Mahé',cat:'Acteur',size:14,y1:2012,y2:2025},
+  {id:'a06',label:'Bérangère Amiot',cat:'Acteur',size:14,y1:2012,y2:2025},
+  {id:'a07',label:'Romain Chefdor',cat:'Acteur',size:16,y1:2017,y2:2025},
+  {id:'a08',label:'John Le Jeune',cat:'Acteur',size:16,y1:2010,y2:2014},
+  {id:'a09',label:'Richard Delogu / BUG',cat:'Acteur',size:12,y1:2010,y2:2015},
+  {id:'a10',label:'Odile Le Borgne',cat:'Acteur',size:8,y1:2012,y2:2014},
+  {id:'a11',label:'Laurent Flamant',cat:'Acteur',size:8,y1:2010,y2:2015},
+  {id:'a12',label:'Thomas Diaz',cat:'Acteur',size:8,y1:2013,y2:2020},
+  {id:'a13',label:'Thomas Meij',cat:'Acteur',size:8,y1:2013,y2:2020},
+  {id:'a14',label:'Tony',cat:'Acteur',size:10,y1:2014,y2:2025},
+  {id:'a15',label:'Célia',cat:'Acteur',size:8,y1:2020,y2:2025},
+  {id:'a16',label:'Laurent Mattlé',cat:'Acteur',size:14,y1:2011,y2:2025},
+  {id:'l01',label:'EESAB',cat:'Lieu',size:16,y1:2012,y2:2025},
+  {id:'l02',label:'IMT Atlantique',cat:'Lieu',size:12,y1:2009,y2:2025},
+  {id:'l03',label:'Rennes Métropole',cat:'Lieu',size:14,y1:2012,y2:2025},
+  {id:'l04',label:'Cantine numérique',cat:'Lieu',size:10,y1:2010,y2:2018},
+  {id:'l05',label:'Champs Libres',cat:'Lieu',size:12,y1:2010,y2:2025},
+  {id:'l06',label:'Jardin Moderne',cat:'Lieu',size:8,y1:2011,y2:2015},
+  {id:'l07',label:'EduLab Rennes 2',cat:'Lieu',size:10,y1:2015,y2:2025},
+  {id:'l08',label:'Trois-Soleils',cat:'Lieu',size:6,y1:2010,y2:2010},
+  {id:'l09',label:'MIT (Boston)',cat:'Lieu',size:6,y1:2013,y2:2020},
+  {id:'l10',label:'FabLab Festival Toulouse',cat:'Lieu',size:8,y1:2015,y2:2020},
+  {id:'l11',label:'Comme un Établi',cat:'Lieu',size:6,y1:2018,y2:2025},
+  {id:'l12',label:'Teaching Lab',cat:'Lieu',size:8,y1:2016,y2:2025},
+  {id:'e01',label:'Rencontre John Le Jeune (2010)',cat:'Événement',size:14,y1:2010,y2:2010},
+  {id:'e02',label:'Création FabLab EESAB (2012)',cat:'Événement',size:18,y1:2012,y2:2012},
+  {id:'e03',label:'Vivacité (2012)',cat:'Événement',size:14,y1:2012,y2:2012},
+  {id:'e04',label:'Appel à projet Pellerin (2013)',cat:'Événement',size:14,y1:2013,y2:2013},
+  {id:'e05',label:'Premier MOOC FUN (2014)',cat:'Événement',size:10,y1:2014,y2:2014},
+  {id:'e06',label:'Projet Bionico (2012-2015)',cat:'Événement',size:14,y1:2012,y2:2015},
+  {id:'e07',label:'Création RFF Lab (2015)',cat:'Événement',size:12,y1:2015,y2:2015},
+  {id:'e08',label:'Création asso fab managers (2017)',cat:'Événement',size:12,y1:2017,y2:2017},
+  {id:'e09',label:'Covid — fabrication distribuée (2020)',cat:'Événement',size:12,y1:2020,y2:2020},
+  {id:'e10',label:'Jardin Numérique (2011)',cat:'Événement',size:8,y1:2011,y2:2011},
+  {id:'e11',label:'Livre blanc RFF Lab (2016-17)',cat:'Événement',size:8,y1:2016,y2:2017},
+  {id:'e12',label:'Métromix',cat:'Événement',size:8,y1:2019,y2:2019},
+  {id:'e13',label:'Ouverture FabLab Vietnam (2013)',cat:'Événement',size:12,y1:2013,y2:2013},
+  {id:'m01',label:'Open source',cat:'Mot-clé',size:16,y1:2010,y2:2025},
+  {id:'m02',label:'Communs',cat:'Mot-clé',size:12,y1:2013,y2:2025},
+  {id:'m03',label:'Libre',cat:'Mot-clé',size:12,y1:2010,y2:2025},
+  {id:'m04',label:'Arduino',cat:'Mot-clé',size:14,y1:2010,y2:2020},
+  {id:'m05',label:'Fab City',cat:'Mot-clé',size:14,y1:2014,y2:2025},
+  {id:'m06',label:'Éducation populaire',cat:'Mot-clé',size:12,y1:2012,y2:2025},
+  {id:'m07',label:'Empowerment',cat:'Mot-clé',size:10,y1:2012,y2:2025},
+  {id:'m08',label:'Low-tech',cat:'Mot-clé',size:10,y1:2015,y2:2025},
+  {id:'m09',label:'Documentation',cat:'Mot-clé',size:12,y1:2012,y2:2025},
+  {id:'m10',label:'MOOC',cat:'Mot-clé',size:10,y1:2014,y2:2020},
+  {id:'m11',label:'Fab manager',cat:'Mot-clé',size:12,y1:2014,y2:2025},
+  {id:'m12',label:'Hackathon',cat:'Mot-clé',size:8,y1:2014,y2:2025},
+  {id:'m13',label:'Maker Faire',cat:'Mot-clé',size:8,y1:2013,y2:2020},
+  {id:'m14',label:'Réparation',cat:'Mot-clé',size:8,y1:2015,y2:2025},
+  {id:'m15',label:'Réemploi',cat:'Mot-clé',size:8,y1:2018,y2:2025},
+  {id:'m16',label:'Design collaboratif',cat:'Mot-clé',size:8,y1:2012,y2:2025},
+  {id:'m17',label:'FEDER',cat:'Mot-clé',size:8,y1:2016,y2:2025},
+  {id:'m18',label:'Fabrication distribuée',cat:'Mot-clé',size:10,y1:2020,y2:2025},
+  {id:'m19',label:'Precious Plastic',cat:'Mot-clé',size:6,y1:2018,y2:2025},
+  {id:'m20',label:'Sensor Community',cat:'Mot-clé',size:6,y1:2019,y2:2025},
+  {id:'m21',label:'DIY',cat:'Mot-clé',size:8,y1:2010,y2:2025},
+  {id:'m22',label:'Pédagogie du faire',cat:'Mot-clé',size:12,y1:2012,y2:2025},
+  {id:'m23',label:'Bénévolat',cat:'Mot-clé',size:8,y1:2012,y2:2025},
+  {id:'m24',label:'Parité',cat:'Mot-clé',size:6,y1:2017,y2:2025},
+  {id:'m25',label:'Encapacitation',cat:'Mot-clé',size:8,y1:2015,y2:2025}
+];
+
+const edges = [
+  {source:'a01',target:'a08',label:'rencontre fondatrice',w:3},
+  {source:'a01',target:'a03',label:'catalyse',w:3},
+  {source:'a01',target:'a02',label:'collabore avec',w:2},
+  {source:'a01',target:'a04',label:'collabore avec',w:2},
+  {source:'a01',target:'a05',label:'collabore avec',w:2},
+  {source:'a01',target:'a09',label:'collabore avec',w:2},
+  {source:'a01',target:'a12',label:"s'inspire de",w:2},
+  {source:'a02',target:'a08',label:'collabore avec',w:3},
+  {source:'a02',target:'a05',label:'collabore avec',w:2},
+  {source:'a02',target:'a16',label:'pilier affectif',w:2},
+  {source:'a02',target:'a14',label:'collabore avec',w:2},
+  {source:'a03',target:'a01',label:'co-fonde MHK',w:3},
+  {source:'a03',target:'a13',label:'voyage avec',w:1},
+  {source:'a04',target:'a07',label:'encadre',w:2},
+  {source:'a06',target:'a14',label:'co-préside avec',w:2},
+  {source:'a06',target:'a05',label:'rencontre fondatrice',w:1},
+  {source:'a06',target:'a02',label:'rencontre fondatrice',w:1},
+  {source:'a10',target:'a05',label:'soutient',w:2},
+  {source:'a08',target:'a01',label:'transmet à',w:3},
+  {source:'a08',target:'a02',label:'transmet à',w:3},
+  {source:'a15',target:'a05',label:'travaille avec',w:2},
+  {source:'a01',target:'e01',label:'participe à',w:3},
+  {source:'a08',target:'e01',label:'participe à',w:3},
+  {source:'a02',target:'e01',label:'participe à',w:2},
+  {source:'a05',target:'e02',label:'fonde',w:3},
+  {source:'a02',target:'e02',label:'anime',w:3},
+  {source:'a08',target:'e02',label:'anime',w:3},
+  {source:'a01',target:'e02',label:'participe à',w:2},
+  {source:'a04',target:'e02',label:'participe à',w:2},
+  {source:'a10',target:'e02',label:'soutient',w:2},
+  {source:'a11',target:'e02',label:'participe à',w:1},
+  {source:'a09',target:'e02',label:'participe à',w:1},
+  {source:'a01',target:'e03',label:'organise',w:3},
+  {source:'a09',target:'e03',label:'organise',w:3},
+  {source:'a03',target:'e03',label:'découvre le FabLab à',w:3},
+  {source:'a09',target:'e04',label:'porte administrativement',w:3},
+  {source:'a04',target:'e04',label:'participe à',w:2},
+  {source:'a07',target:'e04',label:'lauréat (Manche Lab)',w:2},
+  {source:'a01',target:'e04',label:'participe à',w:2},
+  {source:'a02',target:'e05',label:'crée',w:3},
+  {source:'a14',target:'e05',label:'participe à',w:2},
+  {source:'a03',target:'e06',label:'fonde',w:3},
+  {source:'a01',target:'e06',label:'co-fonde',w:3},
+  {source:'a07',target:'e07',label:'participe à',w:2},
+  {source:'a04',target:'e07',label:'référent régional',w:2},
+  {source:'a02',target:'e07',label:'participe à',w:1},
+  {source:'a07',target:'e08',label:'impulse',w:3},
+  {source:'a04',target:'e08',label:'participe à',w:2},
+  {source:'a14',target:'e08',label:'co-préside',w:2},
+  {source:'a06',target:'e08',label:'co-préside',w:2},
+  {source:'a07',target:'e09',label:'coordonne',w:3},
+  {source:'a04',target:'e09',label:'participe à',w:2},
+  {source:'a02',target:'e10',label:'participe à',w:2},
+  {source:'a07',target:'e11',label:'contribue à',w:2},
+  {source:'a06',target:'e12',label:'facilite',w:2},
+  {source:'e01',target:'l05',label:'se déroule à',w:2},
+  {source:'e01',target:'l08',label:'se déroule à',w:2},
+  {source:'e02',target:'l01',label:'se déroule à',w:3},
+  {source:'e03',target:'l05',label:'se déroule à',w:3},
+  {source:'e04',target:'l03',label:'porté par',w:2},
+  {source:'e05',target:'l02',label:'produit à',w:2},
+  {source:'e07',target:'l10',label:'se déroule à',w:2},
+  {source:'e08',target:'l03',label:'soutenu par',w:2},
+  {source:'e10',target:'l06',label:'se déroule à',w:2},
+  {source:'e09',target:'l12',label:'inclut',w:1},
+  {source:'a05',target:'l01',label:'travaille à',w:3},
+  {source:'a02',target:'l02',label:'travaille à',w:3},
+  {source:'a04',target:'l03',label:'travaille à',w:3},
+  {source:'a07',target:'l03',label:'travaille à',w:3},
+  {source:'a14',target:'l07',label:'travaille à',w:3},
+  {source:'a15',target:'l01',label:'travaille à',w:3},
+  {source:'a13',target:'l02',label:'travaille à',w:2},
+  {source:'a01',target:'l04',label:'fréquente',w:2},
+  {source:'a02',target:'l09',label:'voyage à',w:1},
+  {source:'a03',target:'l09',label:'voyage à',w:1},
+  {source:'a01',target:'m05',label:'porte',w:3},
+  {source:'a01',target:'m02',label:'théorise',w:3},
+  {source:'a01',target:'m01',label:'défend',w:2},
+  {source:'a02',target:'m04',label:'enseigne',w:3},
+  {source:'a02',target:'m10',label:'crée',w:3},
+  {source:'a02',target:'m09',label:'pratique',w:2},
+  {source:'a03',target:'m07',label:'incarne',w:3},
+  {source:'a03',target:'m06',label:'défend',w:2},
+  {source:'a03',target:'m01',label:'pratique',w:2},
+  {source:'a04',target:'m06',label:'défend',w:3},
+  {source:'a04',target:'m22',label:'défend',w:2},
+  {source:'a04',target:'m17',label:'mobilise',w:2},
+  {source:'a05',target:'m11',label:'forme',w:2},
+  {source:'a05',target:'m16',label:'pratique',w:2},
+  {source:'a06',target:'m12',label:'facilite',w:3},
+  {source:'a06',target:'m08',label:'défend',w:3},
+  {source:'a06',target:'m09',label:'défend',w:3},
+  {source:'a06',target:'m01',label:'défend',w:2},
+  {source:'a06',target:'m24',label:'porte',w:2},
+  {source:'a06',target:'m23',label:'incarne',w:2},
+  {source:'a06',target:'m25',label:'pratique',w:2},
+  {source:'a06',target:'m19',label:'pratique',w:2},
+  {source:'a07',target:'m05',label:'applique',w:2},
+  {source:'a07',target:'m20',label:'anime',w:2},
+  {source:'a07',target:'m18',label:'coordonne',w:2},
+  {source:'a07',target:'m11',label:'facilite',w:2},
+  {source:'a07',target:'m14',label:'promeut',w:1},
+  {source:'a08',target:'m04',label:'transmet',w:3},
+  {source:'a08',target:'m03',label:'incarne',w:3},
+  {source:'a08',target:'m01',label:'transmet',w:3},
+  {source:'a09',target:'m09',label:'crée (wiki)',w:2},
+  {source:'a11',target:'m08',label:'pratique',w:2},
+  {source:'a12',target:'m05',label:'théorise',w:3},
+  {source:'a14',target:'m11',label:'exerce',w:3},
+  {source:'a15',target:'m11',label:'exerce',w:3},
+  {source:'m01',target:'m02',label:'proche de',w:2},
+  {source:'m01',target:'m03',label:'proche de',w:3},
+  {source:'m02',target:'m03',label:'proche de',w:2},
+  {source:'m06',target:'m07',label:'proche de',w:3},
+  {source:'m06',target:'m22',label:'proche de',w:3},
+  {source:'m06',target:'m25',label:'proche de',w:2},
+  {source:'m07',target:'m25',label:'proche de',w:3},
+  {source:'m08',target:'m14',label:'proche de',w:2},
+  {source:'m08',target:'m15',label:'proche de',w:2},
+  {source:'m14',target:'m15',label:'proche de',w:3},
+  {source:'m14',target:'m19',label:'proche de',w:2},
+  {source:'m18',target:'m05',label:'proche de',w:3},
+  {source:'m09',target:'m01',label:'proche de',w:2},
+  {source:'m21',target:'m22',label:'proche de',w:2},
+  {source:'m21',target:'m08',label:'proche de',w:2},
+  {source:'m23',target:'m24',label:'proche de',w:1},
+  {source:'a16',target:'a01',label:'collabore avec',w:2},
+  {source:'a16',target:'a06',label:'pilier affectif',w:2},
+  {source:'a16',target:'a08',label:'collabore avec',w:1},
+  {source:'a16',target:'e02',label:'participe à',w:2},
+  {source:'a16',target:'e13',label:'organise',w:3},
+  {source:'a16',target:'l01',label:'fréquente',w:2},
+  {source:'a16',target:'l12',label:'travaille à',w:3},
+  {source:'a16',target:'m11',label:'exerce',w:3},
+  {source:'a16',target:'m22',label:'pratique',w:2},
+  {source:'a16',target:'m01',label:'pratique',w:2},
+  {source:'a02',target:'e13',label:'participe à',w:2},
+  {source:'e13',target:'l01',label:'porté depuis',w:1}
+];
+
+// ===== NODE DETAILS (for panel) =====
+const details = {
+  'a01':{desc:"Fonctionnaire territorial à Rennes pendant 24 ans. Autodidacte du numérique depuis 1993. Architecte conceptuel du LabFab étendu et de la vision Fab City rennaise. Co-fondateur de My Human Kit.",role:["Visionnaire : LabFab étendu, Fab City, communs opérants","Catalyseur de rencontres et de projets","Co-fondateur de My Human Kit avec Nicolas Huchet","Porteur politique du projet auprès des institutions"],sources:["Interview directe (1h42)","Cité dans 6/7 interviews"]},
+  'a02':{desc:"Ingénieur à l'IMT depuis 2009. Développeur de prototypes d'objets connectés. Animateur des premiers ateliers Arduino du LabFab et créateur des MOOC FabLab sur France Université Numérique.",role:["Expertise technique (Arduino, électronique, prototypage)","Animation des premiers ateliers à l'EESAB","Création des MOOC FabLab (FUN, 2014)","Voyages internationaux (MIT, Vietnam)"],sources:["Interview directe","Cité dans 5/7 interviews"]},
+  'a03':{desc:"Mécanicien ajusteur (Compagnons du Devoir). Découvre le FabLab en octobre 2012 à Vivacité, motivé par sa prothèse défaillante. Fonde My Human Kit, crée le projet Bionico. Figure publique internationale.",role:["Incarnation de l'impact transformateur du FabLab","Fondateur de My Human Kit et du projet Bionico","Médiatisation majeure (France 2, international)","Défenseur de l'éducation populaire et de l'empowerment"],sources:["Interview directe","Cité dans 4/7 interviews"]},
+  'a04':{desc:"Responsable numérique à Rennes Métropole depuis 2002. Fédérateur territorial du LabFab, architecte institutionnel du réseau. A combattu le modèle Smart City au profit de la culture maker.",role:["Portage institutionnel depuis Rennes Métropole","Assembleur d'acteurs hétérogènes","Référent régional au RFF Lab","Défenseur du modèle bottom-up et de l'éducation populaire"],sources:["Interview directe","Cité dans 4/7 interviews"]},
+  'a05':{desc:"Fondateur d'Artefacto et professeur à l'EESAB. Architecte de formation. A proposé et obtenu le local du premier FabLab à Rennes.",role:["Propose et obtient le local à l'EESAB","Monte des formations numériques (DNAT, licence pro, master)","Crée le laboratoire Design et Pratiques Numériques","Assure la pérennité du FabLab dans l'ADN de l'école"],sources:["Interview directe","Cité dans 4/7 interviews"]},
+  'a06':{desc:"Designer freelance, diplômée EESAB 2012. Première femme présidente du réseau LabFab. Facilitatrice de hackathons. Seule bénévole parmi les membres actifs du réseau.",role:["Co-présidente de l'association LabFab (avec Tony)","Facilitation de hackathons et marathons créatifs","Défense de l'open source, la documentation et la low-tech","Voix critique sur la parité et le bénévolat"],sources:["Interview directe","Citée dans 3/7 interviews"]},
+  'a07':{desc:"Chargé de mission numérique à Rennes Métropole depuis 2017. Urbaniste de formation. Membre du CA du RFF Lab depuis 2022. Facilitateur entre les 23 lieux du réseau LabFab.",role:["Facilitateur du réseau (passage de 7 à 23 lieux)","Lien entre LabFab et politiques publiques","Animation de projets (Sensor Community, Métromix, MobiLab)","Représentant au CA du RFF Lab"],sources:["Interview directe","Cité dans 3/7 interviews"]},
+  'a08':{desc:"Figure fondatrice du LabFab rennais. Transmetteur de compétences techniques (Arduino) et de valeurs du libre. Travaillait chez Snootlab, revendeur Arduino open source.",role:["Apporte l'Arduino et la culture open source à Rennes","Fournit le matériel et l'expertise technique de départ","Anime les premiers ateliers avec Baptiste Gaultier","Transmetteur de valeurs fondatrices"],sources:["Jamais interviewé","Cité dans 4/7 interviews comme « barycentre absent »"],quote:"« Cette carte Arduino m'a intrigué. » — Hugues Aubin"},
+  'a09':{desc:"Responsable de l'association BUG. Rôle fondateur dans l'infrastructure du LabFab (site wiki, événements, nom « LabFab ») mais aussi source de tensions sur la gestion des financements 2013.",role:["Création du site wiki LabFab","Proposition du nom « LabFab » (influence québécoise)","Organisation de Vivacité (60 000 visiteurs)","Porteur administratif de l'appel à projet Pellerin"],sources:["Jamais interviewé","Cité dans 4/7 interviews"]},
+  'a10':{desc:"Membre de l'EESAB. A soutenu l'idée de mettre à disposition des étudiants en design de nouveaux matériaux d'expérimentation.",role:["Soutien à l'ouverture du lieu à l'EESAB","Vision pédagogique : nouveaux outils pour le design"],sources:["Citée dans 2/7 interviews"]},
+  'a11':{desc:"Habitant rennais, pionnier du low-tech. Seul citoyen non-institutionnel autour de la table fondatrice du LabFab.",role:["Seul habitant à la table fondatrice","Pionnier du low-tech dans le réseau"],sources:["Cité dans 3/7 interviews"]},
+  'a12':{desc:"Promoteur international du concept de Fab City. Son TEDx dénonçant le modèle PITO (Product In, Trash Out) a été un tournant dans la vision de Hugues Aubin.",role:["Inspiration directe du concept de LabFab étendu","TEDx fondateur sur la Fab City et le modèle PITO"],sources:["Cité dans 1/7 interviews"]},
+  'a13':{desc:"Membre actif du LabFab lié à l'IMT. Voyages internationaux avec Nicolas Huchet (Russie). Impliqué dans des projets européens.",role:["Voyages internationaux pour le LabFab","Projets européens avec le RFF Lab"],sources:["Cité dans 2/7 interviews"]},
+  'a14':{desc:"Fab manager à l'EduLab de l'Université Rennes 2. CDI. Modèle d'accompagnement humain, de stabilité et de disponibilité.",role:["Fab manager de l'EduLab Rennes 2","Co-président de l'association LabFab (avec Bérangère)","Pilier de stabilité du réseau"],sources:["Cité dans 3/7 interviews"],quote:"« Si on avait des gens comme ça, ça serait fantastique. Tony, c'est des gens précieux. » — Erwan Mahé"},
+  'a15':{desc:"Fab manager au LabFab de l'EESAB. Mobilité Erasmus+ pour visiter d'autres FabLabs européens. En attente de titularisation.",role:["Fab manager du LabFab EESAB","Mobilité Erasmus+ européenne","Candidate à la titularisation"],sources:["Citée dans 2/7 interviews"],quote:"« On a quelqu'un en or. C'est un exemple à suivre. » — Erwan Mahé"},
+  'l01':{desc:"École Européenne Supérieure d'Art de Bretagne. Premier site du FabLab rennais depuis février 2012. Ateliers sur tables de ping-pong."},
+  'l02':{desc:"Institut Mines-Télécom. Lieu de travail de Baptiste Gaultier, site de production des MOOC FabLab."},
+  'l03':{desc:"Collectivité territoriale. Portage institutionnel du LabFab par Norbert Friant puis Romain Chefdor."},
+  'l04':{desc:"Espace de coworking et networking numérique à Rennes. Lieu de rencontres informelles au début du LabFab."},
+  'l05':{desc:"Équipement culturel rennais. Lieu de la rencontre fondatrice entre Hugues Aubin et John Le Jeune (~2010)."},
+  'l06':{desc:"Salle de musiques actuelles. Lieu du festival Jardin Numérique (2011)."},
+  'l07':{desc:"FabLab pédagogique de l'Université Rennes 2. Animé par Tony."},
+  'l08':{desc:"Centre commercial rennais. Scène mythique du TV-B-Gone avec John Le Jeune et Hugues Aubin."},
+  'l09':{desc:"Massachusetts Institute of Technology. Référence mondiale des FabLabs (Neil Gershenfeld). Visité par Baptiste et Nicolas."},
+  'l10':{desc:"Rassemblement national des FabLabs. AG constitutive du RFF Lab en 2015."},
+  'l11':{desc:"Atelier partagé / makerspace rennais."},
+  'l12':{desc:"FabLab pédagogique du SPI (Service Pédagogie et Innovation) de l'Université Bretagne-Loire. Animé par Laurent Mattlé à partir de 2016. Open Labs, partenariats universitaires (Rennes 1, ENSCR, Maison pour la Science), Lab Tour régional et accompagnement international (UVCI, Côte d'Ivoire). Impliqué dans la fabrication distribuée pendant le Covid."},
+  'e01':{desc:"Moment fondateur du LabFab rennais. Hugues rencontre John au café des Champs-Libres. John sort un oscilloscope open source et un Arduino. Ils vont éteindre les écrans au centre commercial des Trois-Soleils avec un TV-B-Gone.",quote:"« Il m'a parlé de choses dont je ne comprenais absolument rien, en sortant deux objets de sa poche. Le premier, c'était un oscilloscope numérique open source. Le deuxième, c'était une carte Arduino. » — Hugues Aubin"},
+  'e02':{desc:"Ouverture du premier FabLab de Rennes dans un local de l'EESAB. Erwan Mahé obtient le local, Odile Le Borgne soutient l'ouverture. Premiers ateliers animés par Baptiste et John sur des tables de ping-pong."},
+  'e03':{desc:"Événement citoyen autour du numérique organisé par BUG aux Champs Libres. 10 jours, 60 000 visiteurs. Nicolas Huchet y découvre le FabLab en octobre 2012 — rencontre qui changera sa vie.",quote:"« Hugues m'a envoûté. Je suis rentré chez moi avec plein d'idées en tête. » — Nicolas Huchet"},
+  'e04':{desc:"Appel national lancé par Fleur Pellerin et Arnaud Montebourg via la DGE. 250 dossiers déposés, 12 lauréats. LabFab retenu via BUG. Source de tensions durables sur la gestion des 200-300K€."},
+  'e05':{desc:"Premier MOOC FabLab sur France Université Numérique par Baptiste Gaultier. Ambition encyclopédique : Arduino, modélisation 3D, découpe laser. Suivi de MOOC hybrides."},
+  'e06':{desc:"Nicolas Huchet entre au FabLab pour résoudre un problème concret : sa prothèse le brûle. Il découvre InMoov et construit une main bionique. Médiatisation France 2, fondation de My Human Kit."},
+  'e07':{desc:"Naissance du Réseau Français des FabLabs au festival de Toulouse (AG constitutive). Réponse collective à l'atomisation post-Pellerin. Gouvernance par conseil collégial."},
+  'e08':{desc:"L'association LabFab structure la gouvernance du réseau rennais, indépendamment de BUG. Co-présidence Tony + Bérangère. Coïncide avec l'arrivée de Romain Chefdor."},
+  'e09':{desc:"Les FabLabs fabriquent masques et visières de manière distribuée pendant le confinement. Preuve de concept pour la fabrication distribuée et le modèle Fab City. Soirées Discord entre makers.",quote:"« Effervescence de fou, pas du tout un confinement tranquille. » — Romain Chefdor"},
+  'e10':{desc:"Festival d'arts numériques au Jardin Moderne. Contribution à la diffusion de la culture maker et numérique à Rennes."},
+  'e11':{desc:"Document de référence du Réseau Français des FabLabs. Marque le décollage du réseau national. Romain Chefdor y contribue."},
+  'e12':{desc:"Marathon créatif urbain facilité par Bérangère Amiot. Croisement entre makers et citoyens autour de problématiques urbaines."},
+  'a16':{desc:"Maker venu du TMP/Lab d'Ivry-sur-Seine, arrivé à Rennes en juillet 2011. Connecté au projet LabFab via BUG (Anthony Cocherie). Participe à l'installation du FabLab EESAB. Co-organise l'ouverture du premier FabLab du Vietnam à Huế (2013). Fab Manager du Teaching Lab (UBL) à partir de 2016.",role:["Aide à l'installation du FabLab EESAB (2011-2012)","Workshop inaugural au Vietnam — ouverture du 1er FabLab à Huế (2013)","Fab Manager du Teaching Lab (SPI, Université Bretagne-Loire)","Organisateur du Lab Tour dans les universités UBL","Accompagnement UVCI (Côte d'Ivoire) pour créer un FabLab"],sources:["Interview directe"]},
+  'e13':{desc:"Workshop inaugural à Huế, à la Maison des Savoirs. Laurent Mattlé, Baptiste Gaultier et Mariame Labidi contribuent à l'ouverture du premier FabLab du Vietnam avec des cadeaux de la ville de Rennes : imprimante 3D Asimov, kit CNC, kits Arduino. Au retour, Laurent passe par Hô-Chi-Minh-Ville où Hoang-Anh Phan lance le 2e FabLab vietnamien."},
+  'm01':{desc:"Philosophie fondatrice du LabFab. Partage du code source et des plans de fabrication. Valeur transmise par John Le Jeune."},
+  'm02':{desc:"Ressources partagées gérées collectivement. Concept théorisé par Hugues Aubin pour le LabFab étendu."},
+  'm03':{desc:"Culture du logiciel et matériel libre. Valeur fondatrice transmise par John Le Jeune et la communauté Arduino."},
+  'm04':{desc:"Microcontrôleur open source. Outil pédagogique central des premiers ateliers FabLab, apporté par John Le Jeune."},
+  'm05':{desc:"Vision d'une ville autosuffisante grâce à la fabrication distribuée. Portée par Hugues Aubin à Rennes, inspirée par Thomas Diaz."},
+  'm06':{desc:"Transmission horizontale des savoirs, sans hiérarchie. Valeur défendue par Nicolas Huchet et Norbert Friant."},
+  'm07':{desc:"Capacité d'agir acquise par la pratique. Incarné par Nicolas Huchet et son parcours de la prothèse à My Human Kit."},
+  'm08':{desc:"Technologies sobres et accessibles. Défendu par Bérangère Amiot et Laurent Flamant."},
+  'm09':{desc:"Pratique de documenter les projets pour les rendre reproductibles. Défendu par Bérangère Amiot. Site wiki créé par BUG."},
+  'm10':{desc:"Cours en ligne ouverts et massifs. Créés par Baptiste Gaultier sur FUN (2014), puis déclinés en MOOC hybrides."},
+  'm11':{desc:"Métier d'animateur de FabLab. Formation structurée par Erwan Mahé. Exercé par Tony, Célia et d'autres."},
+  'm12':{desc:"Marathon créatif collaboratif. Facilité par Bérangère Amiot (Maison Mix, Vélo Mix, Métromix)."},
+  'm13':{desc:"Festival international des makers. Espace de visibilité et de rencontre pour les FabLabs."},
+  'm14':{desc:"Réparer plutôt que jeter. Pratique low-tech promue dans le réseau LabFab."},
+  'm15':{desc:"Réutilisation de matériaux et objets. Complémentaire de la réparation et du low-tech."},
+  'm16':{desc:"Conception participative impliquant les usagers. Pratiquée par Erwan Mahé à l'EESAB."},
+  'm17':{desc:"Fonds Européen de Développement Régional. Financement mobilisé par Norbert Friant pour le réseau."},
+  'm18':{desc:"Production décentralisée dans un réseau de FabLabs. Prouvée pendant le Covid (masques, visières)."},
+  'm19':{desc:"Projet open source de recyclage du plastique. Pratiqué par Bérangère Amiot."},
+  'm20':{desc:"Réseau citoyen de capteurs de qualité de l'air. Animé par Romain Chefdor à Rennes."},
+  'm21':{desc:"Do It Yourself — culture du faire soi-même. ADN du mouvement maker et FabLab."},
+  'm22':{desc:"Apprendre par la pratique et l'expérimentation. Valeur fondamentale du LabFab, défendue par Norbert Friant."},
+  'm23':{desc:"Engagement bénévole. Bérangère Amiot est la seule bénévole active du réseau LabFab."},
+  'm24':{desc:"Enjeu de représentation hommes/femmes dans les FabLabs. Porté par Bérangère Amiot."},
+  'm25':{desc:"Processus d'acquisition de compétences et de confiance par la pratique. Proche de l'empowerment."}
+};
+
+// ===== STATE =====
+const activeCategories = new Set(['Acteur','Lieu','Événement','Mot-clé']);
+let timeRange = [2009, 2025];
+let searchQuery = '';
+let selectedNodeId = null;
+let hoveredNodeId = null;
+
+// ===== HELPERS =====
+const nodeMap = {};
+nodes.forEach(n => nodeMap[n.id] = n);
+
+const adjacency = {};
+nodes.forEach(n => adjacency[n.id] = []);
+edges.forEach(e => {
+  adjacency[e.source].push({target:e.target, label:e.label});
+  adjacency[e.target].push({target:e.source, label:e.label});
+});
+
+function nid(d) { return (typeof d === 'object') ? d.id : d; }
+
+function isNodeVisible(n) {
+  if (!activeCategories.has(n.cat)) return false;
+  if (n.y2 < timeRange[0] || n.y1 > timeRange[1]) return false;
+  if (searchQuery && !n.label.toLowerCase().includes(searchQuery)) return false;
+  return true;
+}
+
+function nodeOpacity(n) {
+  if (!isNodeVisible(n)) return 0.04;
+  if (hoveredNodeId) {
+    const conn = new Set(adjacency[hoveredNodeId].map(a => a.target));
+    conn.add(hoveredNodeId);
+    return conn.has(n.id) ? 1 : 0.08;
+  }
+  if (selectedNodeId) {
+    const conn = new Set(adjacency[selectedNodeId].map(a => a.target));
+    conn.add(selectedNodeId);
+    return conn.has(n.id) ? 1 : 0.2;
+  }
+  return 0.85;
+}
+
+function edgeOpacity(e) {
+  const sid = nid(e.source), tid = nid(e.target);
+  const sn = nodeMap[sid], tn = nodeMap[tid];
+  if (!sn || !tn || !isNodeVisible(sn) || !isNodeVisible(tn)) return 0;
+  if (hoveredNodeId) return (sid===hoveredNodeId||tid===hoveredNodeId) ? 0.5 : 0.01;
+  if (selectedNodeId) return (sid===selectedNodeId||tid===selectedNodeId) ? 0.3 : 0.02;
+  return 0.07;
+}
+
+function edgeColor(e) {
+  const sid = nid(e.source), tid = nid(e.target);
+  if (hoveredNodeId && (sid===hoveredNodeId||tid===hoveredNodeId)) {
+    return catConfig[nodeMap[hoveredNodeId].cat].color;
+  }
+  if (selectedNodeId && (sid===selectedNodeId||tid===selectedNodeId)) {
+    return catConfig[nodeMap[selectedNodeId].cat].color;
+  }
+  return '#ffffff';
+}
+
+// ===== LAYOUT DIMENSIONS =====
+let W, H;
+function updateDimensions() {
+  W = window.innerWidth;
+  H = window.innerHeight - 56 - 80;
+}
+updateDimensions();
+
+// Initialize positions
+nodes.forEach(n => {
+  const c = catConfig[n.cat];
+  const spread = Math.min(W, H) * 0.22;
+  n.x = W/2 + c.cx * W + (Math.random() - 0.5) * spread;
+  n.y = H/2 + c.cy * H + (Math.random() - 0.5) * spread;
+});
+
+// ===== SVG SETUP =====
+const svg = d3.select('#main-svg').attr('width', W).attr('height', H);
+const g = svg.append('g');
+
+const zoom = d3.zoom().scaleExtent([0.2, 5]).on('zoom', e => g.attr('transform', e.transform));
+svg.call(zoom);
+window.zoomIn = () => svg.transition().duration(300).call(zoom.scaleBy, 1.4);
+window.zoomOut = () => svg.transition().duration(300).call(zoom.scaleBy, 0.7);
+window.resetZoom = () => svg.transition().duration(400).call(zoom.transform, d3.zoomIdentity);
+
+// Background zones — radial gradient clouds
+const defs = svg.append('defs');
+const zoneGroup = g.append('g');
+Object.entries(catConfig).forEach(([key, c], i) => {
+  const grad = defs.append('radialGradient')
+    .attr('id', 'zgrad-'+i)
+    .attr('cx','50%').attr('cy','50%').attr('r','50%');
+  grad.append('stop').attr('offset','0%').attr('stop-color',c.color).attr('stop-opacity',0.10);
+  grad.append('stop').attr('offset','45%').attr('stop-color',c.color).attr('stop-opacity',0.05);
+  grad.append('stop').attr('offset','100%').attr('stop-color',c.color).attr('stop-opacity',0);
+
+  const cx = W/2 + c.cx * W, cy = H/2 + c.cy * H;
+  const rx = W*0.38, ry = H*0.44;
+  zoneGroup.append('ellipse').attr('cx',cx).attr('cy',cy).attr('rx',rx).attr('ry',ry)
+    .attr('fill','url(#zgrad-'+i+')').attr('stroke','none');
+  zoneGroup.append('text').attr('x',cx).attr('y',cy-ry*0.55).attr('text-anchor','middle')
+    .attr('fill',c.color).attr('opacity',0.18).attr('font-size',14).attr('font-weight',700)
+    .attr('letter-spacing',3).text(c.label);
+});
+
+// Edges
+const edgeGroup = g.append('g');
+const edgeLines = edgeGroup.selectAll('line').data(edges).join('line')
+  .attr('stroke','#fff').attr('stroke-opacity',0.07).attr('stroke-width',d => d.w*0.5);
+
+// Node group
+const nodeGroup = g.append('g');
+
+// Glow circles
+const nodeGlow = nodeGroup.selectAll('.glow').data(nodes).join('circle')
+  .attr('class','glow').attr('r',d => d.size*1.6)
+  .attr('fill',d => catConfig[d.cat].color).attr('fill-opacity',0).attr('pointer-events','none');
+
+// Selection ring
+const nodeRing = nodeGroup.selectAll('.ring').data(nodes).join('circle')
+  .attr('class','ring').attr('r',d => d.size*0.7+4)
+  .attr('fill','none').attr('stroke','#fff').attr('stroke-width',2)
+  .attr('stroke-opacity',0).attr('pointer-events','none');
+
+// Main circles
+const nodeCircles = nodeGroup.selectAll('.node').data(nodes).join('circle')
+  .attr('class','node').attr('r',d => d.size*0.7)
+  .attr('fill',d => catConfig[d.cat].color).attr('fill-opacity',0.85)
+  .attr('stroke',d => catConfig[d.cat].color).attr('stroke-width',1.5).attr('stroke-opacity',0.3)
+  .attr('cursor','pointer');
+
+// Labels
+const labelGroup = g.append('g');
+const labels = labelGroup.selectAll('text').data(nodes).join('text')
+  .text(d => d.label)
+  .attr('fill','#fff').attr('font-size',d => Math.max(9, d.size*0.55))
+  .attr('text-anchor','middle').attr('dy',d => d.size*0.7+13)
+  .attr('opacity',0.65).attr('pointer-events','none');
+
+// ===== FORCE SIMULATION =====
+const simulation = d3.forceSimulation(nodes)
+  .force('charge', d3.forceManyBody().strength(-160))
+  .force('collide', d3.forceCollide().radius(d => d.size*0.9+8))
+  .force('x', d3.forceX(d => W/2 + catConfig[d.cat].cx * W).strength(0.14))
+  .force('y', d3.forceY(d => H/2 + catConfig[d.cat].cy * H).strength(0.14))
+  .force('link', d3.forceLink(edges.filter(e => {
+    const s = nodeMap[e.source.id||e.source], t = nodeMap[e.target.id||e.target];
+    return s && t && s.cat === t.cat;
+  })).id(d => d.id).strength(0.06).distance(80))
+  .alphaDecay(0.02)
+  .on('tick', tick);
+
+function tick() {
+  edgeLines
+    .attr('x1',d => (nodeMap[nid(d.source)]||d.source).x)
+    .attr('y1',d => (nodeMap[nid(d.source)]||d.source).y)
+    .attr('x2',d => (nodeMap[nid(d.target)]||d.target).x)
+    .attr('y2',d => (nodeMap[nid(d.target)]||d.target).y);
+  nodeCircles.attr('cx',d=>d.x).attr('cy',d=>d.y);
+  nodeGlow.attr('cx',d=>d.x).attr('cy',d=>d.y);
+  nodeRing.attr('cx',d=>d.x).attr('cy',d=>d.y);
+  labels.attr('x',d=>d.x).attr('y',d=>d.y);
+}
+
+// Drag
+nodeCircles.call(d3.drag()
+  .on('start',(e,d)=>{if(!e.active)simulation.alphaTarget(0.08).restart();d.fx=d.x;d.fy=d.y;})
+  .on('drag',(e,d)=>{d.fx=e.x;d.fy=e.y;})
+  .on('end',(e,d)=>{if(!e.active)simulation.alphaTarget(0);d.fx=null;d.fy=null;})
+);
+
+// ===== 3D STATE (declared early so updateVisibility can reference them) =====
+let mode3D = false;
+let threeScene, threeCamera, threeRenderer, threeControls;
+let nodeMeshes3D = [];
+let edgeLines3D;
+let labelSprites3D = [];
+let animFrameId;
+let idleTimer3D;
+
+// ===== MASTER UPDATE =====
+function updateVisibility() {
+  // 2D update
+  nodeCircles.transition().duration(250)
+    .attr('fill-opacity',d => nodeOpacity(d))
+    .attr('pointer-events',d => isNodeVisible(d) ? 'all' : 'none');
+  labels.transition().duration(250)
+    .attr('opacity',d => {
+      const op = nodeOpacity(d);
+      return op > 0.5 ? 0.75 : op > 0.1 ? op * 0.8 : 0;
+    });
+  edgeLines.transition().duration(250)
+    .attr('stroke-opacity',d => edgeOpacity(d))
+    .attr('stroke',d => edgeColor(d));
+  nodeGlow.attr('fill-opacity',d => d.id===hoveredNodeId ? 0.15 : 0);
+  nodeRing.attr('stroke-opacity',d => d.id===selectedNodeId ? 0.6 : 0);
+  // 3D update
+  if (mode3D) update3DVisibility();
+}
+
+function update3DVisibility() {
+  if (!threeRenderer || !nodeMeshes3D.length) return;
+  // Nodes
+  nodes.forEach((n, i) => {
+    const vis = isNodeVisible(n);
+    const mesh = nodeMeshes3D[i];
+    mesh.material.opacity = vis ? 0.92 : 0.03;
+    mesh.material.needsUpdate = true;
+    if (mesh.children[0]) mesh.children[0].material.opacity = vis ? 0.07 : 0;
+  });
+  // Edges — collapse hidden edges to zero-length
+  const pos = edgeLines3D.geometry.attributes.position.array;
+  let idx = 0;
+  edges.forEach(e => {
+    const si = nodes.findIndex(n => n.id === nid(e.source));
+    const ti = nodes.findIndex(n => n.id === nid(e.target));
+    const sVis = si >= 0 && isNodeVisible(nodes[si]);
+    const tVis = ti >= 0 && isNodeVisible(nodes[ti]);
+    if (sVis && tVis) {
+      const s = nodeMeshes3D[si].position, t = nodeMeshes3D[ti].position;
+      pos[idx]=s.x; pos[idx+1]=s.y; pos[idx+2]=s.z;
+      pos[idx+3]=t.x; pos[idx+4]=t.y; pos[idx+5]=t.z;
+    } else {
+      pos[idx]=pos[idx+1]=pos[idx+2]=pos[idx+3]=pos[idx+4]=pos[idx+5]=0;
+    }
+    idx += 6;
+  });
+  edgeLines3D.geometry.attributes.position.needsUpdate = true;
+  // Labels
+  labelSprites3D.forEach(sprite => {
+    const ni = sprite.userData.nodeIdx;
+    sprite.visible = isNodeVisible(nodes[ni]);
+  });
+}
+
+// ===== TOOLTIP =====
+const tooltip = document.getElementById('tooltip');
+
+nodeCircles.on('mouseenter',(event,d) => {
+  if (!isNodeVisible(d)) return;
+  hoveredNodeId = d.id;
+  updateVisibility();
+  const det = details[d.id] || {};
+  const links = adjacency[d.id].slice(0,6).map(a => {
+    const t = nodeMap[a.target];
+    return `→ ${a.label} <b>${t.label}</b>`;
+  }).join('<br>');
+  const more = adjacency[d.id].length > 6 ? `<br><i>+ ${adjacency[d.id].length-6} autres</i>` : '';
+  const descHtml = det.desc ? `<div class="t-desc">${det.desc.substring(0,100)}…</div>` : '';
+  tooltip.innerHTML = `<div class="t-cat">${d.cat} · ${d.y1}${d.y1!==d.y2?'–'+d.y2:''}</div><div class="t-name">${d.label}</div>${descHtml}<div class="t-links">${links}${more}</div>`;
+  tooltip.style.opacity = 1;
+})
+.on('mousemove',event => {
+  const panelOpen = document.getElementById('panel').classList.contains('open');
+  const maxX = window.innerWidth - (panelOpen ? 380 : 0) - 310;
+  tooltip.style.left = Math.min(event.pageX+16, maxX) + 'px';
+  tooltip.style.top = (event.pageY-10) + 'px';
+})
+.on('mouseleave',() => {
+  hoveredNodeId = null;
+  updateVisibility();
+  tooltip.style.opacity = 0;
+});
+
+// ===== CLICK → PANEL =====
+nodeCircles.on('click',(event,d) => {
+  if (!isNodeVisible(d)) return;
+  event.stopPropagation();
+  selectNode(d.id);
+});
+
+svg.on('click',() => closePanel());
+
+function selectNode(id) {
+  selectedNodeId = id;
+  updateVisibility();
+  openPanel(id);
+}
+
+function closePanel() {
+  selectedNodeId = null;
+  document.getElementById('panel').classList.remove('open');
+  updateVisibility();
+}
+
+function openPanel(id) {
+  const n = nodeMap[id];
+  const det = details[id] || {};
+  const panel = document.getElementById('panel');
+  const content = document.getElementById('panel-content');
+  const c = catConfig[n.cat];
+
+  let html = '';
+  html += `<div class="panel-badge" style="background:${c.color}22;color:${c.color}">${n.cat}</div>`;
+  html += `<h2>${n.label}</h2>`;
+  html += `<span class="panel-period">${n.y1}${n.y1!==n.y2 ? ' — '+n.y2 : ''}</span>`;
+  if (det.desc) html += `<p class="panel-desc">${det.desc}</p>`;
+  if (det.quote) html += `<div class="panel-quote">${det.quote}</div>`;
+
+  if (det.role && det.role.length) {
+    html += `<div class="panel-section"><h3>Rôle dans le LabFab</h3><ul>`;
+    det.role.forEach(r => html += `<li>${r}</li>`);
+    html += `</ul></div>`;
+  }
+
+  if (det.sources && det.sources.length) {
+    html += `<div class="panel-section"><h3>Sources</h3><ul>`;
+    det.sources.forEach(s => html += `<li>${s}</li>`);
+    html += `</ul></div>`;
+  }
+
+  const conns = adjacency[id];
+  if (conns.length) {
+    html += `<div class="panel-section"><h3>Connexions (${conns.length})</h3><div>`;
+    conns.forEach(a => {
+      const t = nodeMap[a.target];
+      const tc = catConfig[t.cat].color;
+      html += `<span class="conn-chip" style="border-color:${tc}33" onclick="selectNode('${a.target}')">`
+            + `<span style="color:${tc}">●</span> ${a.label} → ${t.label}</span>`;
+    });
+    html += `</div></div>`;
+  }
+
+  content.innerHTML = html;
+  panel.classList.add('open');
+}
+
+// ===== SEARCH =====
+const searchInput = document.getElementById('search');
+searchInput.addEventListener('input', e => {
+  searchQuery = e.target.value.toLowerCase().trim();
+  updateVisibility();
+});
+
+// ===== CATEGORY FILTERS =====
+const legend = document.getElementById('legend');
+Object.entries(catConfig).forEach(([cat, conf]) => {
+  const count = nodes.filter(n => n.cat === cat).length;
+  const btn = document.createElement('button');
+  btn.className = 'filter-btn';
+  btn.dataset.cat = cat;
+  btn.innerHTML = `<span class="dot" style="background:${conf.color}"></span>${cat}<span class="count">${count}</span>`;
+  btn.addEventListener('click', () => {
+    if (activeCategories.has(cat)) {
+      activeCategories.delete(cat);
+      btn.classList.add('inactive');
+    } else {
+      activeCategories.add(cat);
+      btn.classList.remove('inactive');
+    }
+    updateVisibility();
+  });
+  legend.appendChild(btn);
+});
+
+// ===== TIMELINE =====
+(function initTimeline() {
+  const container = document.getElementById('timeline');
+  const tsvg = d3.select('#timeline-svg');
+  const margin = {left:60, right:60, top:28, bottom:20};
+  const tw = container.clientWidth - margin.left - margin.right;
+  const th = 80 - margin.top - margin.bottom;
+
+  const xScale = d3.scaleLinear().domain([2009, 2025]).range([0, tw]);
+  const tg = tsvg.append('g').attr('transform',`translate(${margin.left},${margin.top})`);
+
+  // Axis
+  const axis = d3.axisBottom(xScale).ticks(17).tickFormat(d3.format('d')).tickSize(th);
+  tg.append('g').attr('class','axis').call(axis).select('.domain').remove();
+
+  // Event markers
+  const events = nodes.filter(n => n.cat === 'Événement');
+  tg.selectAll('.ev-mark').data(events).join('circle')
+    .attr('class','ev-mark')
+    .attr('cx', d => xScale((d.y1+d.y2)/2))
+    .attr('cy', th/2)
+    .attr('r', 4)
+    .attr('fill', catConfig['Événement'].color)
+    .attr('fill-opacity', 0.6)
+    .attr('cursor','pointer')
+    .on('mouseenter', (event,d) => {
+      tooltip.innerHTML = `<div class="t-name">${d.label}</div>`;
+      tooltip.style.opacity = 1;
+      tooltip.style.left = (event.pageX+10)+'px';
+      tooltip.style.top = (event.pageY-40)+'px';
+    })
+    .on('mouseleave', () => { tooltip.style.opacity = 0; })
+    .on('click', (event,d) => { event.stopPropagation(); selectNode(d.id); });
+
+  // Brush
+  const brush = d3.brushX()
+    .extent([[0, 0],[tw, th]])
+    .on('brush end', ({selection}) => {
+      if (selection) {
+        timeRange = selection.map(xScale.invert).map(Math.round);
+      } else {
+        timeRange = [2009, 2025];
+      }
+      updateVisibility();
+    });
+
+  const brushG = tg.append('g').attr('class','brush').call(brush);
+  brushG.call(brush.move, [xScale(2009), xScale(2025)]);
+
+  // ===== AUTOPLAY =====
+  let playing = false;
+  let playInterval = null;
+  let playCursor = 2009;
+  const playSpeed = 180;
+  const playStep = 0.15;
+  const playBtn = document.getElementById('play-btn');
+  const yearLabel = document.getElementById('timeline-year');
+
+  function playTick() {
+    playCursor += playStep;
+    if (playCursor >= 2025) {
+      playCursor = 2009;
+    }
+    brushG.call(brush.move, [xScale(2009), xScale(playCursor)]);
+    yearLabel.textContent = Math.floor(playCursor);
+  }
+
+  function startPlay() {
+    playing = true;
+    playBtn.textContent = '⏸';
+    playBtn.classList.add('playing');
+    yearLabel.classList.add('visible');
+    playCursor = 2009;
+    playTick();
+    playInterval = setInterval(playTick, playSpeed);
+  }
+
+  function stopPlay() {
+    playing = false;
+    playBtn.textContent = '▶';
+    playBtn.classList.remove('playing');
+    yearLabel.classList.remove('visible');
+    if (playInterval) { clearInterval(playInterval); playInterval = null; }
+    brushG.call(brush.move, [xScale(2009), xScale(2025)]);
+  }
+
+  window.togglePlay = function() {
+    if (playing) stopPlay(); else startPlay();
+  };
+})();
+
+// ===== KEYBOARD =====
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    if (selectedNodeId) closePanel();
+    if (searchQuery) { searchInput.value = ''; searchQuery = ''; updateVisibility(); }
+    searchInput.blur();
+  }
+  if (e.key === '/' && document.activeElement !== searchInput) {
+    e.preventDefault();
+    searchInput.focus();
+  }
+});
+
+// ===== RESIZE =====
+window.addEventListener('resize', () => {
+  updateDimensions();
+  svg.attr('width', W).attr('height', H);
+  simulation.force('x', d3.forceX(d => W/2 + catConfig[d.cat].cx * W).strength(0.14));
+  simulation.force('y', d3.forceY(d => H/2 + catConfig[d.cat].cy * H).strength(0.14));
+  simulation.alpha(0.3).restart();
+  if (mode3D && threeRenderer) {
+    threeCamera.aspect = W / H;
+    threeCamera.updateProjectionMatrix();
+    threeRenderer.setSize(W, H);
+  }
+});
+
+// ===== 3D MODE =====
+function init3D() {
+  const container = document.getElementById('three-container');
+
+  threeScene = new THREE.Scene();
+  threeScene.background = new THREE.Color(0x0f0f1a);
+  threeScene.fog = new THREE.FogExp2(0x0f0f1a, 0.0012);
+
+  threeCamera = new THREE.PerspectiveCamera(55, W / H, 1, 3000);
+  threeCamera.position.set(0, 60, 500);
+
+  threeRenderer = new THREE.WebGLRenderer({ antialias: true });
+  threeRenderer.setSize(W, H);
+  threeRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  container.appendChild(threeRenderer.domElement);
+
+  threeScene.add(new THREE.AmbientLight(0x445566, 1.8));
+  const dir = new THREE.DirectionalLight(0xffffff, 0.7);
+  dir.position.set(250, 300, 400);
+  threeScene.add(dir);
+  const pt = new THREE.PointLight(0x6688cc, 0.4, 900);
+  pt.position.set(-200, -100, 250);
+  threeScene.add(pt);
+
+  threeControls = new THREE.OrbitControls(threeCamera, threeRenderer.domElement);
+  threeControls.enableDamping = true;
+  threeControls.dampingFactor = 0.05;
+  threeControls.autoRotate = true;
+  threeControls.autoRotateSpeed = 0.4;
+  threeControls.minDistance = 80;
+  threeControls.maxDistance = 1200;
+
+  function resetIdle() {
+    threeControls.autoRotate = false;
+    clearTimeout(idleTimer3D);
+    idleTimer3D = setTimeout(() => { threeControls.autoRotate = true; }, 3000);
+  }
+  threeRenderer.domElement.addEventListener('pointerdown', resetIdle);
+  threeRenderer.domElement.addEventListener('wheel', resetIdle);
+
+  // Stars
+  const starsGeo = new THREE.BufferGeometry();
+  const sp = [];
+  for (let i = 0; i < 600; i++) {
+    sp.push((Math.random()-0.5)*2000, (Math.random()-0.5)*2000, (Math.random()-0.5)*2000);
+  }
+  starsGeo.setAttribute('position', new THREE.Float32BufferAttribute(sp, 3));
+  threeScene.add(new THREE.Points(starsGeo,
+    new THREE.PointsMaterial({color:0xffffff, size:0.8, transparent:true, opacity:0.25})));
+
+  build3DNodes();
+  build3DEdges();
+  build3DLabels();
+  setup3DRaycast();
+  animate3D();
+}
+
+function build3DNodes() {
+  const catZ = {'Acteur':-90, 'Lieu':90, 'Événement':-25, 'Mot-clé':50};
+  nodeMeshes3D = [];
+  nodes.forEach(n => {
+    const r = n.size * 0.5;
+    const geo = new THREE.SphereGeometry(r, 22, 22);
+    const col = new THREE.Color(catConfig[n.cat].color);
+    const mat = new THREE.MeshPhongMaterial({
+      color: col, emissive: col, emissiveIntensity: 0.3,
+      transparent: true, opacity: 0.92, shininess: 80
+    });
+    const mesh = new THREE.Mesh(geo, mat);
+    mesh.position.set(
+      (n.x - W/2) * 0.55,
+      -(n.y - H/2) * 0.55,
+      (catZ[n.cat]||0) + (Math.random()-0.5)*70
+    );
+    mesh.userData = {nodeId: n.id, baseR: r};
+
+    const glowGeo = new THREE.SphereGeometry(r*2.2, 14, 14);
+    const glowMat = new THREE.MeshBasicMaterial({color:col, transparent:true, opacity:0.07});
+    mesh.add(new THREE.Mesh(glowGeo, glowMat));
+
+    threeScene.add(mesh);
+    nodeMeshes3D.push(mesh);
+  });
+}
+
+function build3DEdges() {
+  const pos = [];
+  edges.forEach(e => {
+    const si = nodes.findIndex(n => n.id === nid(e.source));
+    const ti = nodes.findIndex(n => n.id === nid(e.target));
+    if (si<0||ti<0) return;
+    const s = nodeMeshes3D[si].position, t = nodeMeshes3D[ti].position;
+    pos.push(s.x,s.y,s.z, t.x,t.y,t.z);
+  });
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+  edgeLines3D = new THREE.LineSegments(geo,
+    new THREE.LineBasicMaterial({color:0xffffff, transparent:true, opacity:0.055}));
+  threeScene.add(edgeLines3D);
+}
+
+function build3DLabels() {
+  labelSprites3D = [];
+  nodes.forEach((n, i) => {
+    if (n.size < 10) return;
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    const fs = 30;
+    ctx.font = `600 ${fs}px Segoe UI, Arial, sans-serif`;
+    const tw = ctx.measureText(n.label).width;
+    canvas.width = tw + 24;
+    canvas.height = fs + 16;
+    ctx.font = `600 ${fs}px Segoe UI, Arial, sans-serif`;
+    ctx.fillStyle = '#ffffff';
+    ctx.globalAlpha = 0.72;
+    ctx.fillText(n.label, 12, fs + 2);
+    const tex = new THREE.CanvasTexture(canvas);
+    tex.minFilter = THREE.LinearFilter;
+    const sprite = new THREE.Sprite(
+      new THREE.SpriteMaterial({map:tex, transparent:true, depthWrite:false}));
+    const sc = 0.28;
+    sprite.scale.set(canvas.width*sc/4, canvas.height*sc/4, 1);
+    const m = nodeMeshes3D[i];
+    sprite.position.set(m.position.x, m.position.y - n.size*0.55 - 5, m.position.z);
+    sprite.userData.nodeIdx = i;
+    threeScene.add(sprite);
+    labelSprites3D.push(sprite);
+  });
+}
+
+function setup3DRaycast() {
+  const rc = new THREE.Raycaster();
+  const mouse = new THREE.Vector2();
+  let hov3d = null;
+
+  threeRenderer.domElement.addEventListener('mousemove', ev => {
+    const rect = threeRenderer.domElement.getBoundingClientRect();
+    mouse.x = ((ev.clientX - rect.left)/rect.width)*2 - 1;
+    mouse.y = -((ev.clientY - rect.top)/rect.height)*2 + 1;
+    rc.setFromCamera(mouse, threeCamera);
+    const hits = rc.intersectObjects(nodeMeshes3D);
+    if (hits.length) {
+      const id = hits[0].object.userData.nodeId;
+      if (!id) return;
+      if (hov3d !== id) {
+        hov3d = id;
+        const n = nodeMap[id], det = details[id]||{};
+        document.body.style.cursor = 'pointer';
+        const desc = det.desc ? `<div class="t-desc">${det.desc.substring(0,100)}…</div>` : '';
+        tooltip.innerHTML = `<div class="t-cat">${n.cat}</div><div class="t-name">${n.label}</div>${desc}`;
+        tooltip.style.opacity = 1;
+      }
+      tooltip.style.left = (ev.clientX+16)+'px';
+      tooltip.style.top = (ev.clientY-10)+'px';
+    } else if (hov3d) {
+      hov3d = null;
+      document.body.style.cursor = 'default';
+      tooltip.style.opacity = 0;
+    }
+  });
+
+  threeRenderer.domElement.addEventListener('click', ev => {
+    const rect = threeRenderer.domElement.getBoundingClientRect();
+    mouse.x = ((ev.clientX - rect.left)/rect.width)*2 - 1;
+    mouse.y = -((ev.clientY - rect.top)/rect.height)*2 + 1;
+    rc.setFromCamera(mouse, threeCamera);
+    const hits = rc.intersectObjects(nodeMeshes3D);
+    if (hits.length) {
+      const id = hits[0].object.userData.nodeId;
+      if (id) selectNode(id);
+    } else {
+      closePanel();
+    }
+  });
+}
+
+function animate3D() {
+  animFrameId = requestAnimationFrame(animate3D);
+  threeControls.update();
+  threeRenderer.render(threeScene, threeCamera);
+}
+
+function destroy3D() {
+  if (animFrameId) { cancelAnimationFrame(animFrameId); animFrameId = null; }
+}
+
+function toggle3D() {
+  mode3D = !mode3D;
+  const btn = document.getElementById('btn-3d');
+  const svgEl = document.getElementById('main-svg');
+  const cont = document.getElementById('three-container');
+  if (mode3D) {
+    btn.textContent = '2D';
+    btn.title = 'Revenir en 2D';
+    btn.classList.add('active-3d');
+    svgEl.style.display = 'none';
+    cont.style.display = 'block';
+    if (!threeRenderer) init3D(); else animate3D();
+  } else {
+    btn.textContent = '3D';
+    btn.title = 'Mode 3D';
+    btn.classList.remove('active-3d');
+    svgEl.style.display = 'block';
+    cont.style.display = 'none';
+    destroy3D();
+    tooltip.style.opacity = 0;
+    document.body.style.cursor = 'default';
+  }
+}
+</script>
+</body>
+</html>
