@@ -689,6 +689,11 @@ Object.entries(catConfig).forEach(([key, c], i) => {
     .attr('letter-spacing',3).text(c.label);
 });
 
+g.append('text').attr('x', W/2).attr('y', H/2).attr('text-anchor','middle')
+  .attr('dominant-baseline','central').attr('fill','#ffffff').attr('opacity',0.06)
+  .attr('font-size',120).attr('font-weight',900).attr('letter-spacing',18)
+  .style('pointer-events','none').text('LabFab');
+
 // Edges
 const edgeGroup = g.append('g');
 const edgeLines = edgeGroup.selectAll('line').data(edges).join('line')
