@@ -281,7 +281,23 @@ const nodes = [
   {id:'m22',label:'Pédagogie du faire',cat:'Mot-clé',size:12,y1:2012,y2:2025},
   {id:'m23',label:'Bénévolat',cat:'Mot-clé',size:8,y1:2012,y2:2025},
   {id:'m24',label:'Parité',cat:'Mot-clé',size:6,y1:2017,y2:2025},
-  {id:'m25',label:'Encapacitation',cat:'Mot-clé',size:8,y1:2015,y2:2025}
+  {id:'m25',label:'Encapacitation',cat:'Mot-clé',size:8,y1:2015,y2:2025},
+  {id:'a17',label:"Jean-Baptiste Le Clec'h",cat:'Acteur',size:14,y1:2011,y2:2025},
+  {id:'a18',label:'Jean-Marc',cat:'Acteur',size:10,y1:2016,y2:2025},
+  {id:'a19',label:'Camille Bisson',cat:'Acteur',size:6,y1:2020,y2:2025},
+  {id:'a20',label:'Pascal Plantard',cat:'Acteur',size:8,y1:2017,y2:2025},
+  {id:'e14',label:'Importation Maker Faire (2011)',cat:'Événement',size:12,y1:2011,y2:2011},
+  {id:'e15',label:'Rachat Maker Faire (2016)',cat:'Événement',size:12,y1:2016,y2:2016},
+  {id:'e16',label:'Création Maker Campus (2016)',cat:'Événement',size:14,y1:2016,y2:2016},
+  {id:'e17',label:'Fabrik',cat:'Événement',size:6,y1:2020,y2:2025},
+  {id:'e18',label:'Tech in Vitré',cat:'Événement',size:8,y1:2018,y2:2025},
+  {id:'l13',label:'Grand 8',cat:'Lieu',size:10,y1:2022,y2:2025},
+  {id:'l14',label:'My Human Kit',cat:'Lieu',size:12,y1:2014,y2:2025},
+  {id:'l15',label:'Artilect (Toulouse)',cat:'Lieu',size:8,y1:2011,y2:2025},
+  {id:'l16',label:'Maison des Associations',cat:'Lieu',size:8,y1:2012,y2:2025},
+  {id:'l17',label:'Belle Déchette',cat:'Lieu',size:6,y1:2018,y2:2025},
+  {id:'l18',label:'Élabo (hackerspace)',cat:'Lieu',size:6,y1:2015,y2:2025},
+  {id:'m26',label:'Transition écologique',cat:'Mot-clé',size:10,y1:2018,y2:2025}
 ];
 
 const edges = [
@@ -422,7 +438,40 @@ const edges = [
   {source:'a16',target:'m22',label:'pratique',w:2},
   {source:'a16',target:'m01',label:'pratique',w:2},
   {source:'a02',target:'e13',label:'participe à',w:2},
-  {source:'e13',target:'l01',label:'porté depuis',w:1}
+  {source:'e13',target:'l01',label:'porté depuis',w:1},
+  {source:'a03',target:'e14',label:'mentionne',w:1},
+  {source:'a04',target:'e14',label:'mentionne',w:1},
+  {source:'a06',target:'e14',label:'bénévole à',w:2},
+  {source:'e14',target:'m13',label:'lié à',w:3},
+  {source:'a03',target:'e15',label:'mentionne',w:1},
+  {source:'e15',target:'m13',label:'succède à',w:2},
+  {source:'a01',target:'e16',label:'mentionne',w:1},
+  {source:'a01',target:'e18',label:'mentionne',w:1},
+  {source:'l07',target:'e18',label:'participe à',w:1},
+  {source:'l13',target:'m22',label:'pratique',w:1},
+  {source:'a03',target:'l14',label:'fonde',w:3},
+  {source:'a01',target:'l14',label:'dirige',w:3},
+  {source:'l14',target:'e06',label:'découle de',w:3},
+  {source:'a05',target:'l14',label:'mentionne',w:1},
+  {source:'a04',target:'l14',label:'mentionne',w:1},
+  {source:'a04',target:'l15',label:'mentionne',w:1},
+  {source:'l15',target:'l10',label:'lié à',w:1},
+  {source:'a03',target:'l16',label:'fréquente',w:1},
+  {source:'a01',target:'l16',label:'incubé à',w:2},
+  {source:'l14',target:'l16',label:'incubé à',w:2},
+  {source:'a06',target:'l17',label:'partenaire',w:2},
+  {source:'a01',target:'l17',label:'mentionne',w:1},
+  {source:'l17',target:'l18',label:'répare avec',w:2},
+  {source:'l17',target:'m19',label:'partenaire',w:2},
+  {source:'l17',target:'m14',label:'pratique',w:1},
+  {source:'a01',target:'l18',label:'mentionne',w:1},
+  {source:'l18',target:'m01',label:'culture',w:1},
+  {source:'l18',target:'m14',label:'pratique',w:2},
+  {source:'a06',target:'m26',label:'porte',w:2},
+  {source:'a11',target:'m26',label:'pionnier',w:1},
+  {source:'a07',target:'m26',label:'lié à',w:1},
+  {source:'m26',target:'m08',label:'lié à',w:2},
+  {source:'m26',target:'m14',label:'lié à',w:2}
 ];
 
 // ===== NODE DETAILS (for panel) =====
@@ -492,7 +541,23 @@ const details = {
   'm22':{desc:"Apprendre par la pratique et l'expérimentation. Valeur fondamentale du LabFab, défendue par Norbert Friant."},
   'm23':{desc:"Engagement bénévole. Bérangère Amiot est la seule bénévole active du réseau LabFab."},
   'm24':{desc:"Enjeu de représentation hommes/femmes dans les FabLabs. Porté par Bérangère Amiot."},
-  'm25':{desc:"Processus d'acquisition de compétences et de confiance par la pratique. Proche de l'empowerment."}
+  'm25':{desc:"Processus d'acquisition de compétences et de confiance par la pratique. Proche de l'empowerment."},
+  'a17':{desc:"Ancien étudiant master TEF, organisateur Maker Faire France (2011-2016), co-fondateur de Make Me et du Maker Campus. Basé au Grand 8.",role:["Organisateur événements makers","Co-fondateur Make Me"],sources:["Interview JB Le Clec'h","Interview Nicolas Huchet","Interview Hugues Aubin","Interview Bérangère Amiot"],quote:"Le plus grand rassemblement de makers de France."},
+  'a18':{desc:"Co-fondateur de Make Me avec JB Le Clec'h. Ancien partenaire de groupe de rock. Organisent ensemble le Maker Campus, Tech in Vitré, Maker Music Festival.",role:["Co-fondateur Make Me"],sources:["Interview JB Le Clec'h","Interview Nicolas Huchet","Interview Hugues Aubin"]},
+  'a19':{desc:"Fab manageuse du Teaching Lab, FabLab de l'Université de Rennes.",role:["Fab manageuse Teaching Lab"],sources:["Interview Bérangère Amiot"]},
+  'a20':{desc:"Fondateur de l'EduLab à l'Université Rennes 2 en 2017.",role:["Fondateur EduLab Rennes 2"],sources:["Information transmise par Axel Ropert"]},
+  'e14':{desc:"JB Le Clec'h obtient la licence Maker Faire à San Francisco (2011). Première édition à Saint-Malo. Jusqu'à 10 éditions/an en France.",sources:["Interview JB Le Clec'h","Interview Nicolas Huchet","Interview Norbert Friant","Interview Bérangère Amiot"]},
+  'e15':{desc:"Leroy Merlin rachète la licence Maker Faire pour 1M€ (2016). JB perd la licence et crée Make Me en réponse.",sources:["Interview JB Le Clec'h","Interview Nicolas Huchet"]},
+  'e16':{desc:"Après la perte de Maker Faire, JB et Jean-Marc créent le Maker Campus en marque propre. Plus grand rassemblement de makers de France : 600 makers/édition.",sources:["Interview JB Le Clec'h","Interview Hugues Aubin"]},
+  'e17':{desc:"Événement auquel Make Me participe.",sources:["Interview JB Le Clec'h"]},
+  'e18':{desc:"Événement maker organisé par Make Me à Vitré. Les étudiants de l'EduLab y participent régulièrement.",sources:["Interview JB Le Clec'h","Interview Hugues Aubin"]},
+  'l13':{desc:"Lieu culturel à Rennes hébergeant Make Me depuis 4 ans. Lab ouvert au public, concerts, restauration de patrimoine d'art forain.",sources:["Interview JB Le Clec'h"]},
+  'l14':{desc:"Association fondée par Nicolas Huchet et Hugues Aubin, née du projet Bionico. Human Lab dédié aux aides techniques pour personnes en situation de handicap.",sources:["Interview Nicolas Huchet","Interview Hugues Aubin","Interview Erwan Mahé","Interview Norbert Friant"]},
+  'l15':{desc:"Premier FabLab de France, à Toulouse. Modèle centralisé, contre-exemple de la stratégie décentralisée rennaise.",sources:["Interview JB Le Clec'h","Interview Norbert Friant"]},
+  'l16':{desc:"Bâtiment à Rennes hébergeant BUG et espace d'incubation pour My Human Kit avant Askoria.",sources:["Interview Hugues Aubin","Interview Nicolas Huchet","Interview Romain Chefdor"]},
+  'l17':{desc:"Centre de recyclage à Rennes. Partenaire Precious Plastic (recyclage PLA). Découpe laser partagée, réparée par l'Élabo.",sources:["Interview Hugues Aubin","Interview Bérangère Amiot"]},
+  'l18':{desc:"Hackerspace de Rennes, membre du LabFab étendu. Compétences en réparation de machines. Proche du vivier open source.",sources:["Interview Hugues Aubin"]},
+  'm26':{desc:"Évolution du mouvement maker vers la réparation, le low-tech et le design frugal. Portée par Bérangère Amiot et Laurent Flamant."}
 };
 
 // ===== STATE =====
