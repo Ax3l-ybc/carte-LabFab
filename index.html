@@ -216,6 +216,7 @@ const catConfig = {
 
 // ===== ENRICHED NODE DATA =====
 const nodes = [
+  // === ACTEURS (24) ===
   {id:'a01',label:'Hugues Aubin',cat:'Acteur',size:20,y1:2010,y2:2025},
   {id:'a02',label:'Baptiste Gaultier',cat:'Acteur',size:16,y1:2010,y2:2025},
   {id:'a03',label:'Nicolas Huchet',cat:'Acteur',size:16,y1:2012,y2:2025},
@@ -230,20 +231,37 @@ const nodes = [
   {id:'a12',label:'Thomas Diaz',cat:'Acteur',size:8,y1:2013,y2:2020},
   {id:'a13',label:'Thomas Meij',cat:'Acteur',size:8,y1:2013,y2:2020},
   {id:'a14',label:'Tony',cat:'Acteur',size:10,y1:2014,y2:2025},
-  {id:'a15',label:'Célia',cat:'Acteur',size:8,y1:2020,y2:2025},
+  {id:'a15',label:'Célia Guye',cat:'Acteur',size:12,y1:2020,y2:2025},
   {id:'a16',label:'Laurent Mattlé',cat:'Acteur',size:14,y1:2011,y2:2025},
+  {id:'a17',label:"Jean-Baptiste Le Clec'h",cat:'Acteur',size:14,y1:2011,y2:2025},
+  {id:'a18',label:'Jean-Marc',cat:'Acteur',size:10,y1:2016,y2:2025},
+  {id:'a19',label:'Camille Bisson',cat:'Acteur',size:12,y1:2021,y2:2025},
+  {id:'a20',label:'Pascal Plantard',cat:'Acteur',size:8,y1:2017,y2:2025},
+  {id:'a21',label:'Gaël Langevin',cat:'Acteur',size:10,y1:2012,y2:2020},
+  {id:'a22',label:'Dale Dougherty',cat:'Acteur',size:8,y1:2011,y2:2016},
+  {id:'a23',label:'Sherry Huss',cat:'Acteur',size:6,y1:2011,y2:2025},
+  {id:'a24',label:'Marc Gyver',cat:'Acteur',size:6,y1:2014,y2:2025},
+  // === LIEUX (19) ===
   {id:'l01',label:'EESAB',cat:'Lieu',size:16,y1:2012,y2:2025},
   {id:'l02',label:'IMT Atlantique',cat:'Lieu',size:12,y1:2009,y2:2025},
   {id:'l03',label:'Rennes Métropole',cat:'Lieu',size:14,y1:2012,y2:2025},
   {id:'l04',label:'Cantine numérique',cat:'Lieu',size:10,y1:2010,y2:2018},
   {id:'l05',label:'Champs Libres',cat:'Lieu',size:12,y1:2010,y2:2025},
   {id:'l06',label:'Jardin Moderne',cat:'Lieu',size:8,y1:2011,y2:2015},
-  {id:'l07',label:'EduLab Rennes 2',cat:'Lieu',size:10,y1:2015,y2:2025},
+  {id:'l07',label:'EduLab Rennes 2',cat:'Lieu',size:10,y1:2017,y2:2025},
   {id:'l08',label:'Trois-Soleils',cat:'Lieu',size:6,y1:2010,y2:2010},
   {id:'l09',label:'MIT (Boston)',cat:'Lieu',size:6,y1:2013,y2:2020},
   {id:'l10',label:'FabLab Festival Toulouse',cat:'Lieu',size:8,y1:2015,y2:2020},
   {id:'l11',label:'Comme un Établi',cat:'Lieu',size:6,y1:2018,y2:2025},
-  {id:'l12',label:'Teaching Lab',cat:'Lieu',size:8,y1:2016,y2:2025},
+  {id:'l12',label:'Teaching Lab',cat:'Lieu',size:10,y1:2016,y2:2025},
+  {id:'l13',label:'Grand 8',cat:'Lieu',size:10,y1:2022,y2:2025},
+  {id:'l14',label:'My Human Kit',cat:'Lieu',size:12,y1:2014,y2:2025},
+  {id:'l15',label:'Artilect (Toulouse)',cat:'Lieu',size:8,y1:2011,y2:2025},
+  {id:'l16',label:'Maison des Associations',cat:'Lieu',size:8,y1:2012,y2:2025},
+  {id:'l17',label:'Belle Déchette',cat:'Lieu',size:6,y1:2018,y2:2025},
+  {id:'l18',label:'Élabo (hackerspace)',cat:'Lieu',size:6,y1:2015,y2:2025},
+  {id:'l19',label:'BUG',cat:'Lieu',size:12,y1:2011,y2:2015},
+  // === ÉVÉNEMENTS (21) ===
   {id:'e01',label:'Rencontre John Le Jeune (2010)',cat:'Événement',size:14,y1:2010,y2:2010},
   {id:'e02',label:'Création FabLab EESAB (2012)',cat:'Événement',size:18,y1:2012,y2:2012},
   {id:'e03',label:'Vivacité (2012)',cat:'Événement',size:14,y1:2012,y2:2012},
@@ -257,13 +275,22 @@ const nodes = [
   {id:'e11',label:'Livre blanc RFF Lab (2016-17)',cat:'Événement',size:8,y1:2016,y2:2017},
   {id:'e12',label:'Métromix',cat:'Événement',size:8,y1:2019,y2:2019},
   {id:'e13',label:'Ouverture FabLab Vietnam (2013)',cat:'Événement',size:12,y1:2013,y2:2013},
+  {id:'e14',label:'Importation Maker Faire (2011)',cat:'Événement',size:12,y1:2011,y2:2011},
+  {id:'e15',label:'Rachat Maker Faire (2016)',cat:'Événement',size:12,y1:2016,y2:2016},
+  {id:'e16',label:'Création Maker Campus (2016)',cat:'Événement',size:14,y1:2016,y2:2016},
+  {id:'e17',label:'Fabrik',cat:'Événement',size:6,y1:2020,y2:2025},
+  {id:'e18',label:'Tech in Vitré',cat:'Événement',size:8,y1:2018,y2:2025},
+  {id:'e19',label:'Hackathon Focus Vision MHK (2020)',cat:'Événement',size:8,y1:2020,y2:2020},
+  {id:'e20',label:'Projet piège à drosophiles (~2022)',cat:'Événement',size:8,y1:2022,y2:2022},
+  {id:'e21',label:'Hackathon plancton (2026)',cat:'Événement',size:8,y1:2026,y2:2026},
+  // === MOTS-CLÉS (26) ===
   {id:'m01',label:'Open source',cat:'Mot-clé',size:16,y1:2010,y2:2025},
   {id:'m02',label:'Communs',cat:'Mot-clé',size:12,y1:2013,y2:2025},
   {id:'m03',label:'Libre',cat:'Mot-clé',size:12,y1:2010,y2:2025},
   {id:'m04',label:'Arduino',cat:'Mot-clé',size:14,y1:2010,y2:2020},
   {id:'m05',label:'Fab City',cat:'Mot-clé',size:14,y1:2014,y2:2025},
   {id:'m06',label:'Éducation populaire',cat:'Mot-clé',size:12,y1:2012,y2:2025},
-  {id:'m07',label:'Empowerment',cat:'Mot-clé',size:10,y1:2012,y2:2025},
+  {id:'m07',label:'Empowerment',cat:'Mot-clé',size:12,y1:2012,y2:2025},
   {id:'m08',label:'Low-tech',cat:'Mot-clé',size:10,y1:2015,y2:2025},
   {id:'m09',label:'Documentation',cat:'Mot-clé',size:12,y1:2012,y2:2025},
   {id:'m10',label:'MOOC',cat:'Mot-clé',size:10,y1:2014,y2:2020},
@@ -282,25 +309,11 @@ const nodes = [
   {id:'m23',label:'Bénévolat',cat:'Mot-clé',size:8,y1:2012,y2:2025},
   {id:'m24',label:'Parité',cat:'Mot-clé',size:6,y1:2017,y2:2025},
   {id:'m25',label:'Encapacitation',cat:'Mot-clé',size:8,y1:2015,y2:2025},
-  {id:'a17',label:"Jean-Baptiste Le Clec'h",cat:'Acteur',size:14,y1:2011,y2:2025},
-  {id:'a18',label:'Jean-Marc',cat:'Acteur',size:10,y1:2016,y2:2025},
-  {id:'a19',label:'Camille Bisson',cat:'Acteur',size:6,y1:2020,y2:2025},
-  {id:'a20',label:'Pascal Plantard',cat:'Acteur',size:8,y1:2017,y2:2025},
-  {id:'e14',label:'Importation Maker Faire (2011)',cat:'Événement',size:12,y1:2011,y2:2011},
-  {id:'e15',label:'Rachat Maker Faire (2016)',cat:'Événement',size:12,y1:2016,y2:2016},
-  {id:'e16',label:'Création Maker Campus (2016)',cat:'Événement',size:14,y1:2016,y2:2016},
-  {id:'e17',label:'Fabrik',cat:'Événement',size:6,y1:2020,y2:2025},
-  {id:'e18',label:'Tech in Vitré',cat:'Événement',size:8,y1:2018,y2:2025},
-  {id:'l13',label:'Grand 8',cat:'Lieu',size:10,y1:2022,y2:2025},
-  {id:'l14',label:'My Human Kit',cat:'Lieu',size:12,y1:2014,y2:2025},
-  {id:'l15',label:'Artilect (Toulouse)',cat:'Lieu',size:8,y1:2011,y2:2025},
-  {id:'l16',label:'Maison des Associations',cat:'Lieu',size:8,y1:2012,y2:2025},
-  {id:'l17',label:'Belle Déchette',cat:'Lieu',size:6,y1:2018,y2:2025},
-  {id:'l18',label:'Élabo (hackerspace)',cat:'Lieu',size:6,y1:2015,y2:2025},
   {id:'m26',label:'Transition écologique',cat:'Mot-clé',size:10,y1:2018,y2:2025}
 ];
 
 const edges = [
+  // Acteur → Acteur
   {source:'a01',target:'a08',label:'rencontre fondatrice',w:3},
   {source:'a01',target:'a03',label:'catalyse',w:3},
   {source:'a01',target:'a02',label:'collabore avec',w:2},
@@ -314,6 +327,7 @@ const edges = [
   {source:'a02',target:'a14',label:'collabore avec',w:2},
   {source:'a03',target:'a01',label:'co-fonde MHK',w:3},
   {source:'a03',target:'a13',label:'voyage avec',w:1},
+  {source:'a03',target:'a21',label:"s'inspire de",w:3},
   {source:'a04',target:'a07',label:'encadre',w:2},
   {source:'a06',target:'a14',label:'co-préside avec',w:2},
   {source:'a06',target:'a05',label:'rencontre fondatrice',w:1},
@@ -322,6 +336,24 @@ const edges = [
   {source:'a08',target:'a01',label:'transmet à',w:3},
   {source:'a08',target:'a02',label:'transmet à',w:3},
   {source:'a15',target:'a05',label:'travaille avec',w:2},
+  {source:'a15',target:'a03',label:'liée à via MHK',w:2},
+  {source:'a16',target:'a01',label:'collabore avec',w:2},
+  {source:'a16',target:'a06',label:'pilier affectif',w:2},
+  {source:'a16',target:'a08',label:'collabore avec',w:1},
+  {source:'a17',target:'a18',label:'co-fondateur Make Me',w:3},
+  {source:'a17',target:'a03',label:'compagnon de route',w:2},
+  {source:'a17',target:'a01',label:'allié du réseau',w:2},
+  {source:'a17',target:'a06',label:'compagnon de route',w:2},
+  {source:'a17',target:'a04',label:'connu par',w:1},
+  {source:'a19',target:'a01',label:'collabore avec',w:2},
+  {source:'a19',target:'a15',label:'lien Le Polès',w:1},
+  {source:'a20',target:'a14',label:'recrute',w:2},
+  {source:'a21',target:'a17',label:'cité par',w:1},
+  {source:'a22',target:'a17',label:'rencontré par',w:2},
+  {source:'a22',target:'a23',label:'co-fonde avec',w:2},
+  {source:'a23',target:'a17',label:'amie proche de',w:2},
+  {source:'a24',target:'a17',label:'cité par',w:2},
+  // Acteur → Événement
   {source:'a01',target:'e01',label:'participe à',w:3},
   {source:'a08',target:'e01',label:'participe à',w:3},
   {source:'a02',target:'e01',label:'participe à',w:2},
@@ -333,6 +365,7 @@ const edges = [
   {source:'a10',target:'e02',label:'soutient',w:2},
   {source:'a11',target:'e02',label:'participe à',w:1},
   {source:'a09',target:'e02',label:'participe à',w:1},
+  {source:'a16',target:'e02',label:'participe à',w:2},
   {source:'a01',target:'e03',label:'organise',w:3},
   {source:'a09',target:'e03',label:'organise',w:3},
   {source:'a03',target:'e03',label:'découvre le FabLab à',w:3},
@@ -353,9 +386,33 @@ const edges = [
   {source:'a06',target:'e08',label:'co-préside',w:2},
   {source:'a07',target:'e09',label:'coordonne',w:3},
   {source:'a04',target:'e09',label:'participe à',w:2},
+  {source:'a17',target:'e09',label:'participe à',w:1},
   {source:'a02',target:'e10',label:'participe à',w:2},
   {source:'a07',target:'e11',label:'contribue à',w:2},
   {source:'a06',target:'e12',label:'facilite',w:2},
+  {source:'a16',target:'e13',label:'organise',w:3},
+  {source:'a02',target:'e13',label:'participe à',w:2},
+  {source:'a17',target:'e14',label:'organise',w:3},
+  {source:'a03',target:'e14',label:'mentionne',w:1},
+  {source:'a04',target:'e14',label:'mentionne',w:1},
+  {source:'a06',target:'e14',label:'bénévole à',w:2},
+  {source:'a22',target:'e14',label:'fonde',w:3},
+  {source:'a23',target:'e14',label:'co-fonde',w:2},
+  {source:'a17',target:'e15',label:'perd la licence',w:3},
+  {source:'a03',target:'e15',label:'mentionne',w:1},
+  {source:'a17',target:'e16',label:'crée',w:3},
+  {source:'a18',target:'e16',label:'co-crée',w:3},
+  {source:'a01',target:'e16',label:'mentionne',w:1},
+  {source:'a17',target:'e17',label:'participe à',w:1},
+  {source:'a17',target:'e18',label:'organise',w:2},
+  {source:'a18',target:'e18',label:'organise',w:2},
+  {source:'a01',target:'e18',label:'mentionne',w:1},
+  {source:'a15',target:'e19',label:'participe à',w:2},
+  {source:'a19',target:'e20',label:'coordonne',w:3},
+  {source:'a19',target:'e21',label:'organise',w:3},
+  {source:'a01',target:'e21',label:'participe à',w:2},
+  {source:'a21',target:'e06',label:'inspire via InMoov',w:3},
+  // Événement → Lieu
   {source:'e01',target:'l05',label:'se déroule à',w:2},
   {source:'e01',target:'l08',label:'se déroule à',w:2},
   {source:'e02',target:'l01',label:'se déroule à',w:3},
@@ -366,16 +423,59 @@ const edges = [
   {source:'e08',target:'l03',label:'soutenu par',w:2},
   {source:'e10',target:'l06',label:'se déroule à',w:2},
   {source:'e09',target:'l12',label:'inclut',w:1},
+  {source:'e13',target:'l01',label:'porté depuis',w:1},
+  {source:'e14',target:'m13',label:'lié à',w:3},
+  {source:'e15',target:'m13',label:'succède à',w:2},
+  {source:'e20',target:'l12',label:'se déroule au',w:2},
+  {source:'e20',target:'m26',label:'illustre',w:2},
+  {source:'e20',target:'m09',label:'communs',w:2},
+  {source:'e21',target:'l12',label:'se déroule au',w:2},
+  {source:'e21',target:'m22',label:'illustre',w:2},
+  // Acteur → Lieu
   {source:'a05',target:'l01',label:'travaille à',w:3},
   {source:'a02',target:'l02',label:'travaille à',w:3},
   {source:'a04',target:'l03',label:'travaille à',w:3},
   {source:'a07',target:'l03',label:'travaille à',w:3},
   {source:'a14',target:'l07',label:'travaille à',w:3},
   {source:'a15',target:'l01',label:'travaille à',w:3},
+  {source:'a15',target:'l14',label:'fréquente',w:2},
   {source:'a13',target:'l02',label:'travaille à',w:2},
   {source:'a01',target:'l04',label:'fréquente',w:2},
   {source:'a02',target:'l09',label:'voyage à',w:1},
   {source:'a03',target:'l09',label:'voyage à',w:1},
+  {source:'a16',target:'l01',label:'fréquente',w:2},
+  {source:'a16',target:'l12',label:'travaille à',w:3},
+  {source:'a17',target:'l13',label:'basé à',w:3},
+  {source:'a17',target:'l04',label:'fréquente',w:1},
+  {source:'a18',target:'l13',label:'basé à',w:3},
+  {source:'a19',target:'l12',label:'fab manageuse',w:3},
+  {source:'a20',target:'l07',label:'fonde',w:3},
+  {source:'a03',target:'l14',label:'fonde',w:3},
+  {source:'a01',target:'l14',label:'dirige',w:3},
+  {source:'a05',target:'l14',label:'mentionne',w:1},
+  {source:'a04',target:'l14',label:'mentionne',w:1},
+  {source:'l14',target:'e06',label:'découle de',w:3},
+  {source:'l14',target:'e19',label:'organise',w:3},
+  {source:'l14',target:'l16',label:'incubé à',w:2},
+  {source:'a04',target:'l15',label:'mentionne',w:1},
+  {source:'l15',target:'l10',label:'lié à',w:1},
+  {source:'a03',target:'l16',label:'fréquente',w:1},
+  {source:'a01',target:'l16',label:'incubé à',w:2},
+  {source:'a06',target:'l17',label:'partenaire',w:2},
+  {source:'a01',target:'l17',label:'mentionne',w:1},
+  {source:'l17',target:'l18',label:'répare avec',w:2},
+  {source:'l17',target:'m19',label:'partenaire',w:2},
+  {source:'l17',target:'m14',label:'pratique',w:1},
+  {source:'a01',target:'l18',label:'mentionne',w:1},
+  {source:'l18',target:'m01',label:'culture',w:1},
+  {source:'l18',target:'m14',label:'pratique',w:2},
+  {source:'l13',target:'m22',label:'pratique',w:1},
+  {source:'l07',target:'e18',label:'participe à',w:1},
+  {source:'a09',target:'l19',label:'dirige',w:3},
+  {source:'l19',target:'e03',label:'organise',w:3},
+  {source:'a16',target:'l19',label:'découvre réseau via',w:2},
+  {source:'a03',target:'l19',label:'fréquente',w:1},
+  // Acteur → Mot-clé
   {source:'a01',target:'m05',label:'porte',w:3},
   {source:'a01',target:'m02',label:'théorise',w:3},
   {source:'a01',target:'m01',label:'défend',w:2},
@@ -398,19 +498,41 @@ const edges = [
   {source:'a06',target:'m23',label:'incarne',w:2},
   {source:'a06',target:'m25',label:'pratique',w:2},
   {source:'a06',target:'m19',label:'pratique',w:2},
+  {source:'a06',target:'m26',label:'porte',w:2},
   {source:'a07',target:'m05',label:'applique',w:2},
   {source:'a07',target:'m20',label:'anime',w:2},
   {source:'a07',target:'m18',label:'coordonne',w:2},
   {source:'a07',target:'m11',label:'facilite',w:2},
   {source:'a07',target:'m14',label:'promeut',w:1},
+  {source:'a07',target:'m26',label:'lié à',w:1},
   {source:'a08',target:'m04',label:'transmet',w:3},
   {source:'a08',target:'m03',label:'incarne',w:3},
   {source:'a08',target:'m01',label:'transmet',w:3},
   {source:'a09',target:'m09',label:'crée (wiki)',w:2},
   {source:'a11',target:'m08',label:'pratique',w:2},
+  {source:'a11',target:'m26',label:'pionnier',w:1},
   {source:'a12',target:'m05',label:'théorise',w:3},
   {source:'a14',target:'m11',label:'exerce',w:3},
   {source:'a15',target:'m11',label:'exerce',w:3},
+  {source:'a15',target:'m07',label:'incarne',w:3},
+  {source:'a15',target:'m06',label:'défend',w:2},
+  {source:'a15',target:'m25',label:'incarne',w:2},
+  {source:'a15',target:'m26',label:'porte',w:2},
+  {source:'a16',target:'m11',label:'exerce',w:3},
+  {source:'a16',target:'m22',label:'pratique',w:2},
+  {source:'a16',target:'m01',label:'pratique',w:2},
+  {source:'a17',target:'m13',label:'organise',w:3},
+  {source:'a17',target:'m26',label:'porte',w:2},
+  {source:'a17',target:'m22',label:'pratique',w:2},
+  {source:'a19',target:'m22',label:'défend',w:3},
+  {source:'a19',target:'m09',label:'défend',w:2},
+  {source:'a19',target:'m26',label:'pratique',w:2},
+  {source:'a19',target:'m07',label:'porte',w:2},
+  {source:'a19',target:'m11',label:'exerce',w:2},
+  {source:'a21',target:'m01',label:'pratique',w:3},
+  {source:'a24',target:'m22',label:'incarne',w:2},
+  {source:'a24',target:'m07',label:'incarne',w:2},
+  // Mot-clé → Mot-clé
   {source:'m01',target:'m02',label:'proche de',w:2},
   {source:'m01',target:'m03',label:'proche de',w:3},
   {source:'m02',target:'m03',label:'proche de',w:2},
@@ -427,72 +549,8 @@ const edges = [
   {source:'m21',target:'m22',label:'proche de',w:2},
   {source:'m21',target:'m08',label:'proche de',w:2},
   {source:'m23',target:'m24',label:'proche de',w:1},
-  {source:'a16',target:'a01',label:'collabore avec',w:2},
-  {source:'a16',target:'a06',label:'pilier affectif',w:2},
-  {source:'a16',target:'a08',label:'collabore avec',w:1},
-  {source:'a16',target:'e02',label:'participe à',w:2},
-  {source:'a16',target:'e13',label:'organise',w:3},
-  {source:'a16',target:'l01',label:'fréquente',w:2},
-  {source:'a16',target:'l12',label:'travaille à',w:3},
-  {source:'a16',target:'m11',label:'exerce',w:3},
-  {source:'a16',target:'m22',label:'pratique',w:2},
-  {source:'a16',target:'m01',label:'pratique',w:2},
-  {source:'a02',target:'e13',label:'participe à',w:2},
-  {source:'e13',target:'l01',label:'porté depuis',w:1},
-  {source:'a03',target:'e14',label:'mentionne',w:1},
-  {source:'a04',target:'e14',label:'mentionne',w:1},
-  {source:'a06',target:'e14',label:'bénévole à',w:2},
-  {source:'e14',target:'m13',label:'lié à',w:3},
-  {source:'a03',target:'e15',label:'mentionne',w:1},
-  {source:'e15',target:'m13',label:'succède à',w:2},
-  {source:'a01',target:'e16',label:'mentionne',w:1},
-  {source:'a01',target:'e18',label:'mentionne',w:1},
-  {source:'l07',target:'e18',label:'participe à',w:1},
-  {source:'l13',target:'m22',label:'pratique',w:1},
-  {source:'a03',target:'l14',label:'fonde',w:3},
-  {source:'a01',target:'l14',label:'dirige',w:3},
-  {source:'l14',target:'e06',label:'découle de',w:3},
-  {source:'a05',target:'l14',label:'mentionne',w:1},
-  {source:'a04',target:'l14',label:'mentionne',w:1},
-  {source:'a04',target:'l15',label:'mentionne',w:1},
-  {source:'l15',target:'l10',label:'lié à',w:1},
-  {source:'a03',target:'l16',label:'fréquente',w:1},
-  {source:'a01',target:'l16',label:'incubé à',w:2},
-  {source:'l14',target:'l16',label:'incubé à',w:2},
-  {source:'a06',target:'l17',label:'partenaire',w:2},
-  {source:'a01',target:'l17',label:'mentionne',w:1},
-  {source:'l17',target:'l18',label:'répare avec',w:2},
-  {source:'l17',target:'m19',label:'partenaire',w:2},
-  {source:'l17',target:'m14',label:'pratique',w:1},
-  {source:'a01',target:'l18',label:'mentionne',w:1},
-  {source:'l18',target:'m01',label:'culture',w:1},
-  {source:'l18',target:'m14',label:'pratique',w:2},
-  {source:'a06',target:'m26',label:'porte',w:2},
-  {source:'a11',target:'m26',label:'pionnier',w:1},
-  {source:'a07',target:'m26',label:'lié à',w:1},
   {source:'m26',target:'m08',label:'lié à',w:2},
-  {source:'m26',target:'m14',label:'lié à',w:2},
-  {source:'a17',target:'a18',label:'co-fondateur Make Me',w:3},
-  {source:'a17',target:'a03',label:'compagnon de route',w:2},
-  {source:'a17',target:'a01',label:'allié du réseau',w:2},
-  {source:'a17',target:'a06',label:'compagnon de route',w:2},
-  {source:'a17',target:'a04',label:'connu par',w:1},
-  {source:'a17',target:'e14',label:'organise',w:3},
-  {source:'a17',target:'e15',label:'perd la licence',w:3},
-  {source:'a17',target:'e16',label:'crée',w:3},
-  {source:'a17',target:'e09',label:'participe à',w:1},
-  {source:'a17',target:'e17',label:'participe à',w:1},
-  {source:'a17',target:'e18',label:'organise',w:2},
-  {source:'a17',target:'l13',label:'basé à',w:3},
-  {source:'a17',target:'l04',label:'fréquente',w:1},
-  {source:'a17',target:'m13',label:'organise',w:3},
-  {source:'a17',target:'m26',label:'porte',w:2},
-  {source:'a17',target:'m22',label:'pratique',w:2},
-  {source:'a18',target:'e16',label:'co-crée',w:3},
-  {source:'a18',target:'e18',label:'organise',w:2},
-  {source:'a18',target:'l13',label:'basé à',w:3},
-  {source:'a19',target:'l12',label:'fab manageuse',w:3},
-  {source:'a19',target:'m11',label:'exerce',w:2}
+  {source:'m26',target:'m14',label:'lié à',w:2}
 ];
 
 // ===== NODE DETAILS (for panel) =====
@@ -511,46 +569,69 @@ const details = {
   'a12':{desc:"Promoteur international du concept de Fab City. Son TEDx dénonçant le modèle PITO (Product In, Trash Out) a été un tournant dans la vision de Hugues Aubin.",role:["Inspiration directe du concept de LabFab étendu","TEDx fondateur sur la Fab City et le modèle PITO"],sources:["Cité dans 1/7 interviews"]},
   'a13':{desc:"Membre actif du LabFab lié à l'IMT. Voyages internationaux avec Nicolas Huchet (Russie). Impliqué dans des projets européens.",role:["Voyages internationaux pour le LabFab","Projets européens avec le RFF Lab"],sources:["Cité dans 2/7 interviews"]},
   'a14':{desc:"Fab manager à l'EduLab de l'Université Rennes 2. CDI. Modèle d'accompagnement humain, de stabilité et de disponibilité.",role:["Fab manager de l'EduLab Rennes 2","Co-président de l'association LabFab (avec Bérangère)","Pilier de stabilité du réseau"],sources:["Cité dans 3/7 interviews"],quote:"« Si on avait des gens comme ça, ça serait fantastique. Tony, c'est des gens précieux. » — Erwan Mahé"},
-  'a15':{desc:"Fab manager au LabFab de l'EESAB. Mobilité Erasmus+ pour visiter d'autres FabLabs européens. En attente de titularisation.",role:["Fab manager du LabFab EESAB","Mobilité Erasmus+ européenne","Candidate à la titularisation"],sources:["Citée dans 2/7 interviews"],quote:"« On a quelqu'un en or. C'est un exemple à suivre. » — Erwan Mahé"},
+  'a15':{desc:"Designer de formation (DNSEP EESAB, 2020). Fab manager à l'EESAB. Parcours centré sur le croisement FabLab / handicap : stages Albi Lab et ReHab-Lab, hackathons My Human Kit (Focus Vision 2020), asso Le Polès à Paris. Portée par des valeurs d'empowerment, d'inclusion et d'humanisme.",role:["Fab manager du LabFab EESAB","Parcours FabLab / handicap (My Human Kit, Studio Stimuli)","Expérience Le Polès : remobilisation de jeunes déscolarisés","Mobilité professionnelle au Portugal (RFFLabs)"],sources:["Interview directe","Citée dans Interview Erwan Mahé"],quote:"Tout le monde est impliqué : même si tu n'es pas l'expert, tu te sens intégré parce que tu es porteur de projet."},
+  'a16':{desc:"Maker venu du TMP/Lab d'Ivry-sur-Seine, arrivé à Rennes en juillet 2011. Connecté au projet LabFab via BUG (Anthony Cocherie). Participe à l'installation du FabLab EESAB. Co-organise l'ouverture du premier FabLab du Vietnam à Huế (2013). Fab Manager du Teaching Lab (UBL) à partir de 2016.",role:["Aide à l'installation du FabLab EESAB (2011-2012)","Workshop inaugural au Vietnam — ouverture du 1er FabLab à Huế (2013)","Fab Manager du Teaching Lab (SPI, Université Bretagne-Loire)","Organisateur du Lab Tour dans les universités UBL","Accompagnement UVCI (Côte d'Ivoire) pour créer un FabLab"],sources:["Interview directe"]},
+  'a17':{desc:"Ancien étudiant master TEF, organisateur Maker Faire France (2011-2016), co-fondateur de Make Me et du Maker Campus. Basé au Grand 8.",role:["Organisateur Maker Faire France (10 éditions)","Co-fondateur Make Me avec Jean-Marc","Créateur du Maker Campus (plus grand rassemblement de makers de France)"],sources:["Interview directe","Cité dans plusieurs interviews"],quote:"En 2012 je trouvais la stratégie décentralisée de Rennes dommage. En 2026, je trouve que c'était très très bien. 14 ans après, je vois toutes ces graines qui ont germé."},
+  'a18':{desc:"Co-fondateur de Make Me avec JB Le Clec'h. Ancien partenaire de groupe de rock. Organisent ensemble le Maker Campus, Tech in Vitré, Maker Music Festival.",role:["Co-fondateur Make Me"],sources:["Interview JB Le Clec'h"]},
+  'a19':{desc:"Designer de formation (Brickini, DSA). Fab manager du Teaching Lab (SUPTICE, Université de Rennes). Parcours : ébéniste, packaging, SNCF innovation, FabLab associatif parisien. Arrivée à Rennes en 2021. Spécialiste de la co-conception de matériel pédagogique avec les enseignants.",role:["Fab manager du Teaching Lab","Co-conception de matériel pédagogique","Enseignement au FabLab (100h+/an)","Projets emblématiques : piège à drosophiles (ECOBIO), hackathon plancton"],sources:["Interview directe"],quote:"L'essence de ce que je fais, c'est pas d'apprendre à utiliser l'impression 3D, c'est apprendre à faire toi-même."},
+  'a20':{desc:"Professeur à l'Université Rennes 2, spécialiste en sciences de l'éducation. Fondateur de l'EduLab Rennes 2 en 2017. A recruté Tony Vanpoucke comme fab manager en CDI.",role:["Fondateur de l'EduLab Rennes 2 (2017)","Recruteur de Tony Vanpoucke"],sources:["Information transmise par Axel Ropert"]},
+  'a21':{desc:"Sculpteur numérique français. Créateur d'InMoov, le premier robot humanoïde open source entièrement imprimé en 3D. Sa main InMoov, découverte sur Thingiverse par Hugues Aubin, est à l'origine du projet Bionico de Nicolas Huchet.",role:["Créateur d'InMoov (robot open source)","Inspirateur indirect du projet Bionico"],sources:["Cité dans Interview Nicolas Huchet","Cité dans Interview JB Le Clec'h"]},
+  'a22':{desc:"Fondateur de Maker Faire et du magazine Make. Figure fondatrice du mouvement maker mondial. Rencontré par JB Le Clec'h à San Francisco en 2011.",role:["Fondateur de Maker Faire","Influence mondiale sur le mouvement maker"],sources:["Interview JB Le Clec'h"]},
+  'a23':{desc:"Co-fondatrice de Maker Faire avec Dale Dougherty. Amie proche de JB Le Clec'h. A observé la spécificité française du design dans le mouvement maker.",role:["Co-fondatrice de Maker Faire","Observatrice internationale du mouvement maker"],sources:["Interview JB Le Clec'h"],quote:"Les makers français pensent le design dès le départ, contrairement aux autres pays."},
+  'a24':{desc:"Jeune maker autodidacte (pseudo Marc Gyver). Fabrique des voitures électriques et des vélos, activité devenue son business. Illustration de la reconnaissance des compétences hors diplôme — question de recherche initiale de JB Le Clec'h.",role:["Maker autodidacte","Figure de l'empowerment par le faire"],sources:["Interview JB Le Clec'h"]},
   'l01':{desc:"École Européenne Supérieure d'Art de Bretagne. Premier site du FabLab rennais depuis février 2012. Ateliers sur tables de ping-pong."},
   'l02':{desc:"Institut Mines-Télécom. Lieu de travail de Baptiste Gaultier, site de production des MOOC FabLab."},
   'l03':{desc:"Collectivité territoriale. Portage institutionnel du LabFab par Norbert Friant puis Romain Chefdor."},
   'l04':{desc:"Espace de coworking et networking numérique à Rennes. Lieu de rencontres informelles au début du LabFab."},
   'l05':{desc:"Équipement culturel rennais. Lieu de la rencontre fondatrice entre Hugues Aubin et John Le Jeune (~2010)."},
   'l06':{desc:"Salle de musiques actuelles. Lieu du festival Jardin Numérique (2011)."},
-  'l07':{desc:"FabLab pédagogique de l'Université Rennes 2. Animé par Tony."},
+  'l07':{desc:"FabLab pédagogique de l'Université Rennes 2. Fondé par Pascal Plantard en 2017. Animé par Tony Vanpoucke en CDI."},
   'l08':{desc:"Centre commercial rennais. Scène mythique du TV-B-Gone avec John Le Jeune et Hugues Aubin."},
   'l09':{desc:"Massachusetts Institute of Technology. Référence mondiale des FabLabs (Neil Gershenfeld). Visité par Baptiste et Nicolas."},
   'l10':{desc:"Rassemblement national des FabLabs. AG constitutive du RFF Lab en 2015."},
   'l11':{desc:"Atelier partagé / makerspace rennais."},
-  'l12':{desc:"FabLab pédagogique du SPI (Service Pédagogie et Innovation) de l'Université Bretagne-Loire. Animé par Laurent Mattlé à partir de 2016. Open Labs, partenariats universitaires (Rennes 1, ENSCR, Maison pour la Science), Lab Tour régional et accompagnement international (UVCI, Côte d'Ivoire). Impliqué dans la fabrication distribuée pendant le Covid."},
+  'l12':{desc:"FabLab pédagogique du SUPTICE (Université de Rennes). Animé par Laurent Mattlé (2016), puis Camille Bisson (2021). Open Labs, partenariats universitaires, Lab Tour régional, accompagnement international (UVCI, Côte d'Ivoire). Projets emblématiques : piège à drosophiles (ECOBIO), hackathon plancton."},
+  'l13':{desc:"Lieu culturel à Rennes hébergeant Make Me depuis 2022. Lab ouvert au public, concerts, restauration de patrimoine d'art forain.",sources:["Interview JB Le Clec'h"]},
+  'l14':{desc:"Association fondée par Nicolas Huchet et Hugues Aubin, née du projet Bionico. Human Lab dédié aux aides techniques pour personnes en situation de handicap.",sources:["Interview Nicolas Huchet","Interview Hugues Aubin","Interview Erwan Mahé","Interview Norbert Friant"]},
+  'l15':{desc:"Premier FabLab de France, à Toulouse. Modèle centralisé, contre-exemple de la stratégie décentralisée rennaise.",sources:["Interview JB Le Clec'h","Interview Norbert Friant"]},
+  'l16':{desc:"Bâtiment à Rennes hébergeant BUG et espace d'incubation pour My Human Kit avant Askoria.",sources:["Interview Hugues Aubin","Interview Nicolas Huchet","Interview Romain Chefdor"]},
+  'l17':{desc:"Centre de recyclage à Rennes. Partenaire Precious Plastic (recyclage PLA). Découpe laser partagée, réparée par l'Élabo.",sources:["Interview Hugues Aubin","Interview Bérangère Amiot"]},
+  'l18':{desc:"Hackerspace de Rennes, membre du LabFab étendu. Compétences en réparation de machines. Proche du vivier open source.",sources:["Interview Hugues Aubin"]},
+  'l19':{desc:"Association rennaise pionnière fondée par Richard Delogu. Rôle fondateur dans le LabFab : proposition du nom « LabFab », création du site wiki, organisation de Vivacité (2012). Source de tensions lors de l'appel à projet Pellerin (2013) — captation des fonds sans redistribution aux partenaires.",sources:["Interview Hugues Aubin","Interview Nicolas Huchet","Interview Norbert Friant","Interview Laurent Mattlé","Interview Bérangère Amiot"]},
   'e01':{desc:"Moment fondateur du LabFab rennais. Hugues rencontre John au café des Champs-Libres. John sort un oscilloscope open source et un Arduino. Ils vont éteindre les écrans au centre commercial des Trois-Soleils avec un TV-B-Gone.",quote:"« Il m'a parlé de choses dont je ne comprenais absolument rien, en sortant deux objets de sa poche. Le premier, c'était un oscilloscope numérique open source. Le deuxième, c'était une carte Arduino. » — Hugues Aubin"},
   'e02':{desc:"Ouverture du premier FabLab de Rennes dans un local de l'EESAB. Erwan Mahé obtient le local, Odile Le Borgne soutient l'ouverture. Premiers ateliers animés par Baptiste et John sur des tables de ping-pong."},
   'e03':{desc:"Événement citoyen autour du numérique organisé par BUG aux Champs Libres. 10 jours, 60 000 visiteurs. Nicolas Huchet y découvre le FabLab en octobre 2012 — rencontre qui changera sa vie.",quote:"« Hugues m'a envoûté. Je suis rentré chez moi avec plein d'idées en tête. » — Nicolas Huchet"},
   'e04':{desc:"Appel national lancé par Fleur Pellerin et Arnaud Montebourg via la DGE. 250 dossiers déposés, 12 lauréats. LabFab retenu via BUG. Source de tensions durables sur la gestion des 200-300K€."},
   'e05':{desc:"Premier MOOC FabLab sur France Université Numérique par Baptiste Gaultier. Ambition encyclopédique : Arduino, modélisation 3D, découpe laser. Suivi de MOOC hybrides."},
-  'e06':{desc:"Nicolas Huchet entre au FabLab pour résoudre un problème concret : sa prothèse le brûle. Il découvre InMoov et construit une main bionique. Médiatisation France 2, fondation de My Human Kit."},
+  'e06':{desc:"Nicolas Huchet entre au FabLab pour résoudre un problème concret : sa prothèse le brûle. Il découvre InMoov (Gaël Langevin) et construit une main bionique. Médiatisation France 2, fondation de My Human Kit."},
   'e07':{desc:"Naissance du Réseau Français des FabLabs au festival de Toulouse (AG constitutive). Réponse collective à l'atomisation post-Pellerin. Gouvernance par conseil collégial."},
   'e08':{desc:"L'association LabFab structure la gouvernance du réseau rennais, indépendamment de BUG. Co-présidence Tony + Bérangère. Coïncide avec l'arrivée de Romain Chefdor."},
   'e09':{desc:"Les FabLabs fabriquent masques et visières de manière distribuée pendant le confinement. Preuve de concept pour la fabrication distribuée et le modèle Fab City. Soirées Discord entre makers.",quote:"« Effervescence de fou, pas du tout un confinement tranquille. » — Romain Chefdor"},
   'e10':{desc:"Festival d'arts numériques au Jardin Moderne. Contribution à la diffusion de la culture maker et numérique à Rennes."},
   'e11':{desc:"Document de référence du Réseau Français des FabLabs. Marque le décollage du réseau national. Romain Chefdor y contribue."},
   'e12':{desc:"Marathon créatif urbain facilité par Bérangère Amiot. Croisement entre makers et citoyens autour de problématiques urbaines."},
-  'a16':{desc:"Maker venu du TMP/Lab d'Ivry-sur-Seine, arrivé à Rennes en juillet 2011. Connecté au projet LabFab via BUG (Anthony Cocherie). Participe à l'installation du FabLab EESAB. Co-organise l'ouverture du premier FabLab du Vietnam à Huế (2013). Fab Manager du Teaching Lab (UBL) à partir de 2016.",role:["Aide à l'installation du FabLab EESAB (2011-2012)","Workshop inaugural au Vietnam — ouverture du 1er FabLab à Huế (2013)","Fab Manager du Teaching Lab (SPI, Université Bretagne-Loire)","Organisateur du Lab Tour dans les universités UBL","Accompagnement UVCI (Côte d'Ivoire) pour créer un FabLab"],sources:["Interview directe"]},
   'e13':{desc:"Workshop inaugural à Huế, à la Maison des Savoirs. Laurent Mattlé, Baptiste Gaultier et Mariame Labidi contribuent à l'ouverture du premier FabLab du Vietnam avec des cadeaux de la ville de Rennes : imprimante 3D Asimov, kit CNC, kits Arduino. Au retour, Laurent passe par Hô-Chi-Minh-Ville où Hoang-Anh Phan lance le 2e FabLab vietnamien."},
+  'e14':{desc:"JB Le Clec'h obtient la licence Maker Faire à San Francisco (2011). Première édition à Saint-Malo. Jusqu'à 10 éditions/an en France.",sources:["Interview JB Le Clec'h","Interview Nicolas Huchet","Interview Norbert Friant","Interview Bérangère Amiot"]},
+  'e15':{desc:"Leroy Merlin rachète la licence Maker Faire pour 1M€ (2016). JB perd la licence et crée Make Me en réponse.",sources:["Interview JB Le Clec'h","Interview Nicolas Huchet"]},
+  'e16':{desc:"Après la perte de Maker Faire, JB et Jean-Marc créent le Maker Campus en marque propre. Plus grand rassemblement de makers de France : 600 makers/édition.",sources:["Interview JB Le Clec'h","Interview Hugues Aubin"]},
+  'e17':{desc:"Événement auquel Make Me participe.",sources:["Interview JB Le Clec'h"]},
+  'e18':{desc:"Événement maker organisé par Make Me à Vitré. Les étudiants de l'EduLab y participent régulièrement.",sources:["Interview JB Le Clec'h","Interview Hugues Aubin"]},
+  'e19':{desc:"Hackathon organisé par My Human Kit sur la thématique de la cécité, tenu à Pasteur en 2020. Célia Guye y participe juste après son diplôme à l'EESAB, dans le cadre d'une résidence artistique parallèle. Illustration de la synergie entre makers, designers, patients et chercheurs.",sources:["Interview Célia Guye"],quote:"Cette synergie entre patients — qui ont un savoir expérientiel de la cécité — c'est ça qui était hyper intéressant. — Célia Guye"},
+  'e20':{desc:"Conception et fabrication d'un piège à drosophiles asiatiques au Teaching Lab. Le chercheur entomologue d'ECOBIO, formé par Camille Bisson, devient autonome. 100 pièces imprimées en PETG, déployées dans toute la France. Résultat : découverte d'une nouvelle espèce de drosophile asiatique jamais observée en France.",sources:["Interview Camille Bisson"],quote:"Success story complète : formation → autonomie → production → déploiement national → découverte scientifique."},
+  'e21':{desc:"Hackathon de deux après-midi au Teaching Lab, organisé par Camille Bisson avec Erwan Vapo et une asso de Marseille. Brassage exceptionnel : étudiants design, étudiants électronique, chercheuse en plancton, ingénieurs pédagogiques, Hugues Aubin, enseignante du secondaire, médiatrice scientifique.",sources:["Interview Camille Bisson"],quote:"Complètement à l'arrache, mais très réussi. — Camille Bisson"},
   'm01':{desc:"Philosophie fondatrice du LabFab. Partage du code source et des plans de fabrication. Valeur transmise par John Le Jeune."},
   'm02':{desc:"Ressources partagées gérées collectivement. Concept théorisé par Hugues Aubin pour le LabFab étendu."},
   'm03':{desc:"Culture du logiciel et matériel libre. Valeur fondatrice transmise par John Le Jeune et la communauté Arduino."},
   'm04':{desc:"Microcontrôleur open source. Outil pédagogique central des premiers ateliers FabLab, apporté par John Le Jeune."},
   'm05':{desc:"Vision d'une ville autosuffisante grâce à la fabrication distribuée. Portée par Hugues Aubin à Rennes, inspirée par Thomas Diaz."},
   'm06':{desc:"Transmission horizontale des savoirs, sans hiérarchie. Valeur défendue par Nicolas Huchet et Norbert Friant."},
-  'm07':{desc:"Capacité d'agir acquise par la pratique. Incarné par Nicolas Huchet et son parcours de la prothèse à My Human Kit."},
+  'm07':{desc:"Capacité d'agir acquise par la pratique. Incarné par Nicolas Huchet, Célia Guye et leurs parcours de transformation."},
   'm08':{desc:"Technologies sobres et accessibles. Défendu par Bérangère Amiot et Laurent Flamant."},
-  'm09':{desc:"Pratique de documenter les projets pour les rendre reproductibles. Défendu par Bérangère Amiot. Site wiki créé par BUG."},
+  'm09':{desc:"Pratique de documenter les projets pour les rendre reproductibles. Défendu par Bérangère Amiot et Camille Bisson. Site wiki créé par BUG."},
   'm10':{desc:"Cours en ligne ouverts et massifs. Créés par Baptiste Gaultier sur FUN (2014), puis déclinés en MOOC hybrides."},
-  'm11':{desc:"Métier d'animateur de FabLab. Formation structurée par Erwan Mahé. Exercé par Tony, Célia et d'autres."},
+  'm11':{desc:"Métier d'animateur de FabLab. Formation structurée par Erwan Mahé. Exercé par Tony, Célia Guye, Camille Bisson, Laurent Mattlé et d'autres."},
   'm12':{desc:"Marathon créatif collaboratif. Facilité par Bérangère Amiot (Maison Mix, Vélo Mix, Métromix)."},
-  'm13':{desc:"Festival international des makers. Espace de visibilité et de rencontre pour les FabLabs."},
+  'm13':{desc:"Festival international des makers. Espace de visibilité et de rencontre pour les FabLabs. Importé en France par JB Le Clec'h (2011), racheté par Leroy Merlin (2016)."},
   'm14':{desc:"Réparer plutôt que jeter. Pratique low-tech promue dans le réseau LabFab."},
   'm15':{desc:"Réutilisation de matériaux et objets. Complémentaire de la réparation et du low-tech."},
   'm16':{desc:"Conception participative impliquant les usagers. Pratiquée par Erwan Mahé à l'EESAB."},
@@ -559,31 +640,16 @@ const details = {
   'm19':{desc:"Projet open source de recyclage du plastique. Pratiqué par Bérangère Amiot."},
   'm20':{desc:"Réseau citoyen de capteurs de qualité de l'air. Animé par Romain Chefdor à Rennes."},
   'm21':{desc:"Do It Yourself — culture du faire soi-même. ADN du mouvement maker et FabLab."},
-  'm22':{desc:"Apprendre par la pratique et l'expérimentation. Valeur fondamentale du LabFab, défendue par Norbert Friant."},
+  'm22':{desc:"Apprendre par la pratique et l'expérimentation. Valeur fondamentale du LabFab, défendue par Norbert Friant et incarnée par Camille Bisson."},
   'm23':{desc:"Engagement bénévole. Bérangère Amiot est la seule bénévole active du réseau LabFab."},
   'm24':{desc:"Enjeu de représentation hommes/femmes dans les FabLabs. Porté par Bérangère Amiot."},
   'm25':{desc:"Processus d'acquisition de compétences et de confiance par la pratique. Proche de l'empowerment."},
-  'a17':{desc:"Ancien étudiant master TEF, organisateur Maker Faire France (2011-2016), co-fondateur de Make Me et du Maker Campus. Basé au Grand 8.",role:["Organisateur événements makers","Co-fondateur Make Me"],sources:["Interview JB Le Clec'h","Interview Nicolas Huchet","Interview Hugues Aubin","Interview Bérangère Amiot"],quote:"Le plus grand rassemblement de makers de France."},
-  'a18':{desc:"Co-fondateur de Make Me avec JB Le Clec'h. Ancien partenaire de groupe de rock. Organisent ensemble le Maker Campus, Tech in Vitré, Maker Music Festival.",role:["Co-fondateur Make Me"],sources:["Interview JB Le Clec'h","Interview Nicolas Huchet","Interview Hugues Aubin"]},
-  'a19':{desc:"Fab manageuse du Teaching Lab, FabLab de l'Université de Rennes.",role:["Fab manageuse Teaching Lab"],sources:["Interview Bérangère Amiot"]},
-  'a20':{desc:"Fondateur de l'EduLab à l'Université Rennes 2 en 2017.",role:["Fondateur EduLab Rennes 2"],sources:["Information transmise par Axel Ropert"]},
-  'e14':{desc:"JB Le Clec'h obtient la licence Maker Faire à San Francisco (2011). Première édition à Saint-Malo. Jusqu'à 10 éditions/an en France.",sources:["Interview JB Le Clec'h","Interview Nicolas Huchet","Interview Norbert Friant","Interview Bérangère Amiot"]},
-  'e15':{desc:"Leroy Merlin rachète la licence Maker Faire pour 1M€ (2016). JB perd la licence et crée Make Me en réponse.",sources:["Interview JB Le Clec'h","Interview Nicolas Huchet"]},
-  'e16':{desc:"Après la perte de Maker Faire, JB et Jean-Marc créent le Maker Campus en marque propre. Plus grand rassemblement de makers de France : 600 makers/édition.",sources:["Interview JB Le Clec'h","Interview Hugues Aubin"]},
-  'e17':{desc:"Événement auquel Make Me participe.",sources:["Interview JB Le Clec'h"]},
-  'e18':{desc:"Événement maker organisé par Make Me à Vitré. Les étudiants de l'EduLab y participent régulièrement.",sources:["Interview JB Le Clec'h","Interview Hugues Aubin"]},
-  'l13':{desc:"Lieu culturel à Rennes hébergeant Make Me depuis 4 ans. Lab ouvert au public, concerts, restauration de patrimoine d'art forain.",sources:["Interview JB Le Clec'h"]},
-  'l14':{desc:"Association fondée par Nicolas Huchet et Hugues Aubin, née du projet Bionico. Human Lab dédié aux aides techniques pour personnes en situation de handicap.",sources:["Interview Nicolas Huchet","Interview Hugues Aubin","Interview Erwan Mahé","Interview Norbert Friant"]},
-  'l15':{desc:"Premier FabLab de France, à Toulouse. Modèle centralisé, contre-exemple de la stratégie décentralisée rennaise.",sources:["Interview JB Le Clec'h","Interview Norbert Friant"]},
-  'l16':{desc:"Bâtiment à Rennes hébergeant BUG et espace d'incubation pour My Human Kit avant Askoria.",sources:["Interview Hugues Aubin","Interview Nicolas Huchet","Interview Romain Chefdor"]},
-  'l17':{desc:"Centre de recyclage à Rennes. Partenaire Precious Plastic (recyclage PLA). Découpe laser partagée, réparée par l'Élabo.",sources:["Interview Hugues Aubin","Interview Bérangère Amiot"]},
-  'l18':{desc:"Hackerspace de Rennes, membre du LabFab étendu. Compétences en réparation de machines. Proche du vivier open source.",sources:["Interview Hugues Aubin"]},
-  'm26':{desc:"Évolution du mouvement maker vers la réparation, le low-tech et le design frugal. Portée par Bérangère Amiot et Laurent Flamant."}
+  'm26':{desc:"Évolution du mouvement maker vers la réparation, le low-tech et le design frugal. Portée par Bérangère Amiot et Laurent Flamant. Illustrée par le projet piège à drosophiles de Camille Bisson."}
 };
 
 // ===== STATE =====
 const activeCategories = new Set(['Acteur','Lieu','Événement','Mot-clé']);
-let timeRange = [2009, 2025];
+let timeRange = [2009, 2026];
 let searchQuery = '';
 let selectedNodeId = null;
 let hoveredNodeId = null;
@@ -688,11 +754,6 @@ Object.entries(catConfig).forEach(([key, c], i) => {
     .attr('fill',c.color).attr('opacity',0.18).attr('font-size',14).attr('font-weight',700)
     .attr('letter-spacing',3).text(c.label);
 });
-
-g.append('text').attr('x', W/2).attr('y', H/2).attr('text-anchor','middle')
-  .attr('dominant-baseline','central').attr('fill','#ffffff').attr('opacity',0.06)
-  .attr('font-size',120).attr('font-weight',900).attr('letter-spacing',18)
-  .style('pointer-events','none').text('LabFab');
 
 // Edges
 const edgeGroup = g.append('g');
@@ -952,11 +1013,11 @@ Object.entries(catConfig).forEach(([cat, conf]) => {
   const tw = container.clientWidth - margin.left - margin.right;
   const th = 80 - margin.top - margin.bottom;
 
-  const xScale = d3.scaleLinear().domain([2009, 2025]).range([0, tw]);
+  const xScale = d3.scaleLinear().domain([2009, 2026]).range([0, tw]);
   const tg = tsvg.append('g').attr('transform',`translate(${margin.left},${margin.top})`);
 
   // Axis
-  const axis = d3.axisBottom(xScale).ticks(17).tickFormat(d3.format('d')).tickSize(th);
+  const axis = d3.axisBottom(xScale).ticks(18).tickFormat(d3.format('d')).tickSize(th);
   tg.append('g').attr('class','axis').call(axis).select('.domain').remove();
 
   // Event markers
@@ -985,13 +1046,13 @@ Object.entries(catConfig).forEach(([cat, conf]) => {
       if (selection) {
         timeRange = selection.map(xScale.invert).map(Math.round);
       } else {
-        timeRange = [2009, 2025];
+        timeRange = [2009, 2026];
       }
       updateVisibility();
     });
 
   const brushG = tg.append('g').attr('class','brush').call(brush);
-  brushG.call(brush.move, [xScale(2009), xScale(2025)]);
+  brushG.call(brush.move, [xScale(2009), xScale(2026)]);
 
   // ===== AUTOPLAY =====
   let playing = false;
@@ -1004,7 +1065,7 @@ Object.entries(catConfig).forEach(([cat, conf]) => {
 
   function playTick() {
     playCursor += playStep;
-    if (playCursor >= 2025) {
+    if (playCursor >= 2026) {
       playCursor = 2009;
     }
     brushG.call(brush.move, [xScale(2009), xScale(playCursor)]);
@@ -1027,7 +1088,7 @@ Object.entries(catConfig).forEach(([cat, conf]) => {
     playBtn.classList.remove('playing');
     yearLabel.classList.remove('visible');
     if (playInterval) { clearInterval(playInterval); playInterval = null; }
-    brushG.call(brush.move, [xScale(2009), xScale(2025)]);
+    brushG.call(brush.move, [xScale(2009), xScale(2026)]);
   }
 
   window.togglePlay = function() {
