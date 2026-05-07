@@ -261,6 +261,7 @@ const nodes = [
   {id:'l17',label:'Belle Déchette',cat:'Lieu',size:6,y1:2018,y2:2025},
   {id:'l18',label:'Élabo (hackerspace)',cat:'Lieu',size:6,y1:2015,y2:2025},
   {id:'l19',label:'BUG',cat:'Lieu',size:12,y1:2011,y2:2015},
+  {id:'l20',label:'Fabricarium (Lille)',cat:'Lieu',size:6,y1:2016,y2:2025},
   // === ÉVÉNEMENTS (21) ===
   {id:'e01',label:'Rencontre John Le Jeune (2010)',cat:'Événement',size:14,y1:2010,y2:2010},
   {id:'e02',label:'Création FabLab EESAB (2012)',cat:'Événement',size:18,y1:2012,y2:2012},
@@ -283,6 +284,7 @@ const nodes = [
   {id:'e19',label:'Hackathon Focus Vision MHK (2020)',cat:'Événement',size:8,y1:2020,y2:2020},
   {id:'e20',label:'Projet piège à drosophiles (~2022)',cat:'Événement',size:8,y1:2022,y2:2022},
   {id:'e21',label:'Hackathon plancton (2026)',cat:'Événement',size:8,y1:2026,y2:2026},
+  {id:'e22',label:'Hackathons ArianeGroup (Fabricarium)',cat:'Événement',size:8,y1:2018,y2:2020},
   // === MOTS-CLÉS (26) ===
   {id:'m01',label:'Open source',cat:'Mot-clé',size:16,y1:2010,y2:2025},
   {id:'m02',label:'Communs',cat:'Mot-clé',size:12,y1:2013,y2:2025},
@@ -411,6 +413,11 @@ const edges = [
   {source:'a19',target:'e20',label:'coordonne',w:3},
   {source:'a19',target:'e21',label:'organise',w:3},
   {source:'a01',target:'e21',label:'participe à',w:2},
+  {source:'a15',target:'e22',label:'participe à',w:3},
+  {source:'a03',target:'e22',label:'mentionne',w:1},
+  {source:'e22',target:'l20',label:'se déroule au',w:2},
+  {source:'e22',target:'l14',label:'lié à MHK',w:2},
+  {source:'e22',target:'m12',label:'hackathon',w:2},
   {source:'a21',target:'e06',label:'inspire via InMoov',w:3},
   // Événement → Lieu
   {source:'e01',target:'l05',label:'se déroule à',w:2},
@@ -619,6 +626,8 @@ const details = {
   'e19':{desc:"Hackathon organisé par My Human Kit sur la thématique de la cécité, tenu à Pasteur en 2020. Célia Guye y participe juste après son diplôme à l'EESAB, dans le cadre d'une résidence artistique parallèle. Illustration de la synergie entre makers, designers, patients et chercheurs.",sources:["Interview Célia Guye"],quote:"Cette synergie entre patients — qui ont un savoir expérientiel de la cécité — c'est ça qui était hyper intéressant. — Célia Guye"},
   'e20':{desc:"Conception et fabrication d'un piège à drosophiles asiatiques au Teaching Lab. Le chercheur entomologue d'ECOBIO, formé par Camille Bisson, devient autonome. 100 pièces imprimées en PETG, déployées dans toute la France. Résultat : découverte d'une nouvelle espèce de drosophile asiatique jamais observée en France.",sources:["Interview Camille Bisson"],quote:"Success story complète : formation → autonomie → production → déploiement national → découverte scientifique."},
   'e21':{desc:"Hackathon de deux après-midi au Teaching Lab, organisé par Camille Bisson avec Erwan Vapo et une asso de Marseille. Brassage exceptionnel : étudiants design, étudiants électronique, chercheuse en plancton, ingénieurs pédagogiques, Hugues Aubin, enseignante du secondaire, médiatrice scientifique.",sources:["Interview Camille Bisson"],quote:"Complètement à l'arrache, mais très réussi. — Camille Bisson"},
+  'e22':{desc:"Série de hackathons au Fabricarium (Lille) mêlant étudiants en design (dont Célia Guye, alors en 4e année de DNSEP), ingénieurs d'ArianeGroup et acteurs du handicap. Restitutions théâtralisées chaque soir. Événement déclencheur pour Célia : son basculement d'apprentie maker à actrice du milieu.",sources:["Interview Célia Guye","Interview Nicolas Huchet"],quote:"C'était incroyable d'être avec des ingénieurs où chacun, avec nos compétences, on arrivait à mêler. Même moi qui étais étudiante en design, j'ai mis une pierre à l'édifice. — Célia Guye"},
+  'l20':{desc:"FabLab universitaire situé à Lille. Cadre des hackathons ArianeGroup où Célia Guye a découvert le format hackathon et le milieu du handicap maker.",sources:["Interview Célia Guye"]},
   'm01':{desc:"Philosophie fondatrice du LabFab. Partage du code source et des plans de fabrication. Valeur transmise par John Le Jeune."},
   'm02':{desc:"Ressources partagées gérées collectivement. Concept théorisé par Hugues Aubin pour le LabFab étendu."},
   'm03':{desc:"Culture du logiciel et matériel libre. Valeur fondatrice transmise par John Le Jeune et la communauté Arduino."},
