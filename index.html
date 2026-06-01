@@ -241,7 +241,8 @@ const nodes = [
   {id:'a22',label:'Dale Dougherty',cat:'Acteur',size:8,y1:2011,y2:2016},
   {id:'a23',label:'Sherry Huss',cat:'Acteur',size:6,y1:2011,y2:2025},
   {id:'a24',label:'Marc Gyver',cat:'Acteur',size:6,y1:2014,y2:2025},
-  // === LIEUX (19) ===
+  {id:'a25',label:'Alma',cat:'Acteur',size:12,y1:2018,y2:2026},
+  // === LIEUX (22) ===
   {id:'l01',label:'EESAB',cat:'Lieu',size:16,y1:2012,y2:2025},
   {id:'l02',label:'IMT Atlantique',cat:'Lieu',size:12,y1:2009,y2:2025},
   {id:'l03',label:'Rennes Métropole',cat:'Lieu',size:14,y1:2012,y2:2025},
@@ -262,7 +263,9 @@ const nodes = [
   {id:'l18',label:'Élabo (hackerspace)',cat:'Lieu',size:6,y1:2015,y2:2025},
   {id:'l19',label:'BUG',cat:'Lieu',size:12,y1:2011,y2:2015},
   {id:'l20',label:'Fabricarium (Lille)',cat:'Lieu',size:6,y1:2016,y2:2025},
-  // === ÉVÉNEMENTS (21) ===
+  {id:'l21',label:'EduLab Pasteur',cat:'Lieu',size:12,y1:2021,y2:2026},
+  {id:'l22',label:'Ptit Lab',cat:'Lieu',size:6,y1:2020,y2:2026},
+  // === ÉVÉNEMENTS (23) ===
   {id:'e01',label:'Rencontre John Le Jeune (2010)',cat:'Événement',size:14,y1:2010,y2:2010},
   {id:'e02',label:'Création FabLab EESAB (2012)',cat:'Événement',size:18,y1:2012,y2:2012},
   {id:'e03',label:'Vivacité (2012)',cat:'Événement',size:14,y1:2012,y2:2012},
@@ -285,7 +288,8 @@ const nodes = [
   {id:'e20',label:'Projet piège à drosophiles (~2022)',cat:'Événement',size:8,y1:2022,y2:2022},
   {id:'e21',label:'Hackathon plancton (2026)',cat:'Événement',size:8,y1:2026,y2:2026},
   {id:'e22',label:'Hackathons ArianeGroup (Fabricarium)',cat:'Événement',size:8,y1:2018,y2:2020},
-  // === MOTS-CLÉS (26) ===
+  {id:'e23',label:'Ouverture EduLab Pasteur (2021)',cat:'Événement',size:10,y1:2021,y2:2021},
+  // === MOTS-CLÉS (28) ===
   {id:'m01',label:'Open source',cat:'Mot-clé',size:16,y1:2010,y2:2025},
   {id:'m02',label:'Communs',cat:'Mot-clé',size:12,y1:2013,y2:2025},
   {id:'m03',label:'Libre',cat:'Mot-clé',size:12,y1:2010,y2:2025},
@@ -311,7 +315,9 @@ const nodes = [
   {id:'m23',label:'Bénévolat',cat:'Mot-clé',size:8,y1:2012,y2:2025},
   {id:'m24',label:'Parité',cat:'Mot-clé',size:6,y1:2017,y2:2025},
   {id:'m25',label:'Encapacitation',cat:'Mot-clé',size:8,y1:2015,y2:2025},
-  {id:'m26',label:'Transition écologique',cat:'Mot-clé',size:10,y1:2018,y2:2025}
+  {id:'m26',label:'Transition écologique',cat:'Mot-clé',size:10,y1:2018,y2:2025},
+  {id:'m27',label:'Inclusion sociale',cat:'Mot-clé',size:10,y1:2014,y2:2026},
+  {id:'m28',label:'Nature & numérique',cat:'Mot-clé',size:8,y1:2021,y2:2026}
 ];
 
 const edges = [
@@ -355,6 +361,9 @@ const edges = [
   {source:'a22',target:'a23',label:'co-fonde avec',w:2},
   {source:'a23',target:'a17',label:'amie proche de',w:2},
   {source:'a24',target:'a17',label:'cité par',w:2},
+  {source:'a14',target:'a25',label:'mentor / 2 lettres de reco',w:3},
+  {source:'a25',target:'a14',label:'élève de',w:3},
+  {source:'a25',target:'a19',label:'lien Teaching Lab / Immersia',w:1},
   // Acteur → Événement
   {source:'a01',target:'e01',label:'participe à',w:3},
   {source:'a08',target:'e01',label:'participe à',w:3},
@@ -419,6 +428,7 @@ const edges = [
   {source:'e22',target:'l14',label:'lié à MHK',w:2},
   {source:'e22',target:'m12',label:'hackathon',w:2},
   {source:'a21',target:'e06',label:'inspire via InMoov',w:3},
+  {source:'a25',target:'e23',label:'membre de l\'équipe',w:2},
   // Événement → Lieu
   {source:'e01',target:'l05',label:'se déroule à',w:2},
   {source:'e01',target:'l08',label:'se déroule à',w:2},
@@ -438,6 +448,9 @@ const edges = [
   {source:'e20',target:'m09',label:'communs',w:2},
   {source:'e21',target:'l12',label:'se déroule au',w:2},
   {source:'e21',target:'m22',label:'illustre',w:2},
+  {source:'e23',target:'l21',label:'ouvre',w:3},
+  {source:'e23',target:'l03',label:'porté par',w:2},
+  {source:'e19',target:'l21',label:'se déroule à',w:2},
   // Acteur → Lieu
   {source:'a05',target:'l01',label:'travaille à',w:3},
   {source:'a02',target:'l02',label:'travaille à',w:3},
@@ -481,6 +494,12 @@ const edges = [
   {source:'a09',target:'l19',label:'dirige',w:3},
   {source:'l19',target:'e03',label:'organise',w:3},
   {source:'a16',target:'l19',label:'découvre réseau via',w:2},
+  {source:'a25',target:'l07',label:'usagère puis monitrice',w:3},
+  {source:'a25',target:'l21',label:'facilitatrice à',w:3},
+  {source:'a25',target:'l22',label:'fréquente',w:1},
+  {source:'a25',target:'l12',label:'fréquente comme artiste',w:1},
+  {source:'a15',target:'l21',label:'résidence artistique 2020',w:2},
+  {source:'l21',target:'l03',label:'service municipal',w:3},
 
   // Acteur → Mot-clé
   {source:'a01',target:'m05',label:'porte',w:3},
@@ -539,6 +558,16 @@ const edges = [
   {source:'a21',target:'m01',label:'pratique',w:3},
   {source:'a24',target:'m22',label:'incarne',w:2},
   {source:'a24',target:'m07',label:'incarne',w:2},
+  {source:'a25',target:'m11',label:'exerce (facilitatrice)',w:3},
+  {source:'a25',target:'m22',label:'pratique',w:2},
+  {source:'a25',target:'m07',label:'incarne',w:2},
+  {source:'a25',target:'m27',label:'milite pour',w:3},
+  {source:'a25',target:'m28',label:'anime',w:2},
+  {source:'l21',target:'m27',label:'incarne',w:3},
+  {source:'l21',target:'m28',label:'incarne',w:3},
+  {source:'l21',target:'m22',label:'pratique',w:2},
+  {source:'l21',target:'m07',label:'promeut',w:2},
+  {source:'l14',target:'m27',label:'incarne',w:2},
   // Mot-clé → Mot-clé
   {source:'m01',target:'m02',label:'proche de',w:2},
   {source:'m01',target:'m03',label:'proche de',w:3},
@@ -557,7 +586,11 @@ const edges = [
   {source:'m21',target:'m08',label:'proche de',w:2},
   {source:'m23',target:'m24',label:'proche de',w:1},
   {source:'m26',target:'m08',label:'lié à',w:2},
-  {source:'m26',target:'m14',label:'lié à',w:2}
+  {source:'m26',target:'m14',label:'lié à',w:2},
+  {source:'m27',target:'m06',label:'proche de',w:2},
+  {source:'m27',target:'m07',label:'proche de',w:2},
+  {source:'m28',target:'m26',label:'proche de',w:2},
+  {source:'m28',target:'m22',label:'proche de',w:1}
 ];
 
 // ===== NODE DETAILS (for panel) =====
@@ -575,7 +608,7 @@ const details = {
   'a11':{desc:"Habitant rennais, pionnier du low-tech. Seul citoyen non-institutionnel autour de la table fondatrice du LabFab.",role:["Seul habitant à la table fondatrice","Pionnier du low-tech dans le réseau"],sources:["Cité dans 3/7 interviews"]},
   'a12':{desc:"Promoteur international du concept de Fab City. Son TEDx dénonçant le modèle PITO (Product In, Trash Out) a été un tournant dans la vision de Hugues Aubin.",role:["Inspiration directe du concept de LabFab étendu","TEDx fondateur sur la Fab City et le modèle PITO"],sources:["Cité dans 1/7 interviews"]},
   'a13':{desc:"Membre actif du LabFab lié à l'IMT. Voyages internationaux avec Nicolas Huchet (Russie). Impliqué dans des projets européens.",role:["Voyages internationaux pour le LabFab","Projets européens avec le RFF Lab"],sources:["Cité dans 2/7 interviews"]},
-  'a14':{desc:"Fab manager à l'EduLab de l'Université Rennes 2. CDI. Modèle d'accompagnement humain, de stabilité et de disponibilité.",role:["Fab manager de l'EduLab Rennes 2","Co-président de l'association LabFab (avec Bérangère)","Pilier de stabilité du réseau"],sources:["Cité dans 3/7 interviews"],quote:"« Si on avait des gens comme ça, ça serait fantastique. Tony, c'est des gens précieux. » — Erwan Mahé"},
+  'a14':{desc:"Fab manager à l'EduLab de l'Université Rennes 2. CDI. Modèle d'accompagnement humain, de stabilité et de disponibilité. Figure tutélaire pour Alma sur 10 ans : deux lettres de recommandation (master création numérique, puis poste à l'EduLab Pasteur), recrutement direct comme monitrice sans entretien.",role:["Fab manager de l'EduLab Rennes 2","Co-président de l'association LabFab (avec Bérangère)","Pilier de stabilité du réseau","Mentor et catalyseur de trajectoires (cas Alma)"],sources:["Cité dans 4/8 interviews"],quote:"« Si on avait des gens comme ça, ça serait fantastique. Tony, c'est des gens précieux. » — Erwan Mahé"},
   'a15':{desc:"Designer de formation (DNSEP EESAB, 2020). Fab manager à l'EESAB. Parcours centré sur le croisement FabLab / handicap : stages Albi Lab et ReHab-Lab, hackathons My Human Kit (Focus Vision 2020), asso Le Polès à Paris. Portée par des valeurs d'empowerment, d'inclusion et d'humanisme.",role:["Fab manager du LabFab EESAB","Parcours FabLab / handicap (My Human Kit, Studio Stimuli)","Expérience Le Polès : remobilisation de jeunes déscolarisés","Mobilité professionnelle au Portugal (RFFLabs)"],sources:["Interview directe","Citée dans Interview Erwan Mahé"],quote:"Tout le monde est impliqué : même si tu n'es pas l'expert, tu te sens intégré parce que tu es porteur de projet."},
   'a16':{desc:"Maker venu du TMP/Lab d'Ivry-sur-Seine, arrivé à Rennes en juillet 2011. Connecté au projet LabFab via BUG (Anthony Cocherie). Participe à l'installation du FabLab EESAB. Co-organise l'ouverture du premier FabLab du Vietnam à Huế (2013). Fab Manager du Teaching Lab (UBL) à partir de 2016.",role:["Aide à l'installation du FabLab EESAB (2011-2012)","Workshop inaugural au Vietnam — ouverture du 1er FabLab à Huế (2013)","Fab Manager du Teaching Lab (SPI, Université Bretagne-Loire)","Organisateur du Lab Tour dans les universités UBL","Accompagnement UVCI (Côte d'Ivoire) pour créer un FabLab"],sources:["Interview directe"]},
   'a17':{desc:"Ancien étudiant master TEF, organisateur Maker Faire France (2011-2016), co-fondateur de Make Me et du Maker Campus. Basé au Grand 8.",role:["Organisateur Maker Faire France (10 éditions)","Co-fondateur Make Me avec Jean-Marc","Créateur du Maker Campus (plus grand rassemblement de makers de France)"],sources:["Interview directe","Cité dans plusieurs interviews"],quote:"En 2012 je trouvais la stratégie décentralisée de Rennes dommage. En 2026, je trouve que c'était très très bien. 14 ans après, je vois toutes ces graines qui ont germé."},
@@ -586,13 +619,14 @@ const details = {
   'a22':{desc:"Fondateur de Maker Faire et du magazine Make. Figure fondatrice du mouvement maker mondial. Rencontré par JB Le Clec'h à San Francisco en 2011.",role:["Fondateur de Maker Faire","Influence mondiale sur le mouvement maker"],sources:["Interview JB Le Clec'h"]},
   'a23':{desc:"Co-fondatrice de Maker Faire avec Dale Dougherty. Amie proche de JB Le Clec'h. A observé la spécificité française du design dans le mouvement maker.",role:["Co-fondatrice de Maker Faire","Observatrice internationale du mouvement maker"],sources:["Interview JB Le Clec'h"],quote:"Les makers français pensent le design dès le départ, contrairement aux autres pays."},
   'a24':{desc:"Jeune maker autodidacte (pseudo Marc Gyver). Fabrique des voitures électriques et des vélos, activité devenue son business. Illustration de la reconnaissance des compétences hors diplôme — question de recherche initiale de JB Le Clec'h.",role:["Maker autodidacte","Figure de l'empowerment par le faire"],sources:["Interview JB Le Clec'h"]},
+  'a25':{desc:"Ancienne étudiante de l'Université Rennes 2 (2015-2023), passée par le master recherche en arts plastiques puis le master création numérique (1ʳᵉ génération). Facilitatrice numérique à l'EduLab Pasteur depuis septembre 2024. Parcours fablabien en 3 phases : usagère (2018), monitrice étudiante, facilitatrice à Pasteur — toujours catalysé par Tony Vanpoucke (2 lettres de recommandation). Pratique artistique parallèle : artiste-auteur indépendante, collaborations Immersia / IRISA / INSA.",role:["Facilitatrice numérique à l'EduLab Pasteur (depuis 2024)","Ex-monitrice à l'EduLab Rennes 2 (master création numérique)","Artiste-auteur indépendante (Immersia, IRISA, INSA)","Médiation enfance et croisement nature & numérique"],sources:["Interview directe"],quote:"Un lieu qui a d'un coup poussé comme un champignon au milieu de mon campus a quand même finalement pas mal changé ma trajectoire de vie. — Alma"},
   'l01':{desc:"École Européenne Supérieure d'Art de Bretagne. Premier site du FabLab rennais depuis février 2012. Ateliers sur tables de ping-pong."},
   'l02':{desc:"Institut Mines-Télécom. Lieu de travail de Baptiste Gaultier, site de production des MOOC FabLab."},
   'l03':{desc:"Collectivité territoriale. Portage institutionnel du LabFab par Norbert Friant puis Romain Chefdor."},
   'l04':{desc:"Espace de coworking et networking numérique à Rennes. Lieu de rencontres informelles au début du LabFab."},
   'l05':{desc:"Équipement culturel rennais. Lieu de la rencontre fondatrice entre Hugues Aubin et John Le Jeune (~2010)."},
   'l06':{desc:"Salle de musiques actuelles. Lieu du festival Jardin Numérique (2011)."},
-  'l07':{desc:"FabLab pédagogique de l'Université Rennes 2. Fondé par Pascal Plantard en 2017. Animé par Tony Vanpoucke en CDI."},
+  'l07':{desc:"FabLab pédagogique de l'Université Rennes 2 (bâtiment T, campus Villejean). Fondé par Pascal Plantard en 2017. Animé par Tony Vanpoucke en CDI. Vivier de monitrices et moniteurs étudiants (notamment depuis la 1ʳᵉ promotion du master création numérique). Vivier de futurs facilitateurs du réseau : Alma y est passée comme usagère puis monitrice avant de devenir facilitatrice à l'EduLab Pasteur. Adaptation pendant le confinement Covid : initiations Arduino en visio sur Tinkercad par Tony."},
   'l08':{desc:"Centre commercial rennais. Scène mythique du TV-B-Gone avec John Le Jeune et Hugues Aubin."},
   'l09':{desc:"Massachusetts Institute of Technology. Référence mondiale des FabLabs (Neil Gershenfeld). Visité par Baptiste et Nicolas."},
   'l10':{desc:"Rassemblement national des FabLabs. AG constitutive du RFF Lab en 2015."},
@@ -623,11 +657,14 @@ const details = {
   'e16':{desc:"Après la perte de Maker Faire, JB et Jean-Marc créent le Maker Campus en marque propre. Plus grand rassemblement de makers de France : 600 makers/édition.",sources:["Interview JB Le Clec'h","Interview Hugues Aubin"]},
   'e17':{desc:"Événement auquel Make Me participe.",sources:["Interview JB Le Clec'h"]},
   'e18':{desc:"Événement maker organisé par Make Me à Vitré. Les étudiants de l'EduLab y participent régulièrement.",sources:["Interview JB Le Clec'h","Interview Hugues Aubin"]},
-  'e19':{desc:"Hackathon organisé par My Human Kit sur la thématique de la cécité, tenu à Pasteur en 2020. Célia Guye y participe juste après son diplôme à l'EESAB, dans le cadre d'une résidence artistique parallèle. Illustration de la synergie entre makers, designers, patients et chercheurs.",sources:["Interview Célia Guye"],quote:"Cette synergie entre patients — qui ont un savoir expérientiel de la cécité — c'est ça qui était hyper intéressant. — Célia Guye"},
+  'e19':{desc:"Hackathon organisé par My Human Kit sur la thématique de la cécité, tenu au bâtiment Pasteur (futur EduLab Pasteur) en 2020, en plein Covid. Célia Guye y participe juste après son diplôme à l'EESAB, dans le cadre d'une résidence artistique parallèle. Illustration de la synergie entre makers, designers, patients et chercheurs.",sources:["Interview Célia Guye"],quote:"Cette synergie entre patients — qui ont un savoir expérientiel de la cécité — c'est ça qui était hyper intéressant. — Célia Guye"},
   'e20':{desc:"Conception et fabrication d'un piège à drosophiles asiatiques au Teaching Lab. Le chercheur entomologue d'ECOBIO, formé par Camille Bisson, devient autonome. 100 pièces imprimées en PETG, déployées dans toute la France. Résultat : découverte d'une nouvelle espèce de drosophile asiatique jamais observée en France.",sources:["Interview Camille Bisson"],quote:"Success story complète : formation → autonomie → production → déploiement national → découverte scientifique."},
   'e21':{desc:"Hackathon de deux après-midi au Teaching Lab, organisé par Camille Bisson avec Erwan Vapo et une asso de Marseille. Brassage exceptionnel : étudiants design, étudiants électronique, chercheuse en plancton, ingénieurs pédagogiques, Hugues Aubin, enseignante du secondaire, médiatrice scientifique.",sources:["Interview Camille Bisson"],quote:"Complètement à l'arrache, mais très réussi. — Camille Bisson"},
   'e22':{desc:"Série de hackathons au Fabricarium (Lille) mêlant étudiants en design (dont Célia Guye, alors en 4e année de DNSEP), ingénieurs d'ArianeGroup et acteurs du handicap. Restitutions théâtralisées chaque soir. Événement déclencheur pour Célia : son basculement d'apprentie maker à actrice du milieu.",sources:["Interview Célia Guye","Interview Nicolas Huchet"],quote:"C'était incroyable d'être avec des ingénieurs où chacun, avec nos compétences, on arrivait à mêler. Même moi qui étais étudiante en design, j'ai mis une pierre à l'édifice. — Célia Guye"},
+  'e23':{desc:"Ouverture du FabLab municipal de la ville de Rennes au sein du bâtiment Pasteur réhabilité (ancienne école dentaire). Lieu rattaché à la direction éducation enfance, gratuité totale. À l'ouverture, le lieu est encore très peu équipé (Alma s'y rend pour un POCL et le décrit comme « vide même »). Célia Guye y avait fait une résidence artistique en 2020 pendant le Covid, en parallèle du hackathon Focus Vision My Human Kit. Marque le démarrage du nœud Pasteur dans le réseau LabFab.",sources:["Interview Alma","Interview Célia Guye"]},
   'l20':{desc:"FabLab universitaire situé à Lille. Cadre des hackathons ArianeGroup où Célia Guye a découvert le format hackathon et le milieu du handicap maker.",sources:["Interview Célia Guye"]},
+  'l21':{desc:"FabLab municipal de la ville de Rennes ouvert en 2021 dans le bâtiment Pasteur réhabilité (ancienne école dentaire de Rennes). Service municipal de la direction éducation enfance. Gratuité totale. Public principal : maternelle moyenne section → CM2. Équipe : 3 facilitateurs et 1 responsable, pas de fab manager. Brassement social fort (quartiers prioritaires, précarité). Axe pédagogique singulier : croisement Plan d'éducation à la nature × Plan numérique éducatif local. Dispositifs : Sylvestre Orchestre, risographie, podcasts.",sources:["Interview Alma","Interview Célia Guye"]},
+  'l22':{desc:"FabLab mentionné par Alma sous le nom d'usage « FabLab de Sarah » (orthographe approximative : « petit lave », « Tiny Lab »). Information très partielle dans le corpus.",sources:["Interview Alma"]},
   'm01':{desc:"Philosophie fondatrice du LabFab. Partage du code source et des plans de fabrication. Valeur transmise par John Le Jeune."},
   'm02':{desc:"Ressources partagées gérées collectivement. Concept théorisé par Hugues Aubin pour le LabFab étendu."},
   'm03':{desc:"Culture du logiciel et matériel libre. Valeur fondatrice transmise par John Le Jeune et la communauté Arduino."},
@@ -653,7 +690,9 @@ const details = {
   'm23':{desc:"Engagement bénévole. Bérangère Amiot est la seule bénévole active du réseau LabFab."},
   'm24':{desc:"Enjeu de représentation hommes/femmes dans les FabLabs. Porté par Bérangère Amiot."},
   'm25':{desc:"Processus d'acquisition de compétences et de confiance par la pratique. Proche de l'empowerment."},
-  'm26':{desc:"Évolution du mouvement maker vers la réparation, le low-tech et le design frugal. Portée par Bérangère Amiot et Laurent Flamant. Illustrée par le projet piège à drosophiles de Camille Bisson."}
+  'm26':{desc:"Évolution du mouvement maker vers la réparation, le low-tech et le design frugal. Portée par Bérangère Amiot et Laurent Flamant. Illustrée par le projet piège à drosophiles de Camille Bisson."},
+  'm27':{desc:"Accessibilité numérique et accueil de publics fragiles : quartiers prioritaires, précarité, personnes à la rue. Incarnée par l'EduLab Pasteur (gratuité, brassement social) et par My Human Kit (handicap). Position militante revendiquée par Alma."},
+  'm28':{desc:"Articulation délibérée entre éducation à la nature et éducation au numérique pour s'opposer à leur opposition fréquente. Axe pédagogique de l'EduLab Pasteur (croisement Plan d'éducation à la nature × Plan numérique éducatif local de la ville de Rennes). Dispositifs : Sylvestre Orchestre (faire chanter les plantes), risographie avec matériaux ramassés, podcasts en extérieur."}
 };
 
 // ===== STATE =====
