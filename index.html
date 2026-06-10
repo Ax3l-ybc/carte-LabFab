@@ -131,6 +131,7 @@ svg#main-svg{display:block;position:absolute;top:56px;left:0;right:0;bottom:80px
   background:rgba(10,10,30,0.94);color:#fff;padding:10px 14px;
   border-radius:8px;font-size:13px;max-width:300px;
   border:1px solid rgba(255,255,255,0.12);
+  border-left:3px solid rgba(255,255,255,0.12);
   box-shadow:0 8px 32px rgba(0,0,0,0.5);
   transition:opacity 0.12s;
 }
@@ -142,6 +143,10 @@ svg#main-svg{display:block;position:absolute;top:56px;left:0;right:0;bottom:80px
 /* === ANIMATIONS === */
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
 .fade-in{animation:fadeIn 0.4s ease-out;}
+@keyframes ringPulse{0%,100%{stroke-opacity:0.65;stroke-width:2;}50%{stroke-opacity:0.25;stroke-width:3.5;}}
+.ring-pulse{animation:ringPulse 2s ease-in-out infinite;}
+@keyframes twinkle{0%,100%{opacity:0.06;}50%{opacity:0.32;}}
+.star-twinkle{animation:twinkle 4.5s ease-in-out infinite;}
 
 /* === 3D CONTAINER === */
 #three-container{
@@ -744,6 +749,20 @@ function nodeOpacity(n) {
   return 0.85;
 }
 
+// Étiquettes adaptatives : les petits nœuds ne sont étiquetés qu'en zoom rapproché
+function labelZoomFactor(d) {
+  if (d.size >= 14) return 1;
+  if (d.size >= 10) return zoomK >= 0.65 ? 1 : 0;
+  return zoomK >= 1.1 ? 1 : 0;
+}
+
+function labelOpacity(d) {
+  const op = nodeOpacity(d);
+  const base = op > 0.5 ? 0.75 : op > 0.1 ? op * 0.8 : 0;
+  if (op === 1) return base; // nœud en focus (survol/sélection) : toujours lisible
+  return base * labelZoomFactor(d);
+}
+
 function edgeOpacity(e) {
   const sid = nid(e.source), tid = nid(e.target);
   const sn = nodeMap[sid], tn = nodeMap[tid];
@@ -784,8 +803,27 @@ nodes.forEach(n => {
 const svg = d3.select('#main-svg').attr('width', W).attr('height', H);
 const g = svg.append('g');
 
-const zoom = d3.zoom().scaleExtent([0.2, 5]).on('zoom', e => g.attr('transform', e.transform));
+let zoomK = 1;
+const zoom = d3.zoom().scaleExtent([0.2, 5]).on('zoom', e => {
+  g.attr('transform', e.transform);
+  const k = e.transform.k;
+  if (Math.abs(k - zoomK) > 0.04) {
+    zoomK = k;
+    labels.attr('opacity', d => labelOpacity(d));
+  } else {
+    zoomK = k;
+  }
+});
 svg.call(zoom);
+
+// Fond étoilé — fixe (hors zoom), statique sauf 1 étoile sur 6 qui scintille en CSS
+const starGroup = svg.insert('g', 'g').attr('pointer-events','none');
+starGroup.selectAll('circle').data(d3.range(140)).join('circle')
+  .attr('cx', () => Math.random()*W).attr('cy', () => Math.random()*H)
+  .attr('r', () => 0.4 + Math.random()*1.1)
+  .attr('fill','#fff').attr('opacity', () => 0.05 + Math.random()*0.2)
+  .attr('class', (d,i) => i%6===0 ? 'star-twinkle' : null)
+  .style('animation-delay', (d,i) => i%6===0 ? ((i%30)*0.35)+'s' : null);
 window.zoomIn = () => svg.transition().duration(300).call(zoom.scaleBy, 1.4);
 window.zoomOut = () => svg.transition().duration(300).call(zoom.scaleBy, 0.7);
 window.resetZoom = () => svg.transition().duration(400).call(zoom.transform, d3.zoomIdentity);
@@ -812,7 +850,8 @@ Object.entries(catConfig).forEach(([key, c], i) => {
 
 // Edges
 const edgeGroup = g.append('g');
-const edgeLines = edgeGroup.selectAll('line').data(edges).join('line')
+const edgeLines = edgeGroup.selectAll('path').data(edges).join('path')
+  .attr('fill','none').attr('stroke-linecap','round')
   .attr('stroke','#fff').attr('stroke-opacity',0.07).attr('stroke-width',d => d.w*0.5);
 
 // Node group
@@ -841,6 +880,8 @@ const labelGroup = g.append('g');
 const labels = labelGroup.selectAll('text').data(nodes).join('text')
   .text(d => d.label)
   .attr('fill','#fff').attr('font-size',d => Math.max(9, d.size*0.55))
+  .attr('paint-order','stroke').attr('stroke','#0f0f1a')
+  .attr('stroke-width',2.5).attr('stroke-linejoin','round')
   .attr('text-anchor','middle').attr('dy',d => d.size*0.7+13)
   .attr('opacity',0.65).attr('pointer-events','none');
 
@@ -858,15 +899,28 @@ const simulation = d3.forceSimulation(nodes)
   .on('tick', tick);
 
 function tick() {
-  edgeLines
-    .attr('x1',d => (nodeMap[nid(d.source)]||d.source).x)
-    .attr('y1',d => (nodeMap[nid(d.source)]||d.source).y)
-    .attr('x2',d => (nodeMap[nid(d.target)]||d.target).x)
-    .attr('y2',d => (nodeMap[nid(d.target)]||d.target).y);
+  edgeLines.attr('d', d => {
+    const s = nodeMap[nid(d.source)]||d.source, t = nodeMap[nid(d.target)]||d.target;
+    const mx = (s.x + t.x)/2 - (t.y - s.y)*0.12;
+    const my = (s.y + t.y)/2 + (t.x - s.x)*0.12;
+    return `M${s.x},${s.y} Q${mx},${my} ${t.x},${t.y}`;
+  });
   nodeCircles.attr('cx',d=>d.x).attr('cy',d=>d.y);
   nodeGlow.attr('cx',d=>d.x).attr('cy',d=>d.y);
   nodeRing.attr('cx',d=>d.x).attr('cy',d=>d.y);
   labels.attr('x',d=>d.x).attr('y',d=>d.y);
+}
+
+// Pop d'apparition d'un nœud (lecture automatique de la timeline)
+function popNode(id) {
+  nodeCircles.filter(d => d.id === id)
+    .attr('r', d => d.size*0.12)
+    .transition('pop').duration(650).ease(d3.easeBackOut.overshoot(2.4))
+    .attr('r', d => d.size*0.7);
+  nodeGlow.filter(d => d.id === id)
+    .attr('fill-opacity', 0.5)
+    .transition('popglow').duration(950).ease(d3.easeCubicOut)
+    .attr('fill-opacity', 0);
 }
 
 // Drag
@@ -892,15 +946,13 @@ function updateVisibility() {
     .attr('fill-opacity',d => nodeOpacity(d))
     .attr('pointer-events',d => isNodeVisible(d) ? 'all' : 'none');
   labels.transition().duration(250)
-    .attr('opacity',d => {
-      const op = nodeOpacity(d);
-      return op > 0.5 ? 0.75 : op > 0.1 ? op * 0.8 : 0;
-    });
+    .attr('opacity',d => labelOpacity(d));
   edgeLines.transition().duration(250)
     .attr('stroke-opacity',d => edgeOpacity(d))
     .attr('stroke',d => edgeColor(d));
   nodeGlow.attr('fill-opacity',d => d.id===hoveredNodeId ? 0.15 : 0);
-  nodeRing.attr('stroke-opacity',d => d.id===selectedNodeId ? 0.6 : 0);
+  nodeRing.attr('stroke-opacity',d => d.id===selectedNodeId ? 0.6 : 0)
+    .classed('ring-pulse', d => d.id===selectedNodeId);
   // 3D update
   if (mode3D) update3DVisibility();
 }
@@ -955,6 +1007,7 @@ nodeCircles.on('mouseenter',(event,d) => {
   const more = adjacency[d.id].length > 6 ? `<br><i>+ ${adjacency[d.id].length-6} autres</i>` : '';
   const descHtml = det.desc ? `<div class="t-desc">${det.desc.substring(0,100)}…</div>` : '';
   tooltip.innerHTML = `<div class="t-cat">${d.cat} · ${d.y1}${d.y1!==d.y2?'–'+d.y2:''}</div><div class="t-name">${d.label}</div>${descHtml}<div class="t-links">${links}${more}</div>`;
+  tooltip.style.borderLeftColor = catConfig[d.cat].color;
   tooltip.style.opacity = 1;
 })
 .on('mousemove',event => {
@@ -1087,6 +1140,7 @@ Object.entries(catConfig).forEach(([cat, conf]) => {
     .attr('cursor','pointer')
     .on('mouseenter', (event,d) => {
       tooltip.innerHTML = `<div class="t-name">${d.label}</div>`;
+      tooltip.style.borderLeftColor = catConfig['Événement'].color;
       tooltip.style.opacity = 1;
       tooltip.style.left = (event.pageX+10)+'px';
       tooltip.style.top = (event.pageY-40)+'px';
@@ -1118,13 +1172,22 @@ Object.entries(catConfig).forEach(([cat, conf]) => {
   const playBtn = document.getElementById('play-btn');
   const yearLabel = document.getElementById('timeline-year');
 
+  let bornSet = new Set();
   function playTick() {
     playCursor += playStep;
     if (playCursor >= 2026) {
       playCursor = 2009;
+      bornSet = new Set();
     }
     brushG.call(brush.move, [xScale(2009), xScale(playCursor)]);
     yearLabel.textContent = Math.floor(playCursor);
+    // Pop des nœuds qui « naissent » dans la période courante
+    nodes.forEach(n => {
+      if (!bornSet.has(n.id) && isNodeVisible(n)) {
+        bornSet.add(n.id);
+        if (n.y1 > 2009) popNode(n.id);
+      }
+    });
   }
 
   function startPlay() {
@@ -1133,6 +1196,7 @@ Object.entries(catConfig).forEach(([cat, conf]) => {
     playBtn.classList.add('playing');
     yearLabel.classList.add('visible');
     playCursor = 2009;
+    bornSet = new Set();
     playTick();
     playInterval = setInterval(playTick, playSpeed);
   }
@@ -1168,6 +1232,7 @@ document.addEventListener('keydown', e => {
 window.addEventListener('resize', () => {
   updateDimensions();
   svg.attr('width', W).attr('height', H);
+  starGroup.selectAll('circle').attr('cx', () => Math.random()*W).attr('cy', () => Math.random()*H);
   simulation.force('x', d3.forceX(d => W/2 + catConfig[d.cat].cx * W).strength(0.14));
   simulation.force('y', d3.forceY(d => H/2 + catConfig[d.cat].cy * H).strength(0.14));
   simulation.alpha(0.3).restart();
