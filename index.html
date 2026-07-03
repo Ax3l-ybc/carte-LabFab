@@ -210,6 +210,12 @@ svg#main-svg{display:block;position:absolute;top:56px;left:0;right:0;bottom:80px
 <script src="https://d3js.org/d3.v7.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/CopyShader.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/LuminosityHighPassShader.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/ShaderPass.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/EffectComposer.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/RenderPass.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/UnrealBloomPass.js"></script>
 <script>
 // ===== CONFIGURATION =====
 const catConfig = {
@@ -1017,6 +1023,16 @@ let edgeLines3D;
 let labelSprites3D = [];
 let animFrameId;
 let idleTimer3D;
+let bloomComposer, bloomPass, clock3D, introStart = null;
+let edgeData3D = [];
+let _halo3D = null;
+const SEG3D = 8;
+const catAnchor3D = {
+  'Acteur':    [-190,  130,   70],
+  'Lieu':      [-150, -160,  -90],
+  'Événement': [ 200,  120,  -80],
+  'Mot-clé':   [ 160, -140,  110]
+};
 
 // ===== MASTER UPDATE =====
 function updateVisibility() {
@@ -1038,36 +1054,21 @@ function updateVisibility() {
 
 function update3DVisibility() {
   if (!threeRenderer || !nodeMeshes3D.length) return;
-  // Nodes
+  // Nodes : opacité + intensité lumineuse selon le filtre
   nodes.forEach((n, i) => {
     const vis = isNodeVisible(n);
     const mesh = nodeMeshes3D[i];
-    mesh.material.opacity = vis ? 0.92 : 0.03;
-    mesh.material.needsUpdate = true;
-    if (mesh.children[0]) mesh.children[0].material.opacity = vis ? 0.07 : 0;
+    mesh.material.opacity = vis ? 0.95 : 0.04;
+    mesh.material.emissiveIntensity = vis ? mesh.userData.emI : 0.05;
+    if (mesh.children[0]) mesh.children[0].material.opacity = vis ? 0.55 : 0;
   });
-  // Edges — collapse hidden edges to zero-length
-  const pos = edgeLines3D.geometry.attributes.position.array;
-  let idx = 0;
-  edges.forEach(e => {
-    const si = nodes.findIndex(n => n.id === nid(e.source));
-    const ti = nodes.findIndex(n => n.id === nid(e.target));
-    const sVis = si >= 0 && isNodeVisible(nodes[si]);
-    const tVis = ti >= 0 && isNodeVisible(nodes[ti]);
-    if (sVis && tVis) {
-      const s = nodeMeshes3D[si].position, t = nodeMeshes3D[ti].position;
-      pos[idx]=s.x; pos[idx+1]=s.y; pos[idx+2]=s.z;
-      pos[idx+3]=t.x; pos[idx+4]=t.y; pos[idx+5]=t.z;
-    } else {
-      pos[idx]=pos[idx+1]=pos[idx+2]=pos[idx+3]=pos[idx+4]=pos[idx+5]=0;
-    }
-    idx += 6;
+  // Edges : flag de visibilité (le tracé courbe est recalculé dans updateEdges3D)
+  edgeData3D.forEach(ed => {
+    ed.vis = isNodeVisible(nodes[ed.si]) && isNodeVisible(nodes[ed.ti]);
   });
-  edgeLines3D.geometry.attributes.position.needsUpdate = true;
   // Labels
   labelSprites3D.forEach(sprite => {
-    const ni = sprite.userData.nodeIdx;
-    sprite.visible = isNodeVisible(nodes[ni]);
+    sprite.visible = isNodeVisible(nodes[sprite.userData.nodeIdx]);
   });
 }
 
@@ -1319,27 +1320,87 @@ window.addEventListener('resize', () => {
     threeCamera.aspect = W / H;
     threeCamera.updateProjectionMatrix();
     threeRenderer.setSize(W, H);
+    if (bloomComposer) bloomComposer.setSize(W, H);
   }
 });
 
 // ===== 3D MODE =====
+// Layout 3D organique : relaxation de forces (répulsion + ressorts + ancres par catégorie)
+function compute3DLayout() {
+  const N = nodes.length;
+  const V = () => new THREE.Vector3();
+  const anchor = c => new THREE.Vector3().fromArray(catAnchor3D[c] || [0,0,0]);
+  const P = nodes.map(n => anchor(n.cat).add(
+    new THREE.Vector3((Math.random()-.5)*130,(Math.random()-.5)*130,(Math.random()-.5)*130)));
+  const eidx = edges.map(e => [
+    nodes.findIndex(n => n.id === nid(e.source)),
+    nodes.findIndex(n => n.id === nid(e.target))
+  ]).filter(p => p[0] >= 0 && p[1] >= 0);
+  const REP = 95000, SPRING = 0.022, SLEN = 78, ANCHOR = 0.010, ITERS = 280, CAP = 12;
+  const tmp = V();
+  for (let it = 0; it < ITERS; it++) {
+    const disp = nodes.map(() => V());
+    for (let i = 0; i < N; i++) for (let j = i+1; j < N; j++) {
+      tmp.subVectors(P[i], P[j]);
+      let d2 = tmp.lengthSq(); if (d2 < 1) d2 = 1;
+      tmp.normalize().multiplyScalar(REP / d2);
+      disp[i].add(tmp); disp[j].sub(tmp);
+    }
+    eidx.forEach(([i, j]) => {
+      tmp.subVectors(P[j], P[i]);
+      const d = tmp.length() || 1;
+      tmp.normalize().multiplyScalar((d - SLEN) * SPRING);
+      disp[i].add(tmp); disp[j].sub(tmp);
+    });
+    const cool = Math.min(1, 0.9 - it / ITERS * 0.5);
+    for (let i = 0; i < N; i++) {
+      tmp.copy(anchor(nodes[i].cat)).sub(P[i]).multiplyScalar(ANCHOR);
+      disp[i].add(tmp).multiplyScalar(cool);
+      const ml = disp[i].length();
+      if (ml > CAP) disp[i].multiplyScalar(CAP / ml);
+      P[i].add(disp[i]);
+    }
+  }
+  const c = V(); P.forEach(p => c.add(p)); c.multiplyScalar(1 / N);
+  let maxR = 1; P.forEach(p => maxR = Math.max(maxR, p.distanceTo(c)));
+  const s = 300 / maxR;
+  nodes.forEach((n, i) => { const q = P[i].sub(c).multiplyScalar(s); n.p3 = {x:q.x, y:q.y, z:q.z}; });
+}
+
+// Texture de halo radial (réutilisée par tous les nœuds)
+function halo3D() {
+  if (_halo3D) return _halo3D;
+  const cv = document.createElement('canvas'); cv.width = cv.height = 128;
+  const g = cv.getContext('2d');
+  const gr = g.createRadialGradient(64,64,0, 64,64,64);
+  gr.addColorStop(0,'rgba(255,255,255,1)');
+  gr.addColorStop(0.22,'rgba(255,255,255,0.55)');
+  gr.addColorStop(1,'rgba(255,255,255,0)');
+  g.fillStyle = gr; g.fillRect(0,0,128,128);
+  _halo3D = new THREE.CanvasTexture(cv);
+  return _halo3D;
+}
+
 function init3D() {
   const container = document.getElementById('three-container');
+  clock3D = new THREE.Clock();
 
   threeScene = new THREE.Scene();
-  threeScene.background = new THREE.Color(0x0f0f1a);
-  threeScene.fog = new THREE.FogExp2(0x0f0f1a, 0.0012);
+  threeScene.background = new THREE.Color(0x080810);
+  threeScene.fog = new THREE.FogExp2(0x080810, 0.00085);
 
-  threeCamera = new THREE.PerspectiveCamera(55, W / H, 1, 3000);
-  threeCamera.position.set(0, 60, 500);
+  threeCamera = new THREE.PerspectiveCamera(58, W / H, 1, 4000);
+  threeCamera.position.set(0, 40, 900);
 
   threeRenderer = new THREE.WebGLRenderer({ antialias: true });
   threeRenderer.setSize(W, H);
   threeRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   container.appendChild(threeRenderer.domElement);
 
-  threeScene.add(new THREE.AmbientLight(0x445566, 1.8));
-  const dir = new THREE.DirectionalLight(0xffffff, 0.7);
+  threeScene.add(new THREE.AmbientLight(0x556677, 1.1));
+  const p1 = new THREE.PointLight(0xff5577, 0.7, 1600); p1.position.set(-320, 220, 240); threeScene.add(p1);
+  const p2 = new THREE.PointLight(0x3399ff, 0.7, 1600); p2.position.set(320, -220, -240); threeScene.add(p2);
+  const dir = new THREE.DirectionalLight(0xffffff, 0.45);
   dir.position.set(250, 300, 400);
   threeScene.add(dir);
   const pt = new THREE.PointLight(0x6688cc, 0.4, 900);
@@ -1348,59 +1409,79 @@ function init3D() {
 
   threeControls = new THREE.OrbitControls(threeCamera, threeRenderer.domElement);
   threeControls.enableDamping = true;
-  threeControls.dampingFactor = 0.05;
+  threeControls.dampingFactor = 0.06;
   threeControls.autoRotate = true;
-  threeControls.autoRotateSpeed = 0.4;
-  threeControls.minDistance = 80;
-  threeControls.maxDistance = 1200;
+  threeControls.autoRotateSpeed = 0.35;
+  threeControls.minDistance = 120;
+  threeControls.maxDistance = 1600;
+  threeControls.target.set(0, 0, 0);
 
   function resetIdle() {
     threeControls.autoRotate = false;
     clearTimeout(idleTimer3D);
-    idleTimer3D = setTimeout(() => { threeControls.autoRotate = true; }, 3000);
+    idleTimer3D = setTimeout(() => { threeControls.autoRotate = true; }, 3500);
   }
   threeRenderer.domElement.addEventListener('pointerdown', resetIdle);
   threeRenderer.domElement.addEventListener('wheel', resetIdle);
 
-  // Stars
+  // Étoiles
   const starsGeo = new THREE.BufferGeometry();
   const sp = [];
-  for (let i = 0; i < 600; i++) {
-    sp.push((Math.random()-0.5)*2000, (Math.random()-0.5)*2000, (Math.random()-0.5)*2000);
+  for (let i = 0; i < 1400; i++) {
+    sp.push((Math.random()-0.5)*3000, (Math.random()-0.5)*3000, (Math.random()-0.5)*3000);
   }
   starsGeo.setAttribute('position', new THREE.Float32BufferAttribute(sp, 3));
   threeScene.add(new THREE.Points(starsGeo,
-    new THREE.PointsMaterial({color:0xffffff, size:0.8, transparent:true, opacity:0.25})));
+    new THREE.PointsMaterial({color:0xffffff, size:1.1, transparent:true, opacity:0.35})));
+
+  // Post-traitement : bloom (halo lumineux néon)
+  bloomComposer = new THREE.EffectComposer(threeRenderer);
+  bloomComposer.setSize(W, H);
+  bloomComposer.addPass(new THREE.RenderPass(threeScene, threeCamera));
+  bloomPass = new THREE.UnrealBloomPass(new THREE.Vector2(W, H), 0.95, 0.55, 0.14);
+  bloomComposer.addPass(bloomPass);
+
+  // Disposition organique + paramètres de flottement
+  compute3DLayout();
+  nodes.forEach(n => { n.f3 = {
+    ph: Math.random()*6.28, ph2: Math.random()*6.28,
+    amp: 3 + Math.random()*4, sp: 0.35 + Math.random()*0.4
+  }; });
 
   build3DNodes();
   build3DEdges();
   build3DLabels();
   setup3DRaycast();
+  update3DVisibility();
+  introStart = clock3D.getElapsedTime();
   animate3D();
 }
 
 function build3DNodes() {
-  const catZ = {'Acteur':-90, 'Lieu':90, 'Événement':-25, 'Mot-clé':50};
   nodeMeshes3D = [];
+  const halo = halo3D();
   nodes.forEach(n => {
     const r = n.size * 0.5;
-    const geo = new THREE.SphereGeometry(r, 22, 22);
+    const emI = 0.85;
+    const geo = new THREE.SphereGeometry(r, 24, 24);
     const col = new THREE.Color(catConfig[n.cat].color);
-    const mat = new THREE.MeshPhongMaterial({
-      color: col, emissive: col, emissiveIntensity: 0.3,
-      transparent: true, opacity: 0.92, shininess: 80
+    const mat = new THREE.MeshStandardMaterial({
+      color: col, emissive: col, emissiveIntensity: emI,
+      metalness: 0.3, roughness: 0.35, transparent: true, opacity: 0.95
     });
     const mesh = new THREE.Mesh(geo, mat);
-    mesh.position.set(
-      (n.x - W/2) * 0.55,
-      -(n.y - H/2) * 0.55,
-      (catZ[n.cat]||0) + (Math.random()-0.5)*70
-    );
-    mesh.userData = {nodeId: n.id, baseR: r};
+    mesh.position.set(n.p3.x, n.p3.y, n.p3.z);
+    mesh.userData = {
+      nodeId: n.id, baseR: r, emI,
+      base: new THREE.Vector3(n.p3.x, n.p3.y, n.p3.z), f: n.f3
+    };
 
-    const glowGeo = new THREE.SphereGeometry(r*2.2, 14, 14);
-    const glowMat = new THREE.MeshBasicMaterial({color:col, transparent:true, opacity:0.07});
-    mesh.add(new THREE.Mesh(glowGeo, glowMat));
+    const sprite = new THREE.Sprite(new THREE.SpriteMaterial({
+      map: halo, color: col, transparent: true, opacity: 0.55,
+      depthWrite: false, blending: THREE.AdditiveBlending
+    }));
+    sprite.scale.set(r*7, r*7, 1);
+    mesh.add(sprite);
 
     threeScene.add(mesh);
     nodeMeshes3D.push(mesh);
@@ -1408,18 +1489,32 @@ function build3DNodes() {
 }
 
 function build3DEdges() {
-  const pos = [];
+  edgeData3D = [];
+  const positions = [], colors = [];
+  const idxOf = id => nodes.findIndex(n => n.id === nid(id));
   edges.forEach(e => {
-    const si = nodes.findIndex(n => n.id === nid(e.source));
-    const ti = nodes.findIndex(n => n.id === nid(e.target));
-    if (si<0||ti<0) return;
-    const s = nodeMeshes3D[si].position, t = nodeMeshes3D[ti].position;
-    pos.push(s.x,s.y,s.z, t.x,t.y,t.z);
+    const si = idxOf(e.source), ti = idxOf(e.target);
+    if (si < 0 || ti < 0) return;
+    const cs = new THREE.Color(catConfig[nodes[si].cat].color);
+    const ct = new THREE.Color(catConfig[nodes[ti].cat].color);
+    const start = positions.length / 3;              // index du 1er sommet (en sommets)
+    for (let k = 0; k < SEG3D; k++) {
+      [k, k+1].forEach(kk => {
+        positions.push(0, 0, 0);
+        const c = cs.clone().lerp(ct, kk / SEG3D);
+        colors.push(c.r, c.g, c.b);
+      });
+    }
+    edgeData3D.push({ si, ti, start, vis: true,
+      off: (20 + Math.random()*40) * (Math.random() < 0.5 ? 1 : -1) });
   });
   const geo = new THREE.BufferGeometry();
-  geo.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
-  edgeLines3D = new THREE.LineSegments(geo,
-    new THREE.LineBasicMaterial({color:0xffffff, transparent:true, opacity:0.055}));
+  geo.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+  geo.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
+  edgeLines3D = new THREE.LineSegments(geo, new THREE.LineBasicMaterial({
+    vertexColors: true, transparent: true, opacity: 0.24,
+    blending: THREE.AdditiveBlending, depthWrite: false
+  }));
   threeScene.add(edgeLines3D);
 }
 
@@ -1498,10 +1593,71 @@ function setup3DRaycast() {
   });
 }
 
+const _p = new THREE.Vector3(), _mid = new THREE.Vector3(), _ctrl = new THREE.Vector3(), _perp = new THREE.Vector3();
+const _up = new THREE.Vector3(0, 1, 0);
+function updateEdges3D() {
+  if (!edgeLines3D) return;
+  const pos = edgeLines3D.geometry.attributes.position.array;
+  edgeData3D.forEach(ed => {
+    let b = ed.start * 3;
+    const s = nodeMeshes3D[ed.si].position, t = nodeMeshes3D[ed.ti].position;
+    if (!ed.vis) {                                   // arête masquée → repliée sur un point
+      for (let v = 0; v < SEG3D*2; v++) { pos[b]=s.x; pos[b+1]=s.y; pos[b+2]=s.z; b+=3; }
+      return;
+    }
+    _mid.addVectors(s, t).multiplyScalar(0.5);
+    _perp.subVectors(t, s).cross(_up);
+    if (_perp.lengthSq() < 1e-3) _perp.set(1, 0, 0);
+    _perp.normalize().multiplyScalar(ed.off);
+    _ctrl.copy(_mid).add(_perp);                     // point de contrôle → courbe de Bézier
+    for (let k = 0; k < SEG3D; k++) {
+      [k, k+1].forEach(kk => {
+        const u = kk / SEG3D, a = (1-u)*(1-u), bb = 2*(1-u)*u, c = u*u;
+        _p.set(a*s.x + bb*_ctrl.x + c*t.x, a*s.y + bb*_ctrl.y + c*t.y, a*s.z + bb*_ctrl.z + c*t.z);
+        pos[b]=_p.x; pos[b+1]=_p.y; pos[b+2]=_p.z; b+=3;
+      });
+    }
+  });
+  edgeLines3D.geometry.attributes.position.needsUpdate = true;
+}
+
 function animate3D() {
   animFrameId = requestAnimationFrame(animate3D);
+  const t = clock3D.getElapsedTime();
+
+  // Flottement organique des nœuds
+  nodeMeshes3D.forEach(m => {
+    const b = m.userData.base, f = m.userData.f;
+    m.position.set(
+      b.x + Math.sin(t*f.sp + f.ph)*f.amp,
+      b.y + Math.sin(t*f.sp*1.1 + f.ph2)*f.amp,
+      b.z + Math.cos(t*f.sp*0.9 + f.ph)*f.amp
+    );
+  });
+
+  // Les labels suivent leur nœud
+  labelSprites3D.forEach(sprite => {
+    const i = sprite.userData.nodeIdx, m = nodeMeshes3D[i];
+    sprite.position.set(m.position.x, m.position.y - nodes[i].size*0.55 - 5, m.position.z);
+  });
+
+  // Pulsation du nœud sélectionné
+  if (selectedNodeId) {
+    const i = nodes.findIndex(n => n.id === selectedNodeId);
+    if (i >= 0) nodeMeshes3D[i].material.emissiveIntensity = 1.2 + Math.sin(t*4)*0.5;
+  }
+
+  updateEdges3D();
+
+  // Intro : léger travelling avant
+  if (introStart !== null) {
+    const p = Math.min(1, (t - introStart) / 1.6);
+    threeCamera.position.z = 900 - (1 - Math.pow(1-p, 3)) * 380;
+    if (p >= 1) introStart = null;
+  }
+
   threeControls.update();
-  threeRenderer.render(threeScene, threeCamera);
+  bloomComposer.render();
 }
 
 function destroy3D() {
