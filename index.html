@@ -212,8 +212,8 @@ svg#main-svg{display:block;position:absolute;top:56px;left:0;right:0;bottom:80px
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/CopyShader.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/LuminosityHighPassShader.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/ShaderPass.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/EffectComposer.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/ShaderPass.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/RenderPass.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/UnrealBloomPass.js"></script>
 <script>
@@ -1331,12 +1331,12 @@ function compute3DLayout() {
   const V = () => new THREE.Vector3();
   const anchor = c => new THREE.Vector3().fromArray(catAnchor3D[c] || [0,0,0]);
   const P = nodes.map(n => anchor(n.cat).add(
-    new THREE.Vector3((Math.random()-.5)*130,(Math.random()-.5)*130,(Math.random()-.5)*130)));
+    new THREE.Vector3((Math.random()-.5)*80,(Math.random()-.5)*80,(Math.random()-.5)*80)));
   const eidx = edges.map(e => [
     nodes.findIndex(n => n.id === nid(e.source)),
     nodes.findIndex(n => n.id === nid(e.target))
   ]).filter(p => p[0] >= 0 && p[1] >= 0);
-  const REP = 95000, SPRING = 0.022, SLEN = 78, ANCHOR = 0.010, ITERS = 280, CAP = 12;
+  const REP = 62000, SPRING = 0.014, SLEN = 60, ANCHOR = 0.040, ITERS = 300, CAP = 12;
   const tmp = V();
   for (let it = 0; it < ITERS; it++) {
     const disp = nodes.map(() => V());
@@ -1438,14 +1438,14 @@ function init3D() {
   bloomComposer = new THREE.EffectComposer(threeRenderer);
   bloomComposer.setSize(W, H);
   bloomComposer.addPass(new THREE.RenderPass(threeScene, threeCamera));
-  bloomPass = new THREE.UnrealBloomPass(new THREE.Vector2(W, H), 0.95, 0.55, 0.14);
+  bloomPass = new THREE.UnrealBloomPass(new THREE.Vector2(W, H), 0.5, 0.4, 0.25);
   bloomComposer.addPass(bloomPass);
 
   // Disposition organique + paramètres de flottement
   compute3DLayout();
   nodes.forEach(n => { n.f3 = {
     ph: Math.random()*6.28, ph2: Math.random()*6.28,
-    amp: 3 + Math.random()*4, sp: 0.35 + Math.random()*0.4
+    amp: 3.5 + Math.random()*3.5, sp: 0.5 + Math.random()*0.5
   }; });
 
   build3DNodes();
@@ -1462,12 +1462,12 @@ function build3DNodes() {
   const halo = halo3D();
   nodes.forEach(n => {
     const r = n.size * 0.5;
-    const emI = 0.85;
+    const emI = 0.5;
     const geo = new THREE.SphereGeometry(r, 24, 24);
     const col = new THREE.Color(catConfig[n.cat].color);
     const mat = new THREE.MeshStandardMaterial({
       color: col, emissive: col, emissiveIntensity: emI,
-      metalness: 0.3, roughness: 0.35, transparent: true, opacity: 0.95
+      metalness: 0.25, roughness: 0.45, transparent: true, opacity: 0.96
     });
     const mesh = new THREE.Mesh(geo, mat);
     mesh.position.set(n.p3.x, n.p3.y, n.p3.z);
@@ -1477,10 +1477,10 @@ function build3DNodes() {
     };
 
     const sprite = new THREE.Sprite(new THREE.SpriteMaterial({
-      map: halo, color: col, transparent: true, opacity: 0.55,
+      map: halo, color: col, transparent: true, opacity: 0.28,
       depthWrite: false, blending: THREE.AdditiveBlending
     }));
-    sprite.scale.set(r*7, r*7, 1);
+    sprite.scale.set(r*4.5, r*4.5, 1);
     mesh.add(sprite);
 
     threeScene.add(mesh);
@@ -1512,8 +1512,7 @@ function build3DEdges() {
   geo.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
   geo.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
   edgeLines3D = new THREE.LineSegments(geo, new THREE.LineBasicMaterial({
-    vertexColors: true, transparent: true, opacity: 0.24,
-    blending: THREE.AdditiveBlending, depthWrite: false
+    vertexColors: true, transparent: true, opacity: 0.14, depthWrite: false
   }));
   threeScene.add(edgeLines3D);
 }
@@ -1644,7 +1643,7 @@ function animate3D() {
   // Pulsation du nœud sélectionné
   if (selectedNodeId) {
     const i = nodes.findIndex(n => n.id === selectedNodeId);
-    if (i >= 0) nodeMeshes3D[i].material.emissiveIntensity = 1.2 + Math.sin(t*4)*0.5;
+    if (i >= 0) nodeMeshes3D[i].material.emissiveIntensity = 0.85 + Math.sin(t*4)*0.35;
   }
 
   updateEdges3D();
