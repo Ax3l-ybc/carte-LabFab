@@ -221,7 +221,7 @@ const catConfig = {
 
 // ===== ENRICHED NODE DATA =====
 const nodes = [
-  // === ACTEURS (25) ===
+  // === ACTEURS (28) ===
   {id:'a01',label:'Hugues Aubin',cat:'Acteur',size:20,y1:2010,y2:2025},
   {id:'a02',label:'Baptiste Gaultier',cat:'Acteur',size:16,y1:2010,y2:2025},
   {id:'a03',label:'Nicolas Huchet',cat:'Acteur',size:16,y1:2012,y2:2025},
@@ -247,7 +247,10 @@ const nodes = [
   {id:'a23',label:'Sherry Huss',cat:'Acteur',size:6,y1:2011,y2:2025},
   {id:'a24',label:'Marc Gyver',cat:'Acteur',size:6,y1:2014,y2:2025},
   {id:'a25',label:'Alma',cat:'Acteur',size:12,y1:2018,y2:2026},
-  // === LIEUX (22) ===
+  {id:'a26',label:'Quentin Orant',cat:'Acteur',size:13,y1:2013,y2:2026},
+  {id:'a27',label:'Joden Morand',cat:'Acteur',size:10,y1:2012,y2:2026},
+  {id:'a28',label:'Julie (Belle Déchette)',cat:'Acteur',size:9,y1:2013,y2:2026},
+  // === LIEUX (26) ===
   {id:'l01',label:'EESAB',cat:'Lieu',size:16,y1:2012,y2:2025},
   {id:'l02',label:'IMT Atlantique',cat:'Lieu',size:12,y1:2009,y2:2025},
   {id:'l03',label:'Rennes Métropole',cat:'Lieu',size:14,y1:2012,y2:2025},
@@ -270,7 +273,11 @@ const nodes = [
   {id:'l20',label:'Fabricarium (Lille)',cat:'Lieu',size:6,y1:2016,y2:2025},
   {id:'l21',label:'EduLab Pasteur',cat:'Lieu',size:12,y1:2021,y2:2026},
   {id:'l22',label:'Ptit Lab',cat:'Lieu',size:6,y1:2024,y2:2026},
-  // === ÉVÉNEMENTS (24) ===
+  {id:'l23',label:'Atelier commun',cat:'Lieu',size:10,y1:2016,y2:2022},
+  {id:'l24',label:'Halles en commun',cat:'Lieu',size:8,y1:2022,y2:2026},
+  {id:'l25',label:'FabLab du Blosne',cat:'Lieu',size:6,y1:2015,y2:2025},
+  {id:'l26',label:'Mobilab',cat:'Lieu',size:6,y1:2019,y2:2025},
+  // === ÉVÉNEMENTS (28) ===
   {id:'e01',label:'Rencontre John Le Jeune (2010)',cat:'Événement',size:14,y1:2010,y2:2010},
   {id:'e02',label:'Création FabLab EESAB (2012)',cat:'Événement',size:18,y1:2012,y2:2012},
   {id:'e03',label:'Vivacité (2012)',cat:'Événement',size:14,y1:2012,y2:2012},
@@ -295,7 +302,11 @@ const nodes = [
   {id:'e22',label:'Hackathons ArianeGroup (Fabricarium)',cat:'Événement',size:8,y1:2018,y2:2020},
   {id:'e23',label:'Ouverture EduLab Pasteur (2021)',cat:'Événement',size:10,y1:2021,y2:2021},
   {id:'e24',label:'Fabricatons maths — Audimat',cat:'Événement',size:8,y1:2022,y2:2024},
-  // === MOTS-CLÉS (28) ===
+  {id:'e25',label:'Festival Maintenant — robot dessinant (~2014)',cat:'Événement',size:8,y1:2014,y2:2014},
+  {id:'e26',label:'Budget participatif Precious Plastic (2016)',cat:'Événement',size:8,y1:2016,y2:2016},
+  {id:'e27',label:'Ouverture Atelier commun (2019)',cat:'Événement',size:10,y1:2019,y2:2019},
+  {id:'e28',label:'Fusion Atelier commun – Belle Déchette (~2022)',cat:'Événement',size:10,y1:2022,y2:2022},
+  // === MOTS-CLÉS (30) ===
   {id:'m01',label:'Open source',cat:'Mot-clé',size:16,y1:2010,y2:2025},
   {id:'m02',label:'Communs',cat:'Mot-clé',size:12,y1:2013,y2:2025},
   {id:'m03',label:'Libre',cat:'Mot-clé',size:12,y1:2010,y2:2025},
@@ -323,7 +334,9 @@ const nodes = [
   {id:'m25',label:'Encapacitation',cat:'Mot-clé',size:8,y1:2015,y2:2025},
   {id:'m26',label:'Transition écologique',cat:'Mot-clé',size:10,y1:2018,y2:2025},
   {id:'m27',label:'Inclusion sociale',cat:'Mot-clé',size:10,y1:2014,y2:2026},
-  {id:'m28',label:'Nature & numérique',cat:'Mot-clé',size:8,y1:2021,y2:2026}
+  {id:'m28',label:'Nature & numérique',cat:'Mot-clé',size:8,y1:2021,y2:2026},
+  {id:'m29',label:'Ressourcerie',cat:'Mot-clé',size:8,y1:2016,y2:2026},
+  {id:'m30',label:'Transdisciplinarité',cat:'Mot-clé',size:8,y1:2012,y2:2026}
 ];
 
 const edges = [
@@ -601,7 +614,60 @@ const edges = [
   {source:'m27',target:'m06',label:'proche de',w:2},
   {source:'m27',target:'m07',label:'proche de',w:2},
   {source:'m28',target:'m26',label:'proche de',w:2},
-  {source:'m28',target:'m22',label:'proche de',w:1}
+  {source:'m28',target:'m22',label:'proche de',w:1},
+  // === Interview Quentin Orant (a26) + Julie (a28) ===
+  {source:'a26',target:'l01',label:'découvre le FabLab à',w:3},
+  {source:'a26',target:'a01',label:'rencontre fondatrice',w:3},
+  {source:'a26',target:'a08',label:'reçoit la laser de',w:2},
+  {source:'a26',target:'a28',label:'co-fonde avec (sa sœur)',w:3},
+  {source:'a26',target:'l23',label:'co-fonde',w:3},
+  {source:'a26',target:'l17',label:'forme les salariés',w:2},
+  {source:'a26',target:'l24',label:'installe à',w:2},
+  {source:'a26',target:'l14',label:'cite comme modèle',w:1},
+  {source:'a26',target:'l25',label:'envisage une collab',w:1},
+  {source:'a26',target:'l26',label:'collabore avec',w:1},
+  {source:'a26',target:'e25',label:'participe à',w:2},
+  {source:'a26',target:'e26',label:'porte',w:2},
+  {source:'a26',target:'e27',label:'coordonne',w:3},
+  {source:'a26',target:'e28',label:'acteur de',w:3},
+  {source:'a26',target:'e09',label:'participe à (Atelier commun)',w:2},
+  {source:'a26',target:'m01',label:'défend (Thingiverse)',w:3},
+  {source:'a26',target:'m15',label:'défend',w:3},
+  {source:'a26',target:'m26',label:'pionnier',w:3},
+  {source:'a26',target:'m19',label:'fabrique',w:2},
+  {source:'a26',target:'m29',label:'incarne',w:3},
+  {source:'a26',target:'m07',label:'incarne',w:2},
+  {source:'a28',target:'l17',label:'co-fonde',w:3},
+  {source:'a28',target:'m29',label:'porte',w:3},
+  {source:'a28',target:'m15',label:'défend',w:2},
+  {source:'e26',target:'l23',label:'se déroule à',w:2},
+  {source:'e26',target:'l03',label:'financé par (Fabrique Citoyenne)',w:2},
+  {source:'e26',target:'m19',label:'produit',w:2},
+  {source:'e27',target:'l23',label:'ouverture de',w:3},
+  {source:'e28',target:'l23',label:'concerne',w:2},
+  {source:'e28',target:'l17',label:'fusion avec',w:2},
+  {source:'e28',target:'l24',label:'aboutit à',w:2},
+  {source:'l24',target:'l17',label:'héberge',w:2},
+  {source:'l25',target:'l23',label:'proximité',w:1},
+  {source:'a07',target:'l26',label:'anime',w:2},
+  {source:'l23',target:'m29',label:'incarne',w:2},
+  // === Interview Joden Morand (a27) ===
+  {source:'a27',target:'l01',label:'chargée de com',w:3},
+  {source:'a27',target:'e02',label:'communique le lancement',w:3},
+  {source:'a27',target:'a10',label:'travaille avec',w:2},
+  {source:'a27',target:'a05',label:'collabore avec',w:1},
+  {source:'a27',target:'a08',label:'témoigne de',w:2},
+  {source:'a27',target:'a01',label:'témoigne (TV-B-Gone)',w:1},
+  {source:'a27',target:'a04',label:'à la table avec',w:1},
+  {source:'a27',target:'a06',label:'a suivi son diplôme',w:1},
+  {source:'a27',target:'e01',label:'raconte (TV-B-Gone)',w:1},
+  {source:'a27',target:'m01',label:'défend (espace citoyen)',w:1},
+  {source:'a27',target:'m30',label:'met en avant',w:2},
+  {source:'a27',target:'m05',label:'projette (hors-les-murs)',w:1},
+  {source:'a27',target:'m16',label:'souligne',w:1},
+  {source:'a27',target:'m24',label:'observe',w:1},
+  {source:'a27',target:'m11',label:'observe (surengagement)',w:1},
+  {source:'a05',target:'m30',label:'incarne',w:1}
 ];
 
 // ===== NODE DETAILS (for panel) =====
@@ -704,7 +770,20 @@ const details = {
   'm25':{desc:"Processus d'acquisition de compétences et de confiance par la pratique. Proche de l'empowerment."},
   'm26':{desc:"Évolution du mouvement maker vers la réparation, le low-tech et le design frugal. Portée par Bérangère Amiot et Laurent Flamant. Illustrée par le projet piège à drosophiles de Camille Bisson."},
   'm27':{desc:"Accessibilité numérique et accueil de publics fragiles : quartiers prioritaires, précarité, personnes à la rue. Incarnée par l'EduLab Pasteur (gratuité, brassement social) et par My Human Kit (handicap). Position militante revendiquée par Alma."},
-  'm28':{desc:"Articulation délibérée entre éducation à la nature et éducation au numérique pour s'opposer à leur opposition fréquente. Axe pédagogique de l'EduLab Pasteur (croisement Plan d'éducation à la nature × Plan numérique éducatif local de la ville de Rennes). Dispositifs : Sylvestre Orchestre (faire chanter les plantes), risographie avec matériaux ramassés, podcasts en extérieur."}
+  'm28':{desc:"Articulation délibérée entre éducation à la nature et éducation au numérique pour s'opposer à leur opposition fréquente. Axe pédagogique de l'EduLab Pasteur (croisement Plan d'éducation à la nature × Plan numérique éducatif local de la ville de Rennes). Dispositifs : Sylvestre Orchestre (faire chanter les plantes), risographie avec matériaux ramassés, podcasts en extérieur."},
+  'a26':{desc:"Maker, développeur et artiste indépendant « entre écologie et numérique ». Entré par le FabLab des Beaux-Arts (~2013), il découvre l'apprentissage pair-à-pair et l'open source (boîtier photo diffusé sur Thingiverse). Cofondateur, avec sa sœur Julie, du modèle ressourcerie + FabLab : l'Atelier commun puis l'atelier de la Belle Déchette.",role:["Cofondateur et ex-coordinateur de l'Atelier commun","Formateur des salariés de la Belle Déchette (« fab manager distribué »)","Pionnier de l'axe écologie-réemploi à Rennes","Défenseur du financement public (« les FabLabs, comme une bibliothèque »)"],sources:["Interview directe"],quote:"« Tu peux le vendre avec ce côté technique numérique, et en loucedé, tu vas faire de l'éducation populaire. »"},
+  'a27':{desc:"Chargée de communication, partenariats et expositions à l'EESAB (« couteau suisse ») lors de la création du LabFab des Beaux-Arts (~2012). Aujourd'hui coordinatrice de l'EUR CAPS à Rennes 2. Témoin extérieur et non-makeuse, elle a assuré la première communication du lieu, en traduisant l'objet LabFab pour les publics.",role:["Communication du lancement du LabFab EESAB (interne puis grand public)","Traductrice entre passionnés et grand public","Regard extérieur / institutionnel sur la genèse"],sources:["Interview directe"],quote:"« À chaque fois que quelqu'un rentrait dans ce labo, il en ressortait avec des étoiles dans les yeux. »"},
+  'a28':{desc:"Sœur de Quentin Orant, formée à la gestion des déchets (services déchets de Rennes Métropole, Fougères). Cofondatrice de la ressourcerie La Belle Déchette et du modèle ressourcerie + FabLab. Mène dialogue et rapport de force avec les partenaires institutionnels pour financer des postes.",role:["Cofondatrice de la Belle Déchette","Versant ressourcerie du modèle écologie-réemploi","Combat pour le financement public des postes"],sources:["Interview Quentin Orant"]},
+  'l23':{desc:"Atelier associatif dédié à l'écologie et au réemploi, cofondé par Quentin Orant, accolé à la ressourcerie Belle Déchette (ZI Sud-Est de Rennes, ~2016). Ouvert au public en 2019. Premier atelier rennais à assumer un positionnement écologie-réemploi ; équipement atypique (bois-métal, machines à coudre, labo argentique, CNC DIY, Precious Plastic). Fusionné avec la Belle Déchette (~2022).",sources:["Interview Quentin Orant"]},
+  'l24':{desc:"Lieu en préfiguration à la Courrouze (Rennes), construit selon la méthode de permanence architecturale. Nouvel ancrage de la Belle Déchette et de son atelier après la fusion (~2022). Lieu de projets art/numérique/écologie (installation musique-plantes de Quentin Orant sur le seul arbre du site).",sources:["Interview Quentin Orant"]},
+  'l25':{desc:"FabLab du quartier du Blosne à Rennes. Proche géographiquement de l'Atelier commun, avec qui des collaborations avaient été envisagées.",sources:["Interview Quentin Orant"]},
+  'l26':{desc:"FabLab / atelier mobile du réseau rennais (animé notamment par Sarah), cité par Romain Chefdor et par Quentin Orant (collaborations ponctuelles).",sources:["Interview Quentin Orant","Interview Romain Chefdor"]},
+  'e25':{desc:"Après une résidence à l'Hôtel Pasteur, le collectif IDLV obtient l'appel à projet « Art & Technologie » du Festival Maintenant et y présente son robot dessinant (drawbot inspiré de Polargraph). Étape du basculement de Quentin Orant vers la fabrication numérique.",sources:["Interview Quentin Orant"]},
+  'e26':{desc:"L'Atelier commun obtient le budget participatif de la Ville de Rennes (Fabrique Citoyenne) pour fabriquer des machines Precious Plastic de recyclage plastique, en réemploi, avec deux classes de BTS du lycée Joliot-Curie.",sources:["Interview Quentin Orant"]},
+  'e27':{desc:"Ouverture au public de l'Atelier commun après trois ans d'expérimentation. ~100 adhérents, OpenLab hebdomadaire. Quentin Orant devient salarié coordinateur. Immédiatement suivie du Covid.",sources:["Interview Quentin Orant"]},
+  'e28':{desc:"Après le départ (épuisement) de Quentin de la coordination, l'Atelier commun est repris par la Belle Déchette : les deux associations fusionnent et l'atelier déménage à la Courrouze. Émergence du modèle de fab manager distribué entre salariés de la ressourcerie.",sources:["Interview Quentin Orant"]},
+  'm29':{desc:"Structure de collecte, réparation et revente d'objets de seconde main. Couplée à un FabLab dans le modèle écologie-réemploi porté par Quentin Orant et Julie (Atelier commun, Belle Déchette)."},
+  'm30':{desc:"Croisement des savoirs (artistes, ingénieurs, designers) au cœur de l'ADN du LabFab. Mise en avant par Joden Morand comme la « vision » des fondateurs — de la co-conception avant l'heure."}
 };
 
 // ===== STATE =====
