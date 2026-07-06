@@ -256,7 +256,7 @@ const nodes = [
   {id:'a26',label:'Quentin Orant',cat:'Acteur',size:13,y1:2013,y2:2026},
   {id:'a27',label:'Joden Morand',cat:'Acteur',size:10,y1:2012,y2:2026},
   {id:'a28',label:'Julie (Belle Déchette)',cat:'Acteur',size:9,y1:2013,y2:2026},
-  // === LIEUX (26) ===
+  // === LIEUX (27) ===
   {id:'l01',label:'EESAB',cat:'Lieu',size:16,y1:2012,y2:2025},
   {id:'l02',label:'IMT Atlantique',cat:'Lieu',size:12,y1:2009,y2:2025},
   {id:'l03',label:'Rennes Métropole',cat:'Lieu',size:14,y1:2012,y2:2025},
@@ -283,6 +283,7 @@ const nodes = [
   {id:'l24',label:'Halles en commun',cat:'Lieu',size:8,y1:2022,y2:2026},
   {id:'l25',label:'FabLab du Blosne',cat:'Lieu',size:6,y1:2015,y2:2025},
   {id:'l26',label:'Mobilab',cat:'Lieu',size:6,y1:2019,y2:2025},
+  {id:'l27',label:'IDLV (Indien dans la Ville)',cat:'Lieu',size:7,y1:2012,y2:2026},
   // === ÉVÉNEMENTS (28) ===
   {id:'e01',label:'Rencontre John Le Jeune (2010)',cat:'Événement',size:14,y1:2010,y2:2010},
   {id:'e02',label:'Création FabLab EESAB (2012)',cat:'Événement',size:18,y1:2012,y2:2012},
@@ -632,6 +633,8 @@ const edges = [
   {source:'a26',target:'l14',label:'cite comme modèle',w:1},
   {source:'a26',target:'l25',label:'envisage une collab',w:1},
   {source:'a26',target:'l26',label:'collabore avec',w:1},
+  {source:'a26',target:'l27',label:'cofonde (collectif)',w:3},
+  {source:'l27',target:'e25',label:'présente le robot dessinant à',w:2},
   {source:'a26',target:'e25',label:'participe à',w:2},
   {source:'a26',target:'e26',label:'porte',w:2},
   {source:'a26',target:'e27',label:'coordonne',w:3},
@@ -784,6 +787,7 @@ const details = {
   'l24':{desc:"Lieu en préfiguration à la Courrouze (Rennes), construit selon la méthode de permanence architecturale. Nouvel ancrage de la Belle Déchette et de son atelier après la fusion (~2022). Lieu de projets art/numérique/écologie (installation musique-plantes de Quentin Orant sur le seul arbre du site).",sources:["Interview Quentin Orant"]},
   'l25':{desc:"FabLab du quartier du Blosne à Rennes. Proche géographiquement de l'Atelier commun, avec qui des collaborations avaient été envisagées.",sources:["Interview Quentin Orant"]},
   'l26':{desc:"FabLab / atelier mobile du réseau rennais (animé notamment par Sarah), cité par Romain Chefdor et par Quentin Orant (collaborations ponctuelles).",sources:["Interview Quentin Orant","Interview Romain Chefdor"]},
+  'l27':{desc:"Collectif artistique pluridisciplinaire cofondé par Quentin Orant vers 2012 (existe encore). Explore l'espace public, l'éducation populaire et l'écologie. Connu pour ses projections de silhouettes d'Indiens sur les façades du centre de Rennes (festival de photographie « L'Image publique », dalle du Colombier) — un positionnement dont Quentin assume aujourd'hui mal le côté appropriation culturelle. C'est via l'IDLV et son robot dessinant (drawbot pendulaire inspiré de Polargraph, résidence à l'Hôtel Pasteur, Festival Maintenant) que Quentin bascule vers la fabrication numérique et les FabLabs.",sources:["Interview Quentin Orant"]},
   'e25':{desc:"Après une résidence à l'Hôtel Pasteur, le collectif IDLV obtient l'appel à projet « Art & Technologie » du Festival Maintenant et y présente son robot dessinant (drawbot inspiré de Polargraph). Étape du basculement de Quentin Orant vers la fabrication numérique.",sources:["Interview Quentin Orant"]},
   'e26':{desc:"L'Atelier commun obtient le budget participatif de la Ville de Rennes (Fabrique Citoyenne) pour fabriquer des machines Precious Plastic de recyclage plastique, en réemploi, avec deux classes de BTS du lycée Joliot-Curie.",sources:["Interview Quentin Orant"]},
   'e27':{desc:"Ouverture au public de l'Atelier commun après trois ans d'expérimentation. ~100 adhérents, OpenLab hebdomadaire. Quentin Orant devient salarié coordinateur. Immédiatement suivie du Covid.",sources:["Interview Quentin Orant"]},
