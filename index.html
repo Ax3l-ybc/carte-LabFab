@@ -86,12 +86,6 @@ svg#main-svg{display:block;position:absolute;top:56px;left:0;right:0;bottom:80px
 .panel-section ul{list-style:none;padding:0;}
 .panel-section li{font-size:13px;line-height:1.5;opacity:0.75;padding:2px 0;padding-left:12px;position:relative;}
 .panel-section li::before{content:'·';position:absolute;left:0;opacity:0.4;}
-.conn-chip{
-  display:inline-block;padding:4px 10px;margin:2px 3px;border-radius:5px;
-  font-size:12px;cursor:pointer;transition:all 0.15s;
-  background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);
-}
-.conn-chip:hover{background:rgba(255,255,255,0.12);border-color:rgba(255,255,255,0.2);}
 
 /* === TIMELINE === */
 #timeline{
@@ -128,17 +122,13 @@ svg#main-svg{display:block;position:absolute;top:56px;left:0;right:0;bottom:80px
 /* === TOOLTIP === */
 .tooltip{
   position:absolute;pointer-events:none;opacity:0;z-index:200;
-  background:rgba(10,10,30,0.94);color:#fff;padding:10px 14px;
-  border-radius:8px;font-size:13px;max-width:300px;
+  background:rgba(10,10,30,0.94);color:#fff;padding:5px 10px;
+  border-radius:6px;font-size:13px;font-weight:500;white-space:nowrap;
   border:1px solid rgba(255,255,255,0.12);
   border-left:3px solid rgba(255,255,255,0.12);
-  box-shadow:0 8px 32px rgba(0,0,0,0.5);
+  box-shadow:0 4px 18px rgba(0,0,0,0.5);
   transition:opacity 0.12s;
 }
-.tooltip .t-cat{font-size:10px;opacity:0.5;text-transform:uppercase;letter-spacing:1px;}
-.tooltip .t-name{font-size:14px;font-weight:600;margin:2px 0 4px;}
-.tooltip .t-desc{font-size:12px;opacity:0.6;margin-bottom:4px;line-height:1.4;}
-.tooltip .t-links{font-size:11.5px;opacity:0.7;}
 
 /* === ANIMATIONS === */
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
@@ -148,17 +138,6 @@ svg#main-svg{display:block;position:absolute;top:56px;left:0;right:0;bottom:80px
 @keyframes twinkle{0%,100%{opacity:0.06;}50%{opacity:0.32;}}
 .star-twinkle{animation:twinkle 4.5s ease-in-out infinite;}
 
-/* === 3D CONTAINER === */
-#three-container{
-  display:none;position:absolute;top:56px;left:0;right:0;bottom:80px;
-  background:#0f0f1a;
-}
-#three-container canvas{display:block;width:100%;height:100%;}
-.btn-mode{
-  background:rgba(255,255,255,0.1) !important;font-weight:600 !important;
-  letter-spacing:0.5px;font-size:12px !important;width:auto !important;padding:0 10px !important;
-}
-.btn-mode.active-3d{background:rgba(42,157,143,0.3) !important;border-color:rgba(42,157,143,0.5) !important;}
 </style>
 </head>
 <body>
@@ -177,7 +156,6 @@ svg#main-svg{display:block;position:absolute;top:56px;left:0;right:0;bottom:80px
     <button onclick="zoomIn()" title="Zoom +">+</button>
     <button onclick="zoomOut()" title="Zoom −">−</button>
     <button onclick="resetZoom()" title="Reset vue">⟳</button>
-    <button id="btn-3d" class="btn-mode" onclick="toggle3D()" title="Mode 3D">3D</button>
   </div>
 </div>
 
@@ -198,8 +176,6 @@ svg#main-svg{display:block;position:absolute;top:56px;left:0;right:0;bottom:80px
   <svg id="timeline-svg"></svg>
 </div>
 
-<!-- 3D CONTAINER -->
-<div id="three-container"></div>
 
 <!-- MAIN SVG -->
 <svg id="main-svg"></svg>
@@ -208,14 +184,6 @@ svg#main-svg{display:block;position:absolute;top:56px;left:0;right:0;bottom:80px
 <div class="tooltip" id="tooltip"></div>
 
 <script src="https://d3js.org/d3.v7.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/CopyShader.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/LuminosityHighPassShader.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/EffectComposer.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/ShaderPass.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/RenderPass.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/UnrealBloomPass.js"></script>
 <script>
 // ===== CONFIGURATION =====
 const catConfig = {
@@ -290,7 +258,7 @@ const nodes = [
   {id:'e03',label:'Vivacité (2012)',cat:'Événement',size:14,y1:2012,y2:2012},
   {id:'e04',label:'Appel à projet Pellerin (2013)',cat:'Événement',size:14,y1:2013,y2:2013},
   {id:'e05',label:'Premier MOOC FUN (2014)',cat:'Événement',size:10,y1:2014,y2:2014},
-  {id:'e06',label:'Projet Bionico (2012-2015)',cat:'Événement',size:14,y1:2012,y2:2015},
+  {id:'e06',label:'Projet Bionico (2012)',cat:'Événement',size:14,y1:2012,y2:2015},
   {id:'e07',label:'Création RFF Lab (2015)',cat:'Événement',size:12,y1:2015,y2:2015},
   {id:'e08',label:'Création asso fab managers (2017)',cat:'Événement',size:12,y1:2017,y2:2017},
   {id:'e09',label:'Covid — fabrication distribuée (2020)',cat:'Événement',size:12,y1:2020,y2:2020},
@@ -495,7 +463,7 @@ const edges = [
   {source:'a02',target:'l09',label:'voyage à',w:1},
   {source:'a03',target:'l09',label:'voyage à',w:1},
   {source:'a16',target:'l01',label:'fréquente',w:2},
-  {source:'a16',target:'l12',label:'fab manager 2016-2021',w:3},
+  {source:'a16',target:'l12',label:'fab manager 2016',w:3},
   {source:'a17',target:'l13',label:'basé à',w:3},
   {source:'a17',target:'l04',label:'fréquente',w:1},
   {source:'a18',target:'l13',label:'basé à',w:3},
@@ -1019,24 +987,6 @@ nodeCircles.call(d3.drag()
   .on('end',(e,d)=>{if(!e.active)simulation.alphaTarget(0);d.fx=null;d.fy=null;})
 );
 
-// ===== 3D STATE (declared early so updateVisibility can reference them) =====
-let mode3D = false;
-let threeScene, threeCamera, threeRenderer, threeControls;
-let nodeMeshes3D = [];
-let edgeLines3D;
-let labelSprites3D = [];
-let animFrameId;
-let idleTimer3D;
-let bloomComposer, bloomPass, clock3D, introStart = null;
-let edgeData3D = [];
-let _halo3D = null;
-const SEG3D = 8;
-const catAnchor3D = {
-  'Acteur':    [-190,  130,   70],
-  'Lieu':      [-150, -160,  -90],
-  'Événement': [ 200,  120,  -80],
-  'Mot-clé':   [ 160, -140,  110]
-};
 
 // ===== MASTER UPDATE =====
 function updateVisibility() {
@@ -1052,30 +1002,7 @@ function updateVisibility() {
   nodeGlow.attr('fill-opacity',d => d.id===hoveredNodeId ? 0.15 : 0);
   nodeRing.attr('stroke-opacity',d => d.id===selectedNodeId ? 0.6 : 0)
     .classed('ring-pulse', d => d.id===selectedNodeId);
-  // 3D update
-  if (mode3D) update3DVisibility();
 }
-
-function update3DVisibility() {
-  if (!threeRenderer || !nodeMeshes3D.length) return;
-  // Nodes : opacité + intensité lumineuse selon le filtre
-  nodes.forEach((n, i) => {
-    const vis = isNodeVisible(n);
-    const mesh = nodeMeshes3D[i];
-    mesh.material.opacity = vis ? 0.95 : 0.04;
-    mesh.material.emissiveIntensity = vis ? mesh.userData.emI : 0.05;
-    if (mesh.children[0]) mesh.children[0].material.opacity = vis ? 0.55 : 0;
-  });
-  // Edges : flag de visibilité (le tracé courbe est recalculé dans updateEdges3D)
-  edgeData3D.forEach(ed => {
-    ed.vis = isNodeVisible(nodes[ed.si]) && isNodeVisible(nodes[ed.ti]);
-  });
-  // Labels
-  labelSprites3D.forEach(sprite => {
-    sprite.visible = isNodeVisible(nodes[sprite.userData.nodeIdx]);
-  });
-}
-
 // ===== TOOLTIP =====
 const tooltip = document.getElementById('tooltip');
 
@@ -1083,20 +1010,14 @@ nodeCircles.on('mouseenter',(event,d) => {
   if (!isNodeVisible(d)) return;
   hoveredNodeId = d.id;
   updateVisibility();
-  const det = details[d.id] || {};
-  const links = adjacency[d.id].slice(0,6).map(a => {
-    const t = nodeMap[a.target];
-    return `→ ${a.label} <b>${t.label}</b>`;
-  }).join('<br>');
-  const more = adjacency[d.id].length > 6 ? `<br><i>+ ${adjacency[d.id].length-6} autres</i>` : '';
-  const descHtml = det.desc ? `<div class="t-desc">${det.desc.substring(0,100)}…</div>` : '';
-  tooltip.innerHTML = `<div class="t-cat">${d.cat} · ${d.y1}${d.y1!==d.y2?'–'+d.y2:''}</div><div class="t-name">${d.label}</div>${descHtml}<div class="t-links">${links}${more}</div>`;
+  // Survol : uniquement le nom. Le détail est réservé au clic (panneau latéral).
+  tooltip.textContent = d.label;
   tooltip.style.borderLeftColor = catConfig[d.cat].color;
   tooltip.style.opacity = 1;
 })
 .on('mousemove',event => {
   const panelOpen = document.getElementById('panel').classList.contains('open');
-  const maxX = window.innerWidth - (panelOpen ? 380 : 0) - 310;
+  const maxX = window.innerWidth - (panelOpen ? 380 : 0) - tooltip.offsetWidth - 12;
   tooltip.style.left = Math.min(event.pageX+16, maxX) + 'px';
   tooltip.style.top = (event.pageY-10) + 'px';
 })
@@ -1137,7 +1058,7 @@ function openPanel(id) {
   let html = '';
   html += `<div class="panel-badge" style="background:${c.color}22;color:${c.color}">${n.cat}</div>`;
   html += `<h2>${n.label}</h2>`;
-  html += `<span class="panel-period">${n.y1}${n.y1!==n.y2 ? ' — '+n.y2 : ''}</span>`;
+  html += `<span class="panel-period">${n.y1}</span>`;
   if (det.desc) html += `<p class="panel-desc">${det.desc}</p>`;
   if (det.quote) html += `<div class="panel-quote">${det.quote}</div>`;
 
@@ -1151,18 +1072,6 @@ function openPanel(id) {
     html += `<div class="panel-section"><h3>Sources</h3><ul>`;
     det.sources.forEach(s => html += `<li>${s}</li>`);
     html += `</ul></div>`;
-  }
-
-  const conns = adjacency[id];
-  if (conns.length) {
-    html += `<div class="panel-section"><h3>Connexions (${conns.length})</h3><div>`;
-    conns.forEach(a => {
-      const t = nodeMap[a.target];
-      const tc = catConfig[t.cat].color;
-      html += `<span class="conn-chip" style="border-color:${tc}33" onclick="selectNode('${a.target}')">`
-            + `<span style="color:${tc}">●</span> ${a.label} → ${t.label}</span>`;
-    });
-    html += `</div></div>`;
   }
 
   content.innerHTML = html;
@@ -1223,7 +1132,7 @@ Object.entries(catConfig).forEach(([cat, conf]) => {
     .attr('fill-opacity', 0.6)
     .attr('cursor','pointer')
     .on('mouseenter', (event,d) => {
-      tooltip.innerHTML = `<div class="t-name">${d.label}</div>`;
+      tooltip.textContent = d.label;
       tooltip.style.borderLeftColor = catConfig['Événement'].color;
       tooltip.style.opacity = 1;
       tooltip.style.left = (event.pageX+10)+'px';
@@ -1320,376 +1229,8 @@ window.addEventListener('resize', () => {
   simulation.force('x', d3.forceX(d => W/2 + catConfig[d.cat].cx * W).strength(0.14));
   simulation.force('y', d3.forceY(d => H/2 + catConfig[d.cat].cy * H).strength(0.14));
   simulation.alpha(0.3).restart();
-  if (mode3D && threeRenderer) {
-    threeCamera.aspect = W / H;
-    threeCamera.updateProjectionMatrix();
-    threeRenderer.setSize(W, H);
-    if (bloomComposer) bloomComposer.setSize(W, H);
-  }
 });
 
-// ===== 3D MODE =====
-// Layout 3D organique : relaxation de forces (répulsion + ressorts + ancres par catégorie)
-function compute3DLayout() {
-  const N = nodes.length;
-  const V = () => new THREE.Vector3();
-  const anchor = c => new THREE.Vector3().fromArray(catAnchor3D[c] || [0,0,0]);
-  const P = nodes.map(n => anchor(n.cat).add(
-    new THREE.Vector3((Math.random()-.5)*80,(Math.random()-.5)*80,(Math.random()-.5)*80)));
-  const eidx = edges.map(e => [
-    nodes.findIndex(n => n.id === nid(e.source)),
-    nodes.findIndex(n => n.id === nid(e.target))
-  ]).filter(p => p[0] >= 0 && p[1] >= 0);
-  const REP = 62000, SPRING = 0.014, SLEN = 60, ANCHOR = 0.040, ITERS = 300, CAP = 12;
-  const tmp = V();
-  for (let it = 0; it < ITERS; it++) {
-    const disp = nodes.map(() => V());
-    for (let i = 0; i < N; i++) for (let j = i+1; j < N; j++) {
-      tmp.subVectors(P[i], P[j]);
-      let d2 = tmp.lengthSq(); if (d2 < 1) d2 = 1;
-      tmp.normalize().multiplyScalar(REP / d2);
-      disp[i].add(tmp); disp[j].sub(tmp);
-    }
-    eidx.forEach(([i, j]) => {
-      tmp.subVectors(P[j], P[i]);
-      const d = tmp.length() || 1;
-      tmp.normalize().multiplyScalar((d - SLEN) * SPRING);
-      disp[i].add(tmp); disp[j].sub(tmp);
-    });
-    const cool = Math.min(1, 0.9 - it / ITERS * 0.5);
-    for (let i = 0; i < N; i++) {
-      tmp.copy(anchor(nodes[i].cat)).sub(P[i]).multiplyScalar(ANCHOR);
-      disp[i].add(tmp).multiplyScalar(cool);
-      const ml = disp[i].length();
-      if (ml > CAP) disp[i].multiplyScalar(CAP / ml);
-      P[i].add(disp[i]);
-    }
-  }
-  const c = V(); P.forEach(p => c.add(p)); c.multiplyScalar(1 / N);
-  let maxR = 1; P.forEach(p => maxR = Math.max(maxR, p.distanceTo(c)));
-  const s = 300 / maxR;
-  nodes.forEach((n, i) => { const q = P[i].sub(c).multiplyScalar(s); n.p3 = {x:q.x, y:q.y, z:q.z}; });
-}
-
-// Texture de halo radial (réutilisée par tous les nœuds)
-function halo3D() {
-  if (_halo3D) return _halo3D;
-  const cv = document.createElement('canvas'); cv.width = cv.height = 128;
-  const g = cv.getContext('2d');
-  const gr = g.createRadialGradient(64,64,0, 64,64,64);
-  gr.addColorStop(0,'rgba(255,255,255,1)');
-  gr.addColorStop(0.22,'rgba(255,255,255,0.55)');
-  gr.addColorStop(1,'rgba(255,255,255,0)');
-  g.fillStyle = gr; g.fillRect(0,0,128,128);
-  _halo3D = new THREE.CanvasTexture(cv);
-  return _halo3D;
-}
-
-function init3D() {
-  const container = document.getElementById('three-container');
-  clock3D = new THREE.Clock();
-
-  threeScene = new THREE.Scene();
-  threeScene.background = new THREE.Color(0x080810);
-  threeScene.fog = new THREE.FogExp2(0x080810, 0.00085);
-
-  threeCamera = new THREE.PerspectiveCamera(58, W / H, 1, 4000);
-  threeCamera.position.set(0, 40, 900);
-
-  threeRenderer = new THREE.WebGLRenderer({ antialias: true });
-  threeRenderer.setSize(W, H);
-  threeRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-  container.appendChild(threeRenderer.domElement);
-
-  threeScene.add(new THREE.AmbientLight(0x556677, 1.1));
-  const p1 = new THREE.PointLight(0xff5577, 0.7, 1600); p1.position.set(-320, 220, 240); threeScene.add(p1);
-  const p2 = new THREE.PointLight(0x3399ff, 0.7, 1600); p2.position.set(320, -220, -240); threeScene.add(p2);
-  const dir = new THREE.DirectionalLight(0xffffff, 0.45);
-  dir.position.set(250, 300, 400);
-  threeScene.add(dir);
-  const pt = new THREE.PointLight(0x6688cc, 0.4, 900);
-  pt.position.set(-200, -100, 250);
-  threeScene.add(pt);
-
-  threeControls = new THREE.OrbitControls(threeCamera, threeRenderer.domElement);
-  threeControls.enableDamping = true;
-  threeControls.dampingFactor = 0.06;
-  threeControls.autoRotate = true;
-  threeControls.autoRotateSpeed = 0.35;
-  threeControls.minDistance = 120;
-  threeControls.maxDistance = 1600;
-  threeControls.target.set(0, 0, 0);
-
-  function resetIdle() {
-    threeControls.autoRotate = false;
-    clearTimeout(idleTimer3D);
-    idleTimer3D = setTimeout(() => { threeControls.autoRotate = true; }, 3500);
-  }
-  threeRenderer.domElement.addEventListener('pointerdown', resetIdle);
-  threeRenderer.domElement.addEventListener('wheel', resetIdle);
-
-  // Étoiles
-  const starsGeo = new THREE.BufferGeometry();
-  const sp = [];
-  for (let i = 0; i < 1400; i++) {
-    sp.push((Math.random()-0.5)*3000, (Math.random()-0.5)*3000, (Math.random()-0.5)*3000);
-  }
-  starsGeo.setAttribute('position', new THREE.Float32BufferAttribute(sp, 3));
-  threeScene.add(new THREE.Points(starsGeo,
-    new THREE.PointsMaterial({color:0xffffff, size:1.1, transparent:true, opacity:0.35})));
-
-  // Post-traitement : bloom (halo lumineux néon)
-  bloomComposer = new THREE.EffectComposer(threeRenderer);
-  bloomComposer.setSize(W, H);
-  bloomComposer.addPass(new THREE.RenderPass(threeScene, threeCamera));
-  bloomPass = new THREE.UnrealBloomPass(new THREE.Vector2(W, H), 0.5, 0.4, 0.25);
-  bloomComposer.addPass(bloomPass);
-
-  // Disposition organique + paramètres de flottement
-  compute3DLayout();
-  nodes.forEach(n => { n.f3 = {
-    ph: Math.random()*6.28, ph2: Math.random()*6.28,
-    amp: 3.5 + Math.random()*3.5, sp: 0.5 + Math.random()*0.5
-  }; });
-
-  build3DNodes();
-  build3DEdges();
-  build3DLabels();
-  setup3DRaycast();
-  update3DVisibility();
-  introStart = clock3D.getElapsedTime();
-  animate3D();
-}
-
-function build3DNodes() {
-  nodeMeshes3D = [];
-  const halo = halo3D();
-  nodes.forEach(n => {
-    const r = n.size * 0.5;
-    const emI = 0.5;
-    const geo = new THREE.SphereGeometry(r, 24, 24);
-    const col = new THREE.Color(catConfig[n.cat].color);
-    const mat = new THREE.MeshStandardMaterial({
-      color: col, emissive: col, emissiveIntensity: emI,
-      metalness: 0.25, roughness: 0.45, transparent: true, opacity: 0.96
-    });
-    const mesh = new THREE.Mesh(geo, mat);
-    mesh.position.set(n.p3.x, n.p3.y, n.p3.z);
-    mesh.userData = {
-      nodeId: n.id, baseR: r, emI,
-      base: new THREE.Vector3(n.p3.x, n.p3.y, n.p3.z), f: n.f3
-    };
-
-    const sprite = new THREE.Sprite(new THREE.SpriteMaterial({
-      map: halo, color: col, transparent: true, opacity: 0.28,
-      depthWrite: false, blending: THREE.AdditiveBlending
-    }));
-    sprite.scale.set(r*4.5, r*4.5, 1);
-    mesh.add(sprite);
-
-    threeScene.add(mesh);
-    nodeMeshes3D.push(mesh);
-  });
-}
-
-function build3DEdges() {
-  edgeData3D = [];
-  const positions = [], colors = [];
-  const idxOf = id => nodes.findIndex(n => n.id === nid(id));
-  edges.forEach(e => {
-    const si = idxOf(e.source), ti = idxOf(e.target);
-    if (si < 0 || ti < 0) return;
-    const cs = new THREE.Color(catConfig[nodes[si].cat].color);
-    const ct = new THREE.Color(catConfig[nodes[ti].cat].color);
-    const start = positions.length / 3;              // index du 1er sommet (en sommets)
-    for (let k = 0; k < SEG3D; k++) {
-      [k, k+1].forEach(kk => {
-        positions.push(0, 0, 0);
-        const c = cs.clone().lerp(ct, kk / SEG3D);
-        colors.push(c.r, c.g, c.b);
-      });
-    }
-    edgeData3D.push({ si, ti, start, vis: true,
-      off: (20 + Math.random()*40) * (Math.random() < 0.5 ? 1 : -1) });
-  });
-  const geo = new THREE.BufferGeometry();
-  geo.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
-  geo.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
-  edgeLines3D = new THREE.LineSegments(geo, new THREE.LineBasicMaterial({
-    vertexColors: true, transparent: true, opacity: 0.14, depthWrite: false
-  }));
-  threeScene.add(edgeLines3D);
-}
-
-function build3DLabels() {
-  labelSprites3D = [];
-  nodes.forEach((n, i) => {
-    if (n.size < 10) return;
-    const canvas = document.createElement('canvas');
-    const ctx = canvas.getContext('2d');
-    const fs = 30;
-    ctx.font = `600 ${fs}px Segoe UI, Arial, sans-serif`;
-    const tw = ctx.measureText(n.label).width;
-    canvas.width = tw + 24;
-    canvas.height = fs + 16;
-    ctx.font = `600 ${fs}px Segoe UI, Arial, sans-serif`;
-    ctx.fillStyle = '#ffffff';
-    ctx.globalAlpha = 0.72;
-    ctx.fillText(n.label, 12, fs + 2);
-    const tex = new THREE.CanvasTexture(canvas);
-    tex.minFilter = THREE.LinearFilter;
-    const sprite = new THREE.Sprite(
-      new THREE.SpriteMaterial({map:tex, transparent:true, depthWrite:false}));
-    const sc = 0.28;
-    sprite.scale.set(canvas.width*sc/4, canvas.height*sc/4, 1);
-    const m = nodeMeshes3D[i];
-    sprite.position.set(m.position.x, m.position.y - n.size*0.55 - 5, m.position.z);
-    sprite.userData.nodeIdx = i;
-    threeScene.add(sprite);
-    labelSprites3D.push(sprite);
-  });
-}
-
-function setup3DRaycast() {
-  const rc = new THREE.Raycaster();
-  const mouse = new THREE.Vector2();
-  let hov3d = null;
-
-  threeRenderer.domElement.addEventListener('mousemove', ev => {
-    const rect = threeRenderer.domElement.getBoundingClientRect();
-    mouse.x = ((ev.clientX - rect.left)/rect.width)*2 - 1;
-    mouse.y = -((ev.clientY - rect.top)/rect.height)*2 + 1;
-    rc.setFromCamera(mouse, threeCamera);
-    const hits = rc.intersectObjects(nodeMeshes3D);
-    if (hits.length) {
-      const id = hits[0].object.userData.nodeId;
-      if (!id) return;
-      if (hov3d !== id) {
-        hov3d = id;
-        const n = nodeMap[id], det = details[id]||{};
-        document.body.style.cursor = 'pointer';
-        const desc = det.desc ? `<div class="t-desc">${det.desc.substring(0,100)}…</div>` : '';
-        tooltip.innerHTML = `<div class="t-cat">${n.cat}</div><div class="t-name">${n.label}</div>${desc}`;
-        tooltip.style.opacity = 1;
-      }
-      tooltip.style.left = (ev.clientX+16)+'px';
-      tooltip.style.top = (ev.clientY-10)+'px';
-    } else if (hov3d) {
-      hov3d = null;
-      document.body.style.cursor = 'default';
-      tooltip.style.opacity = 0;
-    }
-  });
-
-  threeRenderer.domElement.addEventListener('click', ev => {
-    const rect = threeRenderer.domElement.getBoundingClientRect();
-    mouse.x = ((ev.clientX - rect.left)/rect.width)*2 - 1;
-    mouse.y = -((ev.clientY - rect.top)/rect.height)*2 + 1;
-    rc.setFromCamera(mouse, threeCamera);
-    const hits = rc.intersectObjects(nodeMeshes3D);
-    if (hits.length) {
-      const id = hits[0].object.userData.nodeId;
-      if (id) selectNode(id);
-    } else {
-      closePanel();
-    }
-  });
-}
-
-const _p = new THREE.Vector3(), _mid = new THREE.Vector3(), _ctrl = new THREE.Vector3(), _perp = new THREE.Vector3();
-const _up = new THREE.Vector3(0, 1, 0);
-function updateEdges3D() {
-  if (!edgeLines3D) return;
-  const pos = edgeLines3D.geometry.attributes.position.array;
-  edgeData3D.forEach(ed => {
-    let b = ed.start * 3;
-    const s = nodeMeshes3D[ed.si].position, t = nodeMeshes3D[ed.ti].position;
-    if (!ed.vis) {                                   // arête masquée → repliée sur un point
-      for (let v = 0; v < SEG3D*2; v++) { pos[b]=s.x; pos[b+1]=s.y; pos[b+2]=s.z; b+=3; }
-      return;
-    }
-    _mid.addVectors(s, t).multiplyScalar(0.5);
-    _perp.subVectors(t, s).cross(_up);
-    if (_perp.lengthSq() < 1e-3) _perp.set(1, 0, 0);
-    _perp.normalize().multiplyScalar(ed.off);
-    _ctrl.copy(_mid).add(_perp);                     // point de contrôle → courbe de Bézier
-    for (let k = 0; k < SEG3D; k++) {
-      [k, k+1].forEach(kk => {
-        const u = kk / SEG3D, a = (1-u)*(1-u), bb = 2*(1-u)*u, c = u*u;
-        _p.set(a*s.x + bb*_ctrl.x + c*t.x, a*s.y + bb*_ctrl.y + c*t.y, a*s.z + bb*_ctrl.z + c*t.z);
-        pos[b]=_p.x; pos[b+1]=_p.y; pos[b+2]=_p.z; b+=3;
-      });
-    }
-  });
-  edgeLines3D.geometry.attributes.position.needsUpdate = true;
-}
-
-function animate3D() {
-  animFrameId = requestAnimationFrame(animate3D);
-  const t = clock3D.getElapsedTime();
-
-  // Flottement organique des nœuds
-  nodeMeshes3D.forEach(m => {
-    const b = m.userData.base, f = m.userData.f;
-    m.position.set(
-      b.x + Math.sin(t*f.sp + f.ph)*f.amp,
-      b.y + Math.sin(t*f.sp*1.1 + f.ph2)*f.amp,
-      b.z + Math.cos(t*f.sp*0.9 + f.ph)*f.amp
-    );
-  });
-
-  // Les labels suivent leur nœud
-  labelSprites3D.forEach(sprite => {
-    const i = sprite.userData.nodeIdx, m = nodeMeshes3D[i];
-    sprite.position.set(m.position.x, m.position.y - nodes[i].size*0.55 - 5, m.position.z);
-  });
-
-  // Pulsation du nœud sélectionné
-  if (selectedNodeId) {
-    const i = nodes.findIndex(n => n.id === selectedNodeId);
-    if (i >= 0) nodeMeshes3D[i].material.emissiveIntensity = 0.85 + Math.sin(t*4)*0.35;
-  }
-
-  updateEdges3D();
-
-  // Intro : léger travelling avant
-  if (introStart !== null) {
-    const p = Math.min(1, (t - introStart) / 1.6);
-    threeCamera.position.z = 900 - (1 - Math.pow(1-p, 3)) * 380;
-    if (p >= 1) introStart = null;
-  }
-
-  threeControls.update();
-  bloomComposer.render();
-}
-
-function destroy3D() {
-  if (animFrameId) { cancelAnimationFrame(animFrameId); animFrameId = null; }
-}
-
-function toggle3D() {
-  mode3D = !mode3D;
-  const btn = document.getElementById('btn-3d');
-  const svgEl = document.getElementById('main-svg');
-  const cont = document.getElementById('three-container');
-  if (mode3D) {
-    btn.textContent = '2D';
-    btn.title = 'Revenir en 2D';
-    btn.classList.add('active-3d');
-    svgEl.style.display = 'none';
-    cont.style.display = 'block';
-    if (!threeRenderer) init3D(); else animate3D();
-  } else {
-    btn.textContent = '3D';
-    btn.title = 'Mode 3D';
-    btn.classList.remove('active-3d');
-    svgEl.style.display = 'block';
-    cont.style.display = 'none';
-    destroy3D();
-    tooltip.style.opacity = 0;
-    document.body.style.cursor = 'default';
-  }
-}
 </script>
 </body>
 </html>
