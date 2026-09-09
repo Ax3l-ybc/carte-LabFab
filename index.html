@@ -9,7 +9,7 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
 body{background:#0f0f1a;overflow:hidden;font-family:'Segoe UI',system-ui,Arial,sans-serif;color:#fff;}
-svg#main-svg{display:block;position:absolute;top:56px;left:0;right:0;bottom:80px;}
+svg#main-svg{display:block;position:absolute;top:56px;left:0;right:0;bottom:120px;}
 
 /* === TOP BAR === */
 #topbar{
@@ -40,7 +40,7 @@ svg#main-svg{display:block;position:absolute;top:56px;left:0;right:0;bottom:80px
 
 /* === LEGEND & FILTERS === */
 #legend{
-  position:absolute;bottom:96px;left:16px;z-index:100;
+  position:absolute;bottom:136px;left:16px;z-index:100;
   background:rgba(10,10,26,0.88);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
   padding:12px 14px;border-radius:10px;border:1px solid rgba(255,255,255,0.08);
 }
@@ -57,7 +57,7 @@ svg#main-svg{display:block;position:absolute;top:56px;left:0;right:0;bottom:80px
 
 /* === SIDE PANEL === */
 #panel{
-  position:absolute;top:56px;right:0;bottom:80px;width:380px;z-index:90;
+  position:absolute;top:56px;right:0;bottom:120px;width:380px;z-index:90;
   background:rgba(10,10,26,0.95);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
   border-left:1px solid rgba(255,255,255,0.08);
   transform:translateX(100%);transition:transform 0.3s cubic-bezier(0.4,0,0.2,1);
@@ -91,7 +91,7 @@ svg#main-svg{display:block;position:absolute;top:56px;left:0;right:0;bottom:80px
 
 /* === TIMELINE === */
 #timeline{
-  position:absolute;bottom:0;left:0;right:0;height:80px;z-index:100;
+  position:absolute;bottom:0;left:0;right:0;height:120px;z-index:100;
   background:rgba(10,10,26,0.92);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
   border-top:1px solid rgba(255,255,255,0.06);
 }
@@ -101,10 +101,21 @@ svg#main-svg{display:block;position:absolute;top:56px;left:0;right:0;bottom:80px
 #timeline .brush .selection{fill:rgba(255,255,255,0.08);stroke:rgba(255,255,255,0.2);stroke-width:1;rx:4;}
 #timeline .brush .handle{fill:rgba(255,255,255,0.4);rx:2;width:4px !important;}
 #timeline .brush .overlay{fill:transparent;}
+/* Jalons structurants (surlignes en jaune) */
+#timeline .ev-struct-g{pointer-events:none;}
+#timeline .ev-struct-halo{fill:#FFE066;fill-opacity:0.13;}
+#timeline .ev-struct{fill:#FFE066;stroke:rgba(15,15,26,0.9);stroke-width:1.5;}
+#timeline .ev-struct-stem{fill:none;stroke:#FFE066;stroke-opacity:0.3;stroke-width:1;stroke-dasharray:2 3;}
+#timeline .ev-struct-label{
+  fill:#FFE066;fill-opacity:0.85;font-size:10px;font-weight:600;
+  letter-spacing:0.2px;text-anchor:middle;
+}
 .timeline-label{
   position:absolute;top:6px;left:50%;transform:translateX(-50%);
   font-size:11px;opacity:0.4;letter-spacing:0.5px;pointer-events:none;
+  white-space:nowrap;
 }
+.timeline-legend{margin-left:14px;color:#FFE066;opacity:0.75;}
 .play-btn{
   position:absolute;top:10px;right:20px;z-index:10;
   background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);
@@ -170,7 +181,7 @@ svg#main-svg{display:block;position:absolute;top:56px;left:0;right:0;bottom:80px
 
 <!-- TIMELINE -->
 <div id="timeline">
-  <span class="timeline-label">Période</span>
+  <span class="timeline-label">Période<span class="timeline-legend">◉ jalons structurants</span></span>
   <span class="timeline-year" id="timeline-year"></span>
   <button class="play-btn" id="play-btn" onclick="togglePlay()" title="Lecture automatique">▶</button>
   <svg id="timeline-svg"></svg>
@@ -253,20 +264,20 @@ const nodes = [
   {id:'l26',label:'Mobilab',cat:'Lieu',size:6,y1:2019,y2:2025},
   {id:'l27',label:'IDLV (Indien dans la Ville)',cat:'Lieu',size:7,y1:2012,y2:2026},
   // === ÉVÉNEMENTS (32) ===
-  {id:'e01',label:'Rencontre John Le Jeune (2010)',cat:'Événement',size:14,y1:2010,y2:2010},
-  {id:'e02',label:'Création FabLab EESAB (2012)',cat:'Événement',size:18,y1:2012,y2:2012},
-  {id:'e03',label:'Vivacité (2012)',cat:'Événement',size:14,y1:2012,y2:2012},
-  {id:'e04',label:'Appel à projet Pellerin (2013)',cat:'Événement',size:14,y1:2013,y2:2013},
-  {id:'e05',label:'Premier MOOC FUN (2014)',cat:'Événement',size:10,y1:2014,y2:2014},
+  {id:'e01',label:'Rencontre John Le Jeune (2010)',cat:'Événement',size:14,y1:2010,y2:2010,struct:1},
+  {id:'e02',label:'Création FabLab EESAB (2012)',cat:'Événement',size:18,y1:2012,y2:2012,struct:1},
+  {id:'e03',label:'Vivacité (2012)',cat:'Événement',size:14,y1:2012,y2:2012,struct:1},
+  {id:'e04',label:'Appel à projet Pellerin (2013)',cat:'Événement',size:14,y1:2013,y2:2013,struct:1},
+  {id:'e05',label:'Premier MOOC FUN (2014)',cat:'Événement',size:10,y1:2014,y2:2014,struct:1},
   {id:'e06',label:'Projet Bionico (2012)',cat:'Événement',size:14,y1:2012,y2:2015},
-  {id:'e07',label:'Création RFF Lab (2015)',cat:'Événement',size:12,y1:2015,y2:2015},
-  {id:'e08',label:'Création asso fab managers (2017)',cat:'Événement',size:12,y1:2017,y2:2017},
-  {id:'e09',label:'Covid — fabrication distribuée (2020)',cat:'Événement',size:12,y1:2020,y2:2020},
+  {id:'e07',label:'Création RFF Lab (2015)',cat:'Événement',size:12,y1:2015,y2:2015,struct:1},
+  {id:'e08',label:'Création asso fab managers (2017)',cat:'Événement',size:12,y1:2017,y2:2017,struct:1},
+  {id:'e09',label:'Covid — fabrication distribuée (2020)',cat:'Événement',size:12,y1:2020,y2:2020,struct:1},
   {id:'e10',label:'Jardin Numérique (2011)',cat:'Événement',size:8,y1:2011,y2:2011},
   {id:'e11',label:'Livre blanc RFF Lab (2016-17)',cat:'Événement',size:8,y1:2016,y2:2017},
   {id:'e12',label:'Métromix',cat:'Événement',size:8,y1:2019,y2:2019},
   {id:'e13',label:'Ouverture FabLab Vietnam (2013)',cat:'Événement',size:12,y1:2013,y2:2013},
-  {id:'e14',label:'Importation Maker Faire (2011)',cat:'Événement',size:12,y1:2011,y2:2011},
+  {id:'e14',label:'Importation Maker Faire (2011)',cat:'Événement',size:12,y1:2011,y2:2011,struct:1},
   {id:'e15',label:'Rachat Maker Faire (2016)',cat:'Événement',size:12,y1:2016,y2:2016},
   {id:'e16',label:'Création Maker Campus (2016)',cat:'Événement',size:14,y1:2016,y2:2016},
   {id:'e17',label:'Fabrik',cat:'Événement',size:6,y1:2020,y2:2025},
@@ -323,7 +334,7 @@ const nodes = [
   {id:'l29',label:'Milo Carré [?]',cat:'Lieu',size:8,y1:2013,y2:2026},
   {id:'l30',label:'TechShop Angers',cat:'Lieu',size:7,y1:2012,y2:2016},
   {id:'l31',label:'FabLab de Lannion',cat:'Lieu',size:7,y1:2012,y2:2026},
-  {id:'e29',label:'Création EduLab Rennes 2 (2017)',cat:'Événement',size:12,y1:2017,y2:2017},
+  {id:'e29',label:'Création EduLab Rennes 2 (2017)',cat:'Événement',size:12,y1:2017,y2:2017,struct:1},
   {id:'e30',label:'Réseau breton LabBZH [?] (~2012)',cat:'Événement',size:9,y1:2012,y2:2020},
   {id:'e31',label:'Opéra Morphose [?]',cat:'Événement',size:8,y1:2025,y2:2025},
   {id:'e32',label:'Échange makers Erlangen (2026)',cat:'Événement',size:9,y1:2026,y2:2026},
@@ -1189,9 +1200,9 @@ Object.entries(catConfig).forEach(([cat, conf]) => {
 (function initTimeline() {
   const container = document.getElementById('timeline');
   const tsvg = d3.select('#timeline-svg');
-  const margin = {left:60, right:60, top:28, bottom:20};
+  const margin = {left:60, right:60, top:64, bottom:20};
   const tw = container.clientWidth - margin.left - margin.right;
-  const th = 80 - margin.top - margin.bottom;
+  const th = container.clientHeight - margin.top - margin.bottom;
 
   const xScale = d3.scaleLinear().domain([2009, 2026]).range([0, tw]);
   const tg = tsvg.append('g').attr('transform',`translate(${margin.left},${margin.top})`);
@@ -1202,7 +1213,7 @@ Object.entries(catConfig).forEach(([cat, conf]) => {
 
   // Event markers
   const events = nodes.filter(n => n.cat === 'Événement');
-  tg.selectAll('.ev-mark').data(events).join('circle')
+  tg.selectAll('.ev-mark').data(events.filter(d => !d.struct)).join('circle')
     .attr('class','ev-mark')
     .attr('cx', d => xScale((d.y1+d.y2)/2))
     .attr('cy', th/2)
@@ -1219,6 +1230,44 @@ Object.entries(catConfig).forEach(([cat, conf]) => {
     })
     .on('mouseleave', () => { tooltip.style.opacity = 0; })
     .on('click', (event,d) => { event.stopPropagation(); selectNode(d.id); });
+
+  // ===== JALONS STRUCTURANTS =====
+  // Etapes cles de la structuration du mouvement FabLab et du reseau LabFab,
+  // vues depuis Rennes. Surlignees en jaune, libelle affiche en permanence.
+  const struct = events.filter(d => d.struct).map(d => ({
+    short: d.label.replace(/\s*\([^)]*\)\s*$/, ''),
+    x: xScale((d.y1+d.y2)/2)
+  })).sort((a,b) => a.x - b.x);
+
+  // Placement des libelles sur deux rangees, sans chevauchement
+  const rowY = [-14, -32];
+  const rowEnd = [-Infinity, -Infinity];
+  struct.forEach(d => {
+    const half = d.short.length * 2.9 + 7;
+    let r = 0, lx = d.x;
+    while (r < rowY.length && d.x - half < rowEnd[r]) r++;
+    if (r === rowY.length) {
+      // Les deux rangees sont prises : on decale le libelle au lieu de le superposer
+      r = (rowEnd[0] <= rowEnd[1]) ? 0 : 1;
+      lx = rowEnd[r] + half + 4;
+    }
+    d.row = r;
+    d.lx = Math.max(half - margin.left, Math.min(tw + margin.right - half, lx));
+    rowEnd[r] = d.lx + half;
+  });
+
+  const sg = tg.append('g').attr('class','ev-struct-g');
+  const sItem = sg.selectAll('g').data(struct).join('g');
+  // Tige : remonte du marqueur puis rejoint le libelle s'il a ete decale
+  sItem.append('path').attr('class','ev-struct-stem')
+    .attr('d', d => `M${d.x},${th/2 - 10}V${rowY[d.row] + 9}L${d.lx},${rowY[d.row] + 4}`);
+  sItem.append('circle').attr('class','ev-struct-halo')
+    .attr('cx', d => d.x).attr('cy', th/2).attr('r', 12);
+  sItem.append('circle').attr('class','ev-struct')
+    .attr('cx', d => d.x).attr('cy', th/2).attr('r', 6);
+  sItem.append('text').attr('class','ev-struct-label')
+    .attr('x', d => d.lx).attr('y', d => rowY[d.row])
+    .text(d => d.short);
 
   // Brush
   const brush = d3.brushX()
