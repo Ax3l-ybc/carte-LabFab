@@ -88,6 +88,35 @@ svg#main-svg{display:block;position:absolute;top:56px;left:0;right:0;bottom:120p
 .panel-section ul{list-style:none;padding:0;}
 .panel-section li{font-size:13px;line-height:1.5;opacity:0.75;padding:2px 0;padding-left:12px;position:relative;}
 .panel-section li::before{content:'·';position:absolute;left:0;opacity:0.4;}
+.panel-handle{display:none;}
+/* Téléphone : le panneau devient un tiroir en bas d'écran, la carte reste visible au-dessus */
+@media (max-width:700px){
+  #panel{
+    top:auto;left:0;right:0;bottom:0;width:auto;height:45vh;height:45dvh;z-index:150;
+    border-left:none;border-top:1px solid rgba(255,255,255,0.12);border-radius:14px 14px 0 0;
+    transform:translateY(100%);padding:0 16px 20px;
+  }
+  #panel.open{transform:translateY(0);}
+  #panel.open.collapsed{transform:translateY(calc(100% - 92px));overflow:hidden;}
+  .panel-handle{
+    display:block;position:sticky;top:0;z-index:2;margin:0 -16px 6px;padding:10px 0 8px;
+    background:rgba(10,10,26,0.98);border:none;width:calc(100% + 32px);cursor:pointer;
+  }
+  .panel-handle::before{
+    content:'';display:block;margin:0 auto;width:40px;height:4px;border-radius:2px;
+    background:rgba(255,255,255,0.3);
+  }
+  .panel-close{top:8px;z-index:3;position:absolute;}
+  #panel h2{font-size:18px;}
+  /* Barre du haut : titre court, recherche extensible, zoom au pincement (seul le reset reste) */
+  #topbar{padding:0 12px;gap:10px;}
+  .title-area{flex-shrink:0;}
+  .title-area h1{font-size:14px;}
+  .title-area .sub,.title-city{display:none;}
+  .search-area{width:auto;flex:1;min-width:0;}
+  .search-area input{font-size:16px;padding:7px 10px 7px 32px;}
+  .controls-area button:not(:last-child){display:none;}
+}
 
 /* === TIMELINE === */
 #timeline{
@@ -156,7 +185,7 @@ svg#main-svg{display:block;position:absolute;top:56px;left:0;right:0;bottom:120p
 <!-- TOP BAR -->
 <div id="topbar">
   <div class="title-area">
-    <h1>Carte du milieu LabFab Rennes</h1>
+    <h1>Carte du milieu LabFab<span class="title-city"> Rennes</span></h1>
     <div class="sub">Acteurs · Lieux · Événements · Mots-clés</div>
   </div>
   <div class="search-area">
@@ -175,6 +204,7 @@ svg#main-svg{display:block;position:absolute;top:56px;left:0;right:0;bottom:120p
 
 <!-- SIDE PANEL -->
 <div id="panel">
+  <button class="panel-handle" id="panel-handle" onclick="togglePanelSize()" title="Agrandir / réduire la fiche"></button>
   <button class="panel-close" onclick="closePanel()">✕</button>
   <div id="panel-content"></div>
 </div>
@@ -1126,16 +1156,42 @@ nodeCircles.on('click',(event,d) => {
 
 svg.on('click',() => closePanel());
 
+const isMobile = () => window.matchMedia('(max-width:700px)').matches;
+
 function selectNode(id) {
   selectedNodeId = id;
   updateVisibility();
   openPanel(id);
+  if (isMobile()) focusOnNode(id);
 }
 
 function closePanel() {
   selectedNodeId = null;
-  document.getElementById('panel').classList.remove('open');
+  const panel = document.getElementById('panel');
+  panel.classList.remove('open', 'collapsed');
   updateVisibility();
+}
+
+// Téléphone : réduire le tiroir à son titre pour voir la carte en grand, ou le rouvrir
+window.togglePanelSize = () => {
+  document.getElementById('panel').classList.toggle('collapsed');
+  if (selectedNodeId) focusOnNode(selectedNodeId);
+};
+
+// Cadre le nœud sélectionné et ses voisins visibles dans la zone de carte non couverte par le tiroir
+function focusOnNode(id) {
+  const pts = [nodeMap[id], ...adjacency[id].map(a => nodeMap[a.target]).filter(isNodeVisible)];
+  const pad = 40;
+  const x0 = d3.min(pts, p => p.x) - pad, x1 = d3.max(pts, p => p.x) + pad;
+  const y0 = d3.min(pts, p => p.y) - pad, y1 = d3.max(pts, p => p.y) + pad;
+  const panel = document.getElementById('panel');
+  const sheetH = panel.classList.contains('collapsed') ? 92 : panel.offsetHeight;
+  const visH = Math.max(120, window.innerHeight - 56 - sheetH);
+  const k = Math.max(0.3, Math.min(2.5, W / (x1 - x0), visH / (y1 - y0)));
+  const t = d3.zoomIdentity
+    .translate(W / 2 - k * (x0 + x1) / 2, visH / 2 - k * (y0 + y1) / 2)
+    .scale(k);
+  svg.transition().duration(500).call(zoom.transform, t);
 }
 
 function openPanel(id) {
@@ -1165,6 +1221,8 @@ function openPanel(id) {
   }
 
   content.innerHTML = html;
+  panel.classList.remove('collapsed');
+  panel.scrollTop = 0;
   panel.classList.add('open');
 }
 
