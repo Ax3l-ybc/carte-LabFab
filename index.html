@@ -179,6 +179,17 @@ svg#main-svg{display:block;position:absolute;top:56px;left:0;right:0;bottom:120p
 .ring-pulse{animation:ringPulse 2s ease-in-out infinite;}
 @keyframes twinkle{0%,100%{opacity:0.06;}50%{opacity:0.32;}}
 .star-twinkle{animation:twinkle 4.5s ease-in-out infinite;}
+/* Flux animé dans les liens du point sélectionné (sens source → cible) */
+@keyframes edgeFlow{from{stroke-dashoffset:12;}to{stroke-dashoffset:0;}}
+.edge-flow{animation:edgeFlow 0.9s linear infinite;}
+.edge-flow.rev{animation-direction:reverse;}
+@media (prefers-reduced-motion:reduce){.edge-flow{animation:none;}}
+
+/* Légende des sens de relation */
+.legend-dir{margin-top:8px;padding-top:8px;border-top:1px solid rgba(255,255,255,0.08);}
+.legend-dir-row{display:flex;align-items:center;gap:8px;padding:3px 8px;font-size:11px;color:rgba(255,255,255,0.75);}
+.legend-dir-row svg{flex-shrink:0;}
+.legend-dir-row .count{margin-left:auto;opacity:0.35;font-size:11px;}
 
 </style>
 
@@ -904,6 +915,14 @@ edges.forEach(e => {
 
 function nid(d) { return (typeof d === 'object') ? d.id : d; }
 
+// ===== SENS DES RELATIONS =====
+// Chaque lien va de source vers cible. Il est 'bi' (réciproque) quand le verbe décrit
+// une relation mutuelle, sinon 'uni'. Pour corriger un lien précis, ajouter dir:'uni' ou dir:'bi'.
+const BI_LABELS = /collabore avec|travaille avec|proche de|partenaire|compagnon de route|co-fonde avec|co-préside avec|voyage avec|à la table avec|côtoie|coordonne avec|coordonnent|répare avec|fusion avec|proximité|rencontre fondatrice|allié du réseau|^lié à|^liée à|^lien /i;
+const DIR_COLOR = { uni:'#A78BFA', bi:'#4ADE80' };
+const DIR_LABEL = { uni:'Relation à sens unique', bi:'Relation réciproque' };
+edges.forEach(e => { if (!e.dir) e.dir = BI_LABELS.test(e.label) ? 'bi' : 'uni'; });
+
 function isNodeVisible(n) {
   if (!activeCategories.has(n.cat)) return false;
   if (n.y2 < timeRange[0] || n.y1 > timeRange[1]) return false;
@@ -944,20 +963,21 @@ function edgeOpacity(e) {
   const sid = nid(e.source), tid = nid(e.target);
   const sn = nodeMap[sid], tn = nodeMap[tid];
   if (!sn || !tn || !isNodeVisible(sn) || !isNodeVisible(tn)) return 0;
-  if (hoveredNodeId) return (sid===hoveredNodeId||tid===hoveredNodeId) ? 0.5 : 0.01;
-  if (selectedNodeId) return (sid===selectedNodeId||tid===selectedNodeId) ? 0.3 : 0.02;
-  return 0.07;
+  if (hoveredNodeId) return (sid===hoveredNodeId||tid===hoveredNodeId) ? 0.75 : 0.01;
+  if (selectedNodeId) return (sid===selectedNodeId||tid===selectedNodeId) ? 0.55 : 0.02;
+  return 0.09;
 }
 
 function edgeColor(e) {
+  return DIR_COLOR[e.dir];
+}
+
+// Flux animé : seulement sur les liens du point cliqué
+function flowOpacity(e) {
+  if (!selectedNodeId || hoveredNodeId && hoveredNodeId !== selectedNodeId) return 0;
   const sid = nid(e.source), tid = nid(e.target);
-  if (hoveredNodeId && (sid===hoveredNodeId||tid===hoveredNodeId)) {
-    return catConfig[nodeMap[hoveredNodeId].cat].color;
-  }
-  if (selectedNodeId && (sid===selectedNodeId||tid===selectedNodeId)) {
-    return catConfig[nodeMap[selectedNodeId].cat].color;
-  }
-  return '#ffffff';
+  if (sid!==selectedNodeId && tid!==selectedNodeId) return 0;
+  return edgeOpacity(e) > 0 ? 0.95 : 0;
 }
 
 // ===== LAYOUT DIMENSIONS =====
@@ -1027,9 +1047,31 @@ Object.entries(catConfig).forEach(([key, c], i) => {
 
 // Edges
 const edgeGroup = g.append('g');
+// Pointes de flèche : une par sens (l'opacité du trait s'applique aussi à la flèche)
+Object.entries(DIR_COLOR).forEach(([dir, color]) => {
+  defs.append('marker').attr('id','arrow-'+dir)
+    .attr('viewBox','0 0 10 10').attr('refX',9).attr('refY',5)
+    .attr('markerWidth',7).attr('markerHeight',7).attr('markerUnits','userSpaceOnUse')
+    .attr('orient','auto-start-reverse')
+    .append('path').attr('d','M0,1 L10,5 L0,9 Z').attr('fill',color);
+});
 const edgeLines = edgeGroup.selectAll('path').data(edges).join('path')
   .attr('fill','none').attr('stroke-linecap','round')
-  .attr('stroke','#fff').attr('stroke-opacity',0.07).attr('stroke-width',d => d.w*0.5);
+  .attr('stroke',d => edgeColor(d)).attr('opacity',0.09).attr('stroke-width',d => d.w*0.5)
+  .attr('marker-end',d => `url(#arrow-${d.dir})`)
+  .attr('marker-start',d => d.dir==='bi' ? `url(#arrow-${d.dir})` : null);
+
+// Particules qui circulent dans les liens du point sélectionné :
+// de la source vers la cible, et dans les deux sens pour une relation réciproque.
+const flowGroup = g.append('g').attr('pointer-events','none');
+const flowFwd = flowGroup.selectAll('path.fwd').data(edges).join('path')
+  .attr('class','edge-flow fwd');
+const flowRev = flowGroup.selectAll('path.rev').data(edges.filter(e => e.dir==='bi')).join('path')
+  .attr('class','edge-flow rev');
+const flowLines = flowGroup.selectAll('path');
+flowLines.attr('fill','none').attr('stroke-linecap','round')
+  .attr('stroke',d => DIR_COLOR[d.dir]).attr('stroke-width',2.4)
+  .attr('stroke-dasharray','0.1 11.9').attr('opacity',0);
 
 // Node group
 const nodeGroup = g.append('g');
@@ -1076,16 +1118,26 @@ const simulation = d3.forceSimulation(nodes)
   .on('tick', tick);
 
 function tick() {
-  edgeLines.attr('d', d => {
-    const s = nodeMap[nid(d.source)]||d.source, t = nodeMap[nid(d.target)]||d.target;
-    const mx = (s.x + t.x)/2 - (t.y - s.y)*0.12;
-    const my = (s.y + t.y)/2 + (t.x - s.x)*0.12;
-    return `M${s.x},${s.y} Q${mx},${my} ${t.x},${t.y}`;
-  });
+  edgeLines.attr('d', edgePath);
+  flowLines.attr('d', edgePath);
   nodeCircles.attr('cx',d=>d.x).attr('cy',d=>d.y);
   nodeGlow.attr('cx',d=>d.x).attr('cy',d=>d.y);
   nodeRing.attr('cx',d=>d.x).attr('cy',d=>d.y);
   labels.attr('x',d=>d.x).attr('y',d=>d.y);
+}
+
+// Courbe d'un lien, raccourcie aux bords des cercles pour que les flèches restent visibles
+function edgePath(d) {
+  const s = nodeMap[nid(d.source)]||d.source, t = nodeMap[nid(d.target)]||d.target;
+  const mx = (s.x + t.x)/2 - (t.y - s.y)*0.12;
+  const my = (s.y + t.y)/2 + (t.x - s.x)*0.12;
+  const trim = (p, r) => {
+    const dx = mx - p.x, dy = my - p.y, len = Math.hypot(dx, dy) || 1;
+    return [p.x + dx/len*r, p.y + dy/len*r];
+  };
+  const [sx, sy] = trim(s, s.size*0.7 + 2);
+  const [tx, ty] = trim(t, t.size*0.7 + 2);
+  return `M${sx},${sy} Q${mx},${my} ${tx},${ty}`;
 }
 
 // Pop d'apparition d'un nœud (lecture automatique de la timeline)
@@ -1117,8 +1169,9 @@ function updateVisibility() {
   labels.transition().duration(250)
     .attr('opacity',d => labelOpacity(d));
   edgeLines.transition().duration(250)
-    .attr('stroke-opacity',d => edgeOpacity(d))
-    .attr('stroke',d => edgeColor(d));
+    .attr('opacity',d => edgeOpacity(d));
+  flowLines.transition().duration(250)
+    .attr('opacity',d => flowOpacity(d));
   nodeGlow.attr('fill-opacity',d => d.id===hoveredNodeId ? 0.15 : 0);
   nodeRing.attr('stroke-opacity',d => d.id===selectedNodeId ? 0.6 : 0)
     .classed('ring-pulse', d => d.id===selectedNodeId);
@@ -1253,6 +1306,23 @@ Object.entries(catConfig).forEach(([cat, conf]) => {
   });
   legend.appendChild(btn);
 });
+
+// Légende du sens des liens
+(function () {
+  const box = document.createElement('div');
+  box.className = 'legend-dir';
+  ['uni','bi'].forEach(dir => {
+    const c = DIR_COLOR[dir];
+    const count = edges.filter(e => e.dir === dir).length;
+    const start = dir === 'bi' ? `<path d="M7,2 L1,5 L7,8 Z" fill="${c}"/>` : '';
+    box.innerHTML += `<div class="legend-dir-row" title="${DIR_LABEL[dir]}">
+      <svg width="26" height="10" viewBox="0 0 26 10">${start}
+        <line x1="${dir==='bi'?6:1}" y1="5" x2="20" y2="5" stroke="${c}" stroke-width="1.6"/>
+        <path d="M19,2 L25,5 L19,8 Z" fill="${c}"/></svg>
+      ${dir === 'bi' ? 'Réciproque' : 'Sens unique'}<span class="count">${count}</span></div>`;
+  });
+  legend.appendChild(box);
+})();
 
 // ===== TIMELINE =====
 (function initTimeline() {
