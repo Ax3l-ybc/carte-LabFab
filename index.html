@@ -972,11 +972,12 @@ function edgeColor(e) {
   return DIR_COLOR[e.dir];
 }
 
-// Flux animé : seulement sur les liens du point cliqué
+// Flux animé : sur les liens du point survolé, sinon du point cliqué
 function flowOpacity(e) {
-  if (!selectedNodeId || hoveredNodeId && hoveredNodeId !== selectedNodeId) return 0;
+  const active = hoveredNodeId || selectedNodeId;
+  if (!active) return 0;
   const sid = nid(e.source), tid = nid(e.target);
-  if (sid!==selectedNodeId && tid!==selectedNodeId) return 0;
+  if (sid!==active && tid!==active) return 0;
   return edgeOpacity(e) > 0 ? 0.95 : 0;
 }
 
